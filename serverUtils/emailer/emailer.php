@@ -1,5 +1,5 @@
-<?php //apikey: 
-        /*                                                                                                          THIS FILE IS NOT BEING USED CURRENTLY
+<?php //apikey:
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require '../../../vendor/autoload.php';
@@ -100,4 +100,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 }
-*/
