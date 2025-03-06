@@ -7,6 +7,9 @@
    require_once __DIR__ . '/DBConnection.php';
    require_once __DIR__ . '/UsersTable.php';
 
+
+
+
     //Select table to access
     $dbAcces = new DBConnection("");
     $table = $_GET['table'];
@@ -17,6 +20,9 @@
            break;
     }
 
+    /**
+     * Parses the data to a workable format, responds with 415 if format is not supported
+     */
     function handleContentType(){
         $rawData = file_get_contents('php://input');
             if ($_SERVER['CONTENT_TYPE'] == 'application/json') {
