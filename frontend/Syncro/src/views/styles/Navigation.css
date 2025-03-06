@@ -1,0 +1,7 @@
+.Navigation {
+    position: absolute;
+    left: 0;
+    width: 40px;
+    border: 2px solid red;
+    border-radius: 20px;
+}
