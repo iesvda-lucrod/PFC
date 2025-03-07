@@ -8,8 +8,16 @@ export default class ControllerTemplate {
     }
 
     //Need to define a switch for routing action
-    execute(action) {
+    execute(action, data) {
         throw new Error('message receiver switch must be implemented');
+
+        //Function template (remove error above when copying)
+        switch (action) {
+            //Cases here
+            default:
+                this.default(action, data);
+                break;
+        }
     }
 
     //Unified default error case
@@ -17,5 +25,5 @@ export default class ControllerTemplate {
         console.err('action not defined:', action, '\n  with associated data:', data);
     }
 
-    //Define controller actions
+    //Define controller functionality
 }
