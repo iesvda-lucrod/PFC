@@ -169,7 +169,6 @@ class DBConnection {
         return $this->getAllRows();
     }
 
-//TODO untested
     /**
      * Selects all rows from $this->table that match the field => value pairs from the associative array $assocNameValues
      *  @param mixed $assocNameValues
