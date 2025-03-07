@@ -7,9 +7,6 @@
    require_once __DIR__ . '/DBConnection.php';
    require_once __DIR__ . '/UsersTable.php';
 
-
-
-
     //Select table to access
     $dbAcces = new DBConnection("");
     $table = $_GET['table'];

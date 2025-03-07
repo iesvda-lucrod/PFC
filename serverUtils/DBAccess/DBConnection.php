@@ -171,6 +171,7 @@ class DBConnection {
 
     /**
      * Selects all rows from $this->table that match the field => value pairs from the associative array $assocNameValues
+     * comparison defaults to equal values but other operators (<, <=, >, >=) can be specified in the value (Ex: '>=2')
      *  @param mixed $assocNameValues
      *  @return mixed
      */
