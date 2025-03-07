@@ -9,4 +9,7 @@ class UsersTable extends DBConnection{
     }
 
     //Define here overrides to queries
+
+    //User password must never be sent server to client
+    
 }
