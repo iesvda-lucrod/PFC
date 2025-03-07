@@ -12,7 +12,6 @@ export default function UserContextProvider(props) {
 
     //Functions to handle this context's data
     const login = (userData) => setUser(userData);
-
     const logout = () => setUser(null);
 
     useEffect(() => {

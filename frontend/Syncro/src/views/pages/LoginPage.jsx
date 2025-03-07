@@ -5,6 +5,9 @@ import LoginController from "../../controllers/LoginController";
 import RoutingController from "../../controllers/RoutingController";
 
 export default function LoginPage() {
+    const loginController = new LoginController();
+    const routingController = new RoutingController();
+    const { user, setUser } = useUserContext();
     const [ newUser, setNewUser ] = useState(false);
     const [ formData, setFormData ] = useState(
         {
@@ -15,9 +18,7 @@ export default function LoginPage() {
         }
     );
     const [ validationErrors, setValidationErrors ] = useState({...formData});
-    const loginController = new LoginController();
-    const routingController = new RoutingController();
-    const { user, setUser } = useUserContext();
+    
 
     useEffect(() => {
         let newFormData = {...formData};
@@ -38,7 +39,6 @@ export default function LoginPage() {
     }
 
     const handleSubmit = () => {
-        console.log('sending.',formData);
         
         let data = {...formData};
         delete data.confirmPassword;
@@ -51,7 +51,9 @@ export default function LoginPage() {
                 setValidationErrors(response);
             }
             else {
-                setUser(formData.email);
+                console.log("-----------Everything checks, setting data:", data)
+                delete data.password;
+                setUser(data); //Only email and username should remain
                 routingController.execute('goto', '/');
             }
         });

@@ -1,7 +1,18 @@
 .Navigation {
     position: absolute;
     left: 0;
-    width: 40px;
+    width: 80px;
     border: 2px solid red;
     border-radius: 20px;
+
+    transition: all 0.5s ease;
+}
+
+.Navigation > div {
+    border: 1px solid blue;
+    display: block;
+}
+
+.navOpen {
+    width: 200px;
 }

@@ -1,7 +1,18 @@
 import UserModel from "../models/UserModel";
 import ControllerTemplate from "./ControllerTemplate";
 
-//TODO securely send password to server (SSL domain lets encrypt)
+
+
+
+/**
+ * //TODO change login method:
+ *      -User fills form and sends data to server
+ *      -Server verifies data and sends a (JWT) token to user
+ *      -Token is stored in session to identify user
+ *      -Token is used in server data requests to verify access
+ * This means we have to change the login methodology
+ * and just add a token check in the backend
+ */
 export default class LoginController extends ControllerTemplate{
     
     constructor() {
@@ -14,12 +25,17 @@ export default class LoginController extends ControllerTemplate{
         let result;
         switch(action) {
             case 'register':
+                console.log("ACTION REGISTER");
+
                 result = this.validateLoginFormat(data);
                 if (!result.valid) return result;
+                console.log('result post format:', result);
 
                 try {
                     result = await this.checkDuplicates(data);
                     if (!result.valid) return result;
+                    console.log('result post duplicate check:', result);
+
 
                     //TODO SEND VERIFICATION EMAIL locked out for 24h lol
 
@@ -28,19 +44,25 @@ export default class LoginController extends ControllerTemplate{
                     //result = await this.registerNewUser(data);
                     //if (!result.valid) return result;
 
-                    return result; //Valid: true
+                    //return result; //Valid: true
+                    result = this.execute('login', data);
+                    return result;
                 } catch (e) {
                     console.log(e);
                     return {valid: false, server: 'There was a communication error with the server, please try again later'}
                 }
                 break;
             case 'login':
+                console.log("ACTION LOGIN");
                 result = this.validateLoginFormat(data);
                 if (!result.valid) return result;
+                console.log('result post format:', result);
+
 
                 try {
                     //TODO this is not secure
-                    result = this.checkCredentials(data);
+                    result = await this.checkCredentials(data);
+                    console.log('result post check :', result);
                     return result;
                 }
                 catch (e) {
@@ -99,10 +121,26 @@ export default class LoginController extends ControllerTemplate{
         return result;
     }
 
+    /**
+     * Gets a user from the database filtering by email
+     * @param {*} formData 
+     * @returns The user data or null if not found
+     */
+    async getUser(formData) {
+        let result = await this.model.getByField({email: formData.email});
+        if (result.length === 0) {return null;}
+        if (result.length > 1) { //TODO
+            console.error('Multiple accounts have been found, this shouldnt ever happen');
+            return null;
+        }
+        return result[0];
+        //return result.length > 0 ? result : null;
+    }
+
     async checkDuplicates(formData) {
         let result = {valid: true};
-        let duplicates = await this.model.getByField({email: formData.email});
-        if (duplicates.length > 0) {
+        let duplicates = await this.getUser(formData);
+        if (duplicates !== null) {
             result.valid = false;
             result.email = 'This email is already in use';
         }
@@ -110,27 +148,15 @@ export default class LoginController extends ControllerTemplate{
     }
     async checkCredentials(formData) {
         let result = {valid: true};
-        let credentials = await this.model.getByField({email: formData.email});
-        if (formData.email === credentials.email ) {
+        let credentials = await this.getUser(formData);
+        if (credentials === null) {
             result.valid = false;
             result.email = 'This email is not registered';
-        }
-        if (formData.password === credentials.password) {
+        } else if (formData.password !== credentials.password) {
             result.valid = false;
             result.password = 'The password is incorrect';
         }
+        console.log("credential check result:", result);
         return result;
     }
-
-    //TODO this is not used
-    async registerNewUser(formData) { 
-        let result = {valid: true};
-        if (!await this.model.insert(formData)){
-            result.valid = false;
-            result.server = 'Server error'; //Try catch behaviour
-        }
-        return result;
-    }
-
-    
 }

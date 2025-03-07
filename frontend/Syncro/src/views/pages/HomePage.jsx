@@ -9,12 +9,7 @@ export default function HomePage() {
 
     return(
         <>
-
-        <h1>HOME ViEW</h1>
-
         { user ? <DashboardPage></DashboardPage> : <InfoPage></InfoPage>}
-
-        
         </>
     );
 }
