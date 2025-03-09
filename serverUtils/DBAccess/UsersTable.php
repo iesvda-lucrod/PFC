@@ -3,11 +3,8 @@
 class UsersTable extends DBConnection{ 
     public function __construct()
     { 
-        parent::__construct("users");
+        parent::__construct("users", 'id, email, username');
     }
 
     //Define here overrides to queries
-
-    //User password must never be sent server to client
-    
 }

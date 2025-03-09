@@ -19,7 +19,7 @@ require_once __DIR__ . '/DBParams.php';
 
 class DBConnection {
     protected $server, $username, $password, $DB, $connection = null,
-     $stmt, $table, $result, $rowNum, $colNum;
+     $stmt, $table, $fields, $result, $rowNum, $colNum;
 
 
     /**
@@ -28,7 +28,7 @@ class DBConnection {
      * @param mixed $username
      * @param mixed $password
      */
-    function __construct($table) {
+    function __construct($table, $fields = '*') {
 
         $params = DBParams::getParams();
         $this->server = $params['server'];
@@ -36,6 +36,7 @@ class DBConnection {
         $this->password =  $params['password'];
         $this->DB =  $params['database'];
         $this->table = $table;
+        $this->fields = $fields;
         $this->connect();
     }
 
@@ -72,7 +73,11 @@ class DBConnection {
     //Querying
     //------------------------------------------------------------//
 
-    //Safe to use with simple SELECT statements WITHOUT user input
+    /**
+     * Safe to use with simple SELECT statements WITHOUT user input see @method execPreparedQuery().
+     * @param mixed $query
+     * @return void
+     */
     protected function execSimpleQuery ($query){ 
         $this->stmt = $this->connection->query($query);
     }
@@ -125,7 +130,7 @@ class DBConnection {
         return $this->result;
     }
     /**
-     * Stores in $result he remaining results from a query $stmt
+     * Stores in $result the remaining results from a query $stmt
      * @throws \Error When there's no query to fetch results from
      * @return mixed The results as an associative array
      */
@@ -148,7 +153,7 @@ class DBConnection {
      */
     function selectAll() {
         $this->execPreparedQuery(
-            "SELECT * FROM $this->table",
+            "SELECT $this->fields FROM $this->table",
             []
         );
         return $this->getAllRows();
@@ -161,7 +166,7 @@ class DBConnection {
      */
     function selectByField($fieldName, $fieldValue) {
         $this->execPreparedQuery(
-            "SELECT * FROM $this->table WHERE $fieldName = :fieldValue",
+            "SELECT $this->fields FROM $this->table WHERE $fieldName = :fieldValue",
             [
                 ':fieldValue' => $fieldValue,
             ]
@@ -196,7 +201,7 @@ class DBConnection {
         };
 
         $this->execPreparedQuery(
-            "SELECT * FROM $this->table WHERE ". $filters,
+            "SELECT $this->fields FROM $this->table WHERE ". $filters,
             $bindings,
         );
         return $this->getAllRows();
