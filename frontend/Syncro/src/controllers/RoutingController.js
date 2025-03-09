@@ -2,23 +2,20 @@ import { useNavigate } from "react-router-dom";
 
 export default class RoutingController {
 
-    navigate;
-    constructor() {
-        this.navigate = useNavigate();
-    }
+    static #navigate = useNavigate();
 
-    execute(action, data) {
+    static execute(action, data) {
         switch (action) {
             case 'goto':
-                this.redirect(data);
+                this.#redirect(data);
                 break;
             default:
                 console.err('action not registered', action);
                 break;
         }
     }
-    redirect(route) {
+    static #redirect(route) {
         console.log("Routing to ", route);
-        this.navigate(route);
+        this.#navigate(route);
     }
 }

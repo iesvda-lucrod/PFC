@@ -8,7 +8,7 @@ export default class ControllerTemplate {
     }
 
     //Need to define a switch for routing action
-    execute(action, data) {
+    static execute(action, data) {
         throw new Error('message receiver switch must be implemented');
 
         //Function template (remove error above when copying)

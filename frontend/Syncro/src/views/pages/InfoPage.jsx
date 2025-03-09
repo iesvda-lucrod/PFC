@@ -7,7 +7,7 @@ export default function InfoPage() {
         <>
     <h2>INFO PAGE (USER NOT LOGGED IN)</h2>
 
-    <Button controller={new RoutingController()} action={'goto'} data={'/login'}> Get started</Button>
+    <Button controller={RoutingController} action={'goto'} data={'/login'}> Get started</Button>
     </>
     );
     

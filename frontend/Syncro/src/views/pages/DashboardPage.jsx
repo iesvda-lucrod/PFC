@@ -1,6 +1,6 @@
 import RoutingController from "../../controllers/RoutingController";
 import Button from "../components/Button";
-import { useUserContext } from "../contexts/UserContext";
+import { useUserContext } from "../../contexts/UserContext";
 import UserDataController from "../../controllers/UserDataController";
 
 export default function DashboardPage() {
@@ -8,9 +8,7 @@ export default function DashboardPage() {
     const userDataController = new UserDataController();
     console.log('ACTIVE USER: ', user);
 
-    const requestUserInfo = () => {
-        
-    }
+
 
     return (
         <>

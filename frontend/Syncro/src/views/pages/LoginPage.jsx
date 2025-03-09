@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
-import { useUserContext } from "../contexts/UserContext";
+import { useUserContext } from "../../contexts/UserContext";
 import LoginController from "../../controllers/LoginController";
 import RoutingController from "../../controllers/RoutingController";
 
 export default function LoginPage() {
-    const loginController = new LoginController();
-    const routingController = new RoutingController();
+    //Controllers
+    const loginController = LoginController;
+    const routingController = RoutingController;
+    //Context
     const { user, setUser } = useUserContext();
+
+    //State
     const [ newUser, setNewUser ] = useState(false);
     const [ formData, setFormData ] = useState(
         {
@@ -19,13 +23,13 @@ export default function LoginPage() {
     );
     const [ validationErrors, setValidationErrors ] = useState({...formData});
     
-
     useEffect(() => {
         let newFormData = {...formData};
         newFormData.confirmPassword = null;
         newFormData.username= null;
         setFormData(newFormData)
     }, [newUser]);
+
 
     const handleChange = () => {
         let targetInput = event.target;

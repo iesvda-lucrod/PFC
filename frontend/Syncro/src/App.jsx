@@ -9,7 +9,7 @@ import Navigation from "./views/components/Navigations";
 import HomePage from './views/pages/HomePage';
 import NotFoundPage from './views/pages/NotFoundPage';
 import LoginPage from './views/pages/LoginPage';
-import UserContextProvider from './views/contexts/UserContext.jsx';
+import UserContextProvider from './contexts/UserContext';
 
 function App() {
 

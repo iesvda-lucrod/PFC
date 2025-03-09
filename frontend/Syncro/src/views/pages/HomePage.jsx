@@ -1,4 +1,4 @@
-import { useUserContext } from "../contexts/UserContext";
+import { useUserContext } from "../../contexts/UserContext";
 import InfoPage from "./InfoPage";
 import DashboardPage from "./DashboardPage";
 

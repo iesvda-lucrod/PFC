@@ -14,32 +14,29 @@ import ControllerTemplate from "./ControllerTemplate";
  * and just add a token check in the backend
  */
 export default class LoginController extends ControllerTemplate{
-    
-    constructor() {
-        super();
-        this.model = new UserModel();
-    }
 
-    async execute(action, data) {
+    static #userModel = new UserModel();
+
+    static async execute(action, data) {
         console.log("executing:", action, 'with data', data);
         let result;
         switch(action) {
             case 'register':
                 console.log("ACTION REGISTER");
 
-                result = this.validateLoginFormat(data);
+                result = this.#validateLoginFormat(data);
                 if (!result.valid) return result;
                 console.log('result post format:', result);
 
                 try {
-                    result = await this.checkDuplicates(data);
+                    result = await this.#checkDuplicates(data);
                     if (!result.valid) return result;
                     console.log('result post duplicate check:', result);
 
 
                     //TODO SEND VERIFICATION EMAIL locked out for 24h lol
 
-                    let insertResult = await this.model.insert(data); //This either works or triggers try-catch
+                    let insertResult = await this.#userModel.insert(data); //This either works or triggers try-catch
                     console.log("INSERT RESULT:",insertResult); //This should always log 1
                     //result = await this.registerNewUser(data);
                     //if (!result.valid) return result;
@@ -54,14 +51,14 @@ export default class LoginController extends ControllerTemplate{
                 break;
             case 'login':
                 console.log("ACTION LOGIN");
-                result = this.validateLoginFormat(data);
+                result = this.#validateLoginFormat(data);
                 if (!result.valid) return result;
                 console.log('result post format:', result);
 
 
                 try {
                     //TODO this is not secure
-                    result = await this.checkCredentials(data);
+                    result = await this.#checkCredentials(data);
                     console.log('result post check :', result);
                     return result;
                 }
@@ -76,7 +73,7 @@ export default class LoginController extends ControllerTemplate{
         }
     }
 
-    validateLoginFormat(formData) {
+    static #validateLoginFormat(formData) {
         console.log("VALIDATING", formData);
         let result = {valid: true}
         
@@ -126,8 +123,8 @@ export default class LoginController extends ControllerTemplate{
      * @param {*} formData 
      * @returns The user data or null if not found
      */
-    async getUser(formData) {
-        let result = await this.model.getByField({email: formData.email});
+    static async #getUser(formData) {
+        let result = await this.#userModel.getByField({email: formData.email});
         if (result.length === 0) {return null;}
         if (result.length > 1) { //TODO
             console.error('Multiple accounts have been found, this shouldnt ever happen');
@@ -137,18 +134,18 @@ export default class LoginController extends ControllerTemplate{
         //return result.length > 0 ? result : null;
     }
 
-    async checkDuplicates(formData) {
+    static async #checkDuplicates(formData) {
         let result = {valid: true};
-        let duplicates = await this.getUser(formData);
+        let duplicates = await this.#getUser(formData);
         if (duplicates !== null) {
             result.valid = false;
             result.email = 'This email is already in use';
         }
         return result;
     }
-    async checkCredentials(formData) {
+    static async #checkCredentials(formData) {
         let result = {valid: true};
-        let credentials = await this.getUser(formData);
+        let credentials = await this.#getUser(formData);
         if (credentials === null) {
             result.valid = false;
             result.email = 'This email is not registered';
