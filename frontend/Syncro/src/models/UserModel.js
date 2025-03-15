@@ -1,20 +1,7 @@
-import MainModel from "./MainModel";
+import DatabaseModel from "./DatabaseModel";
 
-export default class UserModel extends MainModel {
-    userData;
+export default class UserModel extends DatabaseModel{
     constructor() {
-        super('users');
-    }
-
-    getUsernameFromEmail() {}
-
-    /**
-     * Returns all ROOMS that belong to a USER identified by its id
-     * @param {*} userId 
-     */
-    getUserRooms(userId) {
-        this.table = 'users_rooms';
-        this.getById(userId);
-        this.table = 'users';
-    }
+        super('user.php');
+    };
 }

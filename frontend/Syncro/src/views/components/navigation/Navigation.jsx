@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import Button from "./Button";
 
-import '../styles/Navigation.css';
+import './Navigation.css';
 import { useState } from "react";
 
 export default function Navigation() {
@@ -14,16 +13,16 @@ export default function Navigation() {
     return (
         <div className= {"Navigation "+(isOpen ? 'navOpen' : 'navClosed')}>
             <div className="menuOppener">
-                <Button action={triggerMenu}>Open</Button>
+                <button onClick={triggerMenu}>Open</button>
                 {isOpen ? <span>Menu</span> : <></>}
             </div>
             
             <div className="menuLinks">
-                <Button as={Link} to={'/'}></Button>
+                <button as={Link} to={'/'}></button>
                 {isOpen ? <span>Home</span> : <></>}
-                <Button as={Link} to={'/profile'}></Button>
+                <button as={Link} to={'/'}></button>
                 {isOpen ? <span>Profile</span> : <></>}
-                <Button as={Link} to={'/contact'}></Button>
+                <button as={Link} to={'/'}></button>
                 {isOpen ? <span>Contact</span> : <></>}
             </div>
 

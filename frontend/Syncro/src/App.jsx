@@ -1,37 +1,24 @@
 
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './App.css'
-
-//Controller imports
+import Router from './features/routing/Router';
 
 //UI Component imports
-import Navigation from "./views/components/Navigations";
-import HomePage from './views/pages/HomePage';
-import NotFoundPage from './views/pages/NotFoundPage';
-import LoginPage from './views/pages/LoginPage';
-import UserContextProvider from './contexts/UserContext';
+import Navigation from "./views/components/navigation/Navigation";
+
+
 
 function App() {
 
   return (
     <div>
-      <UserContextProvider>
-        <Router>
-
+      <BrowserRouter>
         <Navigation/>
 
+        <Router />
+      </BrowserRouter>
 
-          <Routes>
-            
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="*" element={<NotFoundPage />} />
 
-          </Routes>
-
-          
-        </Router>
-      </UserContextProvider>
     </div>
   )
 }

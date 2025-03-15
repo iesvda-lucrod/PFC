@@ -1,15 +1,16 @@
-import { useUserContext } from "../../contexts/UserContext";
+
 import InfoPage from "./InfoPage";
 import DashboardPage from "./DashboardPage";
+import { useState } from "react";
+import { redirect } from "react-router-dom";
 
 export default function HomePage() {
-    const { user } = useUserContext();
-    console.log("userfrom context",user);
-    console.log("userfrom context",user ? true: false);
+    const [ logged, setLogged ] = useState(false);
+    console.log(logged, 'redirercting');
 
     return(
         <>
-        { user ? <DashboardPage></DashboardPage> : <InfoPage></InfoPage>}
+         {logged ? <DashboardPage/> : <InfoPage/>}
         </>
     );
 }
