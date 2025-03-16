@@ -24,7 +24,31 @@ function sendEmail($from, $to, $subject, $message) {
     $response->success() && var_dump($response->getData());
 }
 
-
+function sendConfirmationImage($userData) {
+    $mj = new \Mailjet\Client($_ENV['MJ_APIKEY_PUBLIC'], $_ENV['MJ_APIKEY_PRIVATE'],false,['version' => 'v3.1']);
+    $body = [
+        'Messages' => [
+            [
+                'From' => [
+                    'Email' => "iesvda.lucrod@gmail.com",
+                    'Name' => "Syncro Contact"
+                ],
+                'To' => [
+                    [
+                        'Email' => $userData['email'],
+                        'Name' => $userData['username'],
+                    ]
+                ],
+                'Subject' => 'Confirm your email address',
+                'TextPart' => "Confirm your email address with the following link: \n\n",
+                'HTMLPart' => "<h2>Welcome to Syncro</h2>
+                <p>Confirm your email address with the following link <a href=\"http://localhost:5173/notfound\">TESTLINK</a></p>", //TODO confirmation link page?
+            ]
+        ]
+    ];
+    $response = $mj->post(Resources::$Email, ['body' => $body]);
+    $response->success() && var_dump($response->getData());
+}
 
 
 
