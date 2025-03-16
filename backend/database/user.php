@@ -7,14 +7,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('HTTP/1.1 200 OK');
     exit;
 }
-echo "0dep<br>";
 require_once __DIR__."/../services/DBAccess/api.php";
-echo "1dep<br>";
 require_once __DIR__."/../services/DBAccess/UsersTable.php";
-echo "2dep<br>";
-//require_once __DIR__."/../services/emailer/mailjet.php";
-echo "3dep<br>";
-
+require_once __DIR__."/../services/emailer/mailjet.php";
 
 // Mostrar todos los errores
 ini_set('display_errors', 1); // Habilita la visualización de errores
@@ -39,6 +34,9 @@ switch($_SERVER['REQUEST_METHOD']){
                 sendResponse(['valid'=> false, 'cause' => 'Email is already registered']);
             }
             $result = $table->insert($data); //1 if correct or throws Error
+            
+            //TODO send confirmation email (figure out confirmation link)
+            
             //sendEmail();
             sendResponse($result);
         } catch (Error $e) {

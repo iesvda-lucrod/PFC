@@ -2,16 +2,42 @@
 /*
 This call sends a message to one recipient.
 */
-echo "e1";
-require __DIR__.'../../../vendor/autoload.php';
-echo "e2";
 
-require __DIR__.'../../config.php';
-echo "e3";
-echo "e3";
+
+require __DIR__.'/../../config.php';
 use \Mailjet\Resources;
-function sendEmail() {
-    $mj = new \Mailjet\Client(getenv('MJ_APIKEY_PUBLIC'), getenv('MJ_APIKEY_PRIVATE'),true,['version' => 'v3.1']);
+
+function sendEmail($from, $to, $subject, $message) {
+    $mj = new \Mailjet\Client($_ENV['MJ_APIKEY_PUBLIC'], $_ENV['MJ_APIKEY_PRIVATE'],false,['version' => 'v3.1']);
+    $body = [
+        'Messages' => [
+            [
+                'From' => $from,
+                'To' => $to,
+                $subject,
+
+                $message,
+            ]
+        ]
+    ];
+    $response = $mj->post(Resources::$Email, ['body' => $body]);
+    $response->success() && var_dump($response->getData());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+function sendEmail($from, $to, $subject, $message) {
+    $mj = new \Mailjet\Client($_ENV['MJ_APIKEY_PUBLIC'], $_ENV['MJ_APIKEY_PRIVATE'],false,['version' => 'v3.1']);
     $body = [
         'Messages' => [
             [
@@ -33,4 +59,4 @@ function sendEmail() {
     ];
     $response = $mj->post(Resources::$Email, ['body' => $body]);
     $response->success() && var_dump($response->getData());
-}
+}*/

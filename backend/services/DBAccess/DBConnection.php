@@ -5,9 +5,7 @@
  * Creates the connection to the database
  * Prepares and executes queries both simple and with prepared statements
  */
-echo "0dbt<br>";
 require __DIR__ . '/../../config.php';
-echo "1dbt<br>";
 
 class DBConnection {
     protected $server, $username, $password, $DB, $connection = null,
