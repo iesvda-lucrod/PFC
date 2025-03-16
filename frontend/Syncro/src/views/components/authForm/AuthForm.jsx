@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import UserModel from "../../../models/UserModel";
+import { UserContext } from "../../../contexts/UserContext";
 
 export default function AuthForm() {
+    const { userInfo, setUserInfo } = useContext(UserContext);
     const userModel = new UserModel();
+    let navigate = useNavigate();
     const [ isRegistering, setIsRegistering ] = useState(false);
     const [ formData, setFormData ] = useState({
         email: '',
@@ -57,29 +61,47 @@ export default function AuthForm() {
         return errors;
     }
 
-    const loginUser = () => {
+    const loginUser = async () => {
         console.log("logging user");
         let valErrors = validateData();
         if (Object.keys(valErrors).length > 0) {
             setValidationErrors(valErrors);
-        } else {
+            return;
+        }
 
-        } 
+        let requestPayload = {action:'login', email: formData.email, password: formData.password};
+        let result = await userModel.post(requestPayload);
+
+        if (!result.valid) {
+            setValidationErrors({...validationErrors, email: result.errors.email, password: result.errors.password});
+            return;
+        }
+
+        //TODO store JWT and user info in context
+        
+        await setUserInfo({...userInfo, email: formData.email});
+        console.log('login correct, redirecting...', userInfo);
+        navigate('/');
+
     };
     const registerUser = async () => {
         console.log("registering user");
         let valErrors = validateRegisterData();
         if (Object.keys(valErrors).length > 0) {
             setValidationErrors(valErrors);
-        } else {
-            let requestPayload = {...formData}; delete requestPayload.confirmPassword;
-            let result = await userModel.post(requestPayload);
-            
-            console.log("request result:", result);
-            if (!result.valid) {
-                setValidationErrors({...validationErrors, email: result.cause});
-            }
+            return;
         }
+
+        let requestPayload = {action: 'register', ...formData}; delete requestPayload.confirmPassword;
+        let result = await userModel.post(requestPayload);
+        
+        console.log("request result:", result);
+        if (!result.valid) {
+            setValidationErrors({...validationErrors, email: result.cause.email});
+            return;
+        }
+
+        loginUser();
     };
 
     return (
@@ -111,10 +133,10 @@ export default function AuthForm() {
                 </div>
                 </>
                 ) : <></>}
-                <button type="submit"></button>
+                <button type="submit">{isRegistering ? 'Register' : 'Log in'}</button>
             </form>
 
-            <button onClick={() => {setIsRegistering(!isRegistering)}}>{isRegistering ? 'Already have an account?':"Don't have an account yet?"}</button>
+            <button onClick={() => {setIsRegistering(!isRegistering)}}>{isRegistering ? "Already have an account?" : "Don't have an account yet?"}</button>
             
         </div>
     );

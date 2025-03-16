@@ -22,6 +22,7 @@ $table = new UsersTable();
 switch($_SERVER['REQUEST_METHOD']){
         
     case "GET":
+        
         $data = $table->selectAll();
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -30,17 +31,32 @@ switch($_SERVER['REQUEST_METHOD']){
     case "POST": //Registering a user
         try {
             $data = handleContentType();
-            if (hasDuplicates($data)) {
-                sendResponse(['valid'=> false, 'cause' => 'Email is already registered']);
+            if ($data['action'] === 'register') { unset($data['action']);
+                if (hasDuplicates($data)) {
+                    sendResponse(['valid'=> false, 'errors' => ['Email is already registered']]);
+                }
+                $result = $table->insert($data); //1 if correct or throws Error
+                //TODO send confirmation email (figure out confirmation link)
+                //sendEmail();
+                sendResponse(['valid'=> true]);
             }
-            $result = $table->insert($data); //1 if correct or throws Error
+
+            if ($data['action'] === 'login'){ unset($data['action']);
+                if (!hasDuplicates($data)) {
+                    sendResponse(['valid'=> false, 'errors' => ['email' => 'Email not registered']]);
+                }
+                $usr = $table->selectByField('email', $data['email']);
+                if ($data['password'] !== $table->getUserCredentials($data)['password']) {
+                    sendResponse(['valid'=> false, 'errors' => ['password' => 'Incorrect password']]);
+                }
+                //TODO generate JWT
+                sendResponse(['valid'=> true]);
+                break;
+            }
+
             
-            //TODO send confirmation email (figure out confirmation link)
-            
-            //sendEmail();
-            sendResponse($result);
         } catch (Error $e) {
-            sendResponse(['message' => 'There was an error inserting the user']);
+            sendResponse(['message' => 'There was an error in the server']);
         }
         break;
 
@@ -72,3 +88,5 @@ function hasDuplicates($data) {
     }
     return false;
 }
+
+function generateJWT(){}

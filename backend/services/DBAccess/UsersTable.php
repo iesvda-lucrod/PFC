@@ -8,4 +8,11 @@ class UsersTable extends DBConnection{
     }
 
     //Define here overrides to queries
+
+    public function getUserCredentials($userData) {
+        $this->fields = 'id, email, username, password';
+        $credentials = $this->selectByField('email', $userData['email'])[0];
+        $this->fields = 'id, email, username, password';
+        return $credentials;
+    }
 }

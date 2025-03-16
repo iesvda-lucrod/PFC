@@ -5,7 +5,7 @@ export default function InfoPage() {
     return (
         <>
     <h2>INFO PAGE (USER NOT LOGGED IN)</h2>
-        <button onClick={() => {navigate('/auth')}}></button>
+        <button onClick={() => {navigate('/auth')}}>Get started</button>
     </>
     );
     
