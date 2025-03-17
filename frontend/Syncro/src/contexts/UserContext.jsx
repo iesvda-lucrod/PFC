@@ -7,9 +7,11 @@ export const UserContext = createContext({email: '',
 export function UserContextProvider(props) {
     const { children } = props;
     const [ user, setUser ] = useState({
+        id: '',
         email: '',
         username: '',
         JWT: '',
+        rooms: [],
     });
 
     const isLogged = () => {
