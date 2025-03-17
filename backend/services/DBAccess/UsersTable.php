@@ -7,7 +7,7 @@ class UsersTable extends DBConnection{
         parent::__construct("users", 'id, email, username');
     }
 
-    //Define here overrides to queries
+    //TODO method to retrieve rooms from user
 
     public function getUserCredentials($userData) {
         $this->fields = 'id, email, username, password';

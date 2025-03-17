@@ -23,34 +23,35 @@ switch($_SERVER['REQUEST_METHOD']){
         
     case "GET":
         
-        $data = $table->selectAll();
+        $payload = $table->selectAll();
         header('Content-Type: application/json');
-        echo json_encode($data);
+        echo json_encode($payload);
         break;
 
     case "POST": //Registering a user
         try {
-            $data = handleContentType();
-            if ($data['action'] === 'register') { unset($data['action']);
-                if (hasDuplicates($data)) {
+            $payload = handleContentType();
+            if ($payload['action'] === 'register') { unset($payload['action']);
+                if (hasDuplicates($payload)) {
                     sendResponse(['valid'=> false, 'errors' => ['Email is already registered']]);
                 }
-                $result = $table->insert($data); //1 if correct or throws Error
+                $result = $table->insert($payload); //1 if correct or throws Error
                 //TODO send confirmation email (figure out confirmation link)
                 //sendEmail();
                 sendResponse(['valid'=> true]);
             }
 
-            if ($data['action'] === 'login'){ unset($data['action']);
-                if (!hasDuplicates($data)) {
+            if ($payload['action'] === 'login'){ unset($payload['action']);
+                if (!hasDuplicates($payload)) {
                     sendResponse(['valid'=> false, 'errors' => ['email' => 'Email not registered']]);
                 }
-                $usr = $table->selectByField('email', $data['email']);
-                if ($data['password'] !== $table->getUserCredentials($data)['password']) {
+
+                $userData = $table->getUserCredentials($payload);
+                if ($payload['password'] !== $userData['password']) {
                     sendResponse(['valid'=> false, 'errors' => ['password' => 'Incorrect password']]);
                 }
                 //TODO generate JWT
-                sendResponse(['valid'=> true]);
+                sendResponse(['valid'=> true, 'id'=> $userData['id'],'username'=> $userData['username']]);
                 break;
             }
 
@@ -61,13 +62,13 @@ switch($_SERVER['REQUEST_METHOD']){
         break;
 
     case "DELETE":
-        $data = handleContentType();
-        echo $table->delete($data);
+        $payload = handleContentType();
+        echo $table->delete($payload);
         break;
     
     case "PUT":
-        $data = handleContentType();
-        echo $table->update($data['id'], $data['newValues']);
+        $payload = handleContentType();
+        echo $table->update($payload['id'], $payload['newValues']);
         break;
     default: 
         sendResponse(['message' => 'Method not allowed'], 405);
