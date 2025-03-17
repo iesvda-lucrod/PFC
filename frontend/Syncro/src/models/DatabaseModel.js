@@ -42,6 +42,11 @@ export default class DatabaseModel {
         return await this.makeRequest('PUT', queryParams, data);
     }
 
+    /**
+     * Formats an object's entries into a string to place as url params
+     * @param {Object} object 
+     * @returns 
+     */
     queryParamsFromObject(object) {
         let queryString = '';
         Object.entries(object).forEach(([key, value]) => {
