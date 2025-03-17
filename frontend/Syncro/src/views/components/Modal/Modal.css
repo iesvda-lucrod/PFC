@@ -1,0 +1,16 @@
+.ModalBackground {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.ModalContainer {
+}
+
+.ModalClosed {
+    display: none;
+    background-color: red;
+}
+
+.ModalOpen {
+    display: block;
+    background-color: blue;
+}

@@ -78,8 +78,7 @@ export default function AuthForm() {
         }
 
         //TODO store JWT and user info in context
-        
-        await setUserInfo({...userInfo, email: formData.email});
+        await setUserInfo({...userInfo, email: formData.email, id: result.id, username: result.username});
         console.log('login correct, redirecting...', userInfo);
         navigate('/');
 

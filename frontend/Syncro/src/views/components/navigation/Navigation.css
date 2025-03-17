@@ -1,18 +1,30 @@
 .Navigation {
     position: absolute;
     left: 0;
-    width: 80px;
     border: 2px solid red;
     border-radius: 20px;
 
     transition: all 0.5s ease;
+    overflow: hidden;
+    display: flex;
 }
 
-.Navigation > div {
-    border: 1px solid blue;
-    display: block;
+.MenuControl {
+    width: 80px;
+}
+.MenuText {
+    transition: all 0.5s ease;
 }
 
-.navOpen {
-    width: 200px;
+.MenuOpen {
+    width: 120px;
+}
+.MenuClosed {
+    width: 0px;
+}
+
+.MenuRow {
+    border: 1px solid green;
+    width: 100%;
+    overflow: hidden;
 }
