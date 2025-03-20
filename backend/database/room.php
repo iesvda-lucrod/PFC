@@ -18,15 +18,26 @@ $table = new RoomsTable();
 switch($_SERVER['REQUEST_METHOD']){
         
     case "GET":
-        $data = $table->selectByField('id', $_GET['id']);
-        sendResponse(['valid' => true, 'rooms' => $result]);
+        $result = $table->selectByField('id', $_GET['id']);
+        sendResponse($result);
         break;
 
-    case "POST": //Registering a user
+    case "POST":
         try {
             $payload = handleContentType();
             //insert room
-                break;
+            //var_dump($payload);
+            //var_dump($table);
+            //echo "0";
+            $roomData = $table->insertRoom($payload['name']);
+            echo "roomdata";
+            var_dump($roomData);
+            //echo "1";
+            $table->linkUsers($roomData["id"], $payload['user_id']);
+            //echo "2";
+            
+            
+            break;
         } catch (Error $e) {
             sendResponse(['message' => 'There was an error in the server']);
         }

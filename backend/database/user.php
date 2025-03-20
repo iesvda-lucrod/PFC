@@ -57,7 +57,7 @@ switch($_SERVER['REQUEST_METHOD']){
 
             
         } catch (Error $e) {
-            sendResponse(['message' => 'There was an error in the server']);
+            sendResponse(['message' => 'There was an error in the server'], 400);
         }
         break;
 

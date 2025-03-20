@@ -138,7 +138,7 @@ class DBConnection {
      * Selects all rows from $table
      * @return mixed
      */
-    function selectAll() {
+    public function selectAll() {
         $this->execPreparedQuery(
             "SELECT $this->fields FROM $this->table",
             []
@@ -151,7 +151,7 @@ class DBConnection {
      * @param mixed $fieldValue
      * @return mixed
      */
-    function selectByField($fieldName, $fieldValue) {
+    public function selectByField($fieldName, $fieldValue) {
         $this->execPreparedQuery(
             "SELECT $this->fields FROM $this->table WHERE $fieldName = :fieldValue",
             [
@@ -167,7 +167,7 @@ class DBConnection {
      *  @param mixed $assocNameValues
      *  @return mixed
      */
-    function selectByFilters($assocNameValues) {
+    public function selectByFilters($assocNameValues) {
         $fields = [];
         foreach ($assocNameValues as $fieldName => $fieldValue) {
             $expressionCheck = substr($fieldValue,0,2);
@@ -188,7 +188,7 @@ class DBConnection {
         };
 
         $this->execPreparedQuery(
-            "SELECT $this->fields FROM $this->table WHERE ". $filters,
+            "SELECT $this->fields FROM $this->table WHERE $filters",
             $bindings,
         );
         return $this->getAllRows();
@@ -200,17 +200,46 @@ class DBConnection {
      * @param mixed $valuesAssoc
      * @return mixed
      */
-    function insert($valuesAssoc) {
+    public function insert($valuesAssoc) {
         
         $fields = array_keys($valuesAssoc);
 
         $bindings = [];
         foreach($valuesAssoc as $field => $value) {
-            $bindings[':'.$field] = $value;
+            $bindings[":$field"] = $value;
         };
         return $this->execPreparedQuery(
             "INSERT INTO $this->table (".implode( ', ', $fields).") VALUES (:".implode(', :', $fields).")",
             $bindings,
+        );
+    }
+    
+    /**
+     * Inserts several rows at a time into $this->table
+     * @param mixed $data An array containing the arrays of values, all value arrays must have the same format
+     */
+    public function multiInsert($data) {
+        echo "\n\nIn dbconn:\n";var_dump($data);
+        $fields = implode(', ', array_keys($data[0]));
+        $valueHolders = "";
+        $subArrays = [];
+        $bindings = [];
+    
+        for ($i = 0; $i < count($data); $i++) {
+            $current = $data[$i];
+            $subArrays[] = implode("$i, :", array_keys($current)).$i;
+    
+            for ($j = 0; $j < count($current); $j++) {
+                $bindings[':'.array_keys($current)[$j].$i] = array_values($current)[$j];
+            }
+        }
+        $valueHolders = "(:".implode('),(:', $subArrays).")";
+        
+        var_dump($valueHolders);
+        print_r($bindings);
+        return $this->execPreparedQuery(
+            "INSERT INTO $this->table ($fields) VALUES $valueHolders",
+            $bindings
         );
     }
 
