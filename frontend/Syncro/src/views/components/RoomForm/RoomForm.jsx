@@ -3,40 +3,45 @@ import { UserContext } from '../../../contexts/UserContext';
 import './RoomForm.css';
 import RoomModel from '../../../models/RoomModel';
 
-export default function RoomForm() {
+export default function RoomForm({submitAction = null}) {
     const { userInfo, setUserInfo } = useContext(UserContext);
     const roomModel = new RoomModel();
     const [ roomInfo, setRoomInfo ] = useState({
         name: '',
     });
+    const [ validationErrors, setValidationErrors ] = useState('');
 
     const handleChange = (e) => {
-        const field = event.target;
+        const field = e.target;
         setRoomInfo({...roomInfo, [field.name]: field.value});
     }
-
-    const createRoom = async () => {
-        console.log("userinfo",userInfo.rooms);
-        userInfo.rooms.map(({roomId, roomName}) => {
-            console.log("id", roomId, "name", roomName);
-        });
-
-        //Check duplicates
+    const handleSubmit = (e) => {
+        e.preventDefault();
         if (!validateRoomInfo()) {
             return false;
         }
-        console.log("Create room triggered");
-        let result = await roomModel.post({...roomInfo, user_id:userInfo.id});
-        console.log(result);
-        let newRoomList = await roomModel.get({id: userInfo.id});
-        console.log("NRL",newRoomList);
+        createRoom();
+        if (submitAction) submitAction();
+    }
+
+    const createRoom = async () => {
+        await roomModel.post({...roomInfo, user_id:userInfo.id});
+        let newRoomList = await roomModel.getUserRooms(userInfo.id);
         setUserInfo({...userInfo, rooms: [...newRoomList]});
     }
 
+    
+
     const validateRoomInfo = () => {
-        console.log("This users room names",userInfo.rooms.map((room) => room.name))
+        //console.log("This users room names",userInfo.rooms.map((room) => room.name))
+
+        if (/[^a-zA-Z0-9À-ÖØ-öø-ÿ\s]/.test(roomInfo.name)) {
+            setValidationErrors("Room name can only contain letters, spaces and numbers");
+            return;
+        }
+
         if (userInfo.rooms.map((room) => room.name).includes(roomInfo.name)) {
-            console.log("Duplicate room found");
+            setValidationErrors("Room with the same name already exists");
             return false;
         };
         console.log("No dupes");
@@ -45,15 +50,14 @@ export default function RoomForm() {
 
     return (
         <div className="RoomForm">
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="inputGroup">
                     <label>Room Name:</label>
-                    <input id="roomName" name="roomName" type="text" onChange={() => {handleChange(event)}}/>
-                    <span>Room name can only contain letters, spaces and numbers</span>
+                    <input id="name" name="name" type="text" onChange={() => {handleChange(event)}}/>
+                    <span>{validationErrors}</span>
                 </div>
+            <button type="submit">Create Room</button>
             </form>
-            <button type="submit" onClick={createRoom}>Create Room</button>
         </div>
-        
     );
 }

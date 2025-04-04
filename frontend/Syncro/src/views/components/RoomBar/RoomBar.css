@@ -1,0 +1,12 @@
+.RoomBar {
+    position: relative;
+    top: 0px;
+    
+    width: 100vw;
+    z-index: 9;
+
+    border: solid var(--mainColor1);
+    border-width: 0px 0px 2px 0px;
+
+    display: flex;
+}

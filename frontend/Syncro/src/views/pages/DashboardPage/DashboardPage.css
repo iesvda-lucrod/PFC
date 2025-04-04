@@ -1,0 +1,5 @@
+.roomList {
+    display: flex;
+    flex-direction: row;
+    border: 2px dashed green;
+}

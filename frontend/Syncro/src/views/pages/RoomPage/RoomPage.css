@@ -1,0 +1,4 @@
+.RoomPage {
+    display: flex;
+    flex-direction: column;
+}

@@ -4,7 +4,7 @@ import UserModel from "../../../models/UserModel";
 import { UserContext } from "../../../contexts/UserContext";
 
 export default function AuthForm() {
-    const { userInfo, setUserInfo } = useContext(UserContext);
+    const { userInfo, logIn } = useContext(UserContext);
     const userModel = new UserModel();
     let navigate = useNavigate();
     const [ isRegistering, setIsRegistering ] = useState(false);
@@ -21,10 +21,6 @@ export default function AuthForm() {
         setFormData({...formData, [field.name]: field.value});
         setValidationErrors({...validationErrors, [field.name]: ''});
     }
-
-    useEffect(() => {
-        console.log(formData);
-    }, [formData]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -69,19 +65,16 @@ export default function AuthForm() {
             return;
         }
 
-        let requestPayload = {action:'login', email: formData.email, password: formData.password};
-        let result = await userModel.post(requestPayload);
-
+        let result = await userModel.post({action:'login', email: formData.email, password: formData.password});
         if (!result.valid) {
             setValidationErrors({...validationErrors, email: result.errors.email, password: result.errors.password});
             return;
         }
 
-        //TODO store JWT and user info in context
-        await setUserInfo({...userInfo, email: formData.email, id: result.id, username: result.username});
-        console.log('login correct, redirecting...', userInfo);
-        navigate('/');
-
+        const userData = {...userInfo, email: formData.email, id: result.id, username: result.username, JWT: result.JWT}
+        console.log('login correct, saving to context...', {...userInfo, email: formData.email, id: result.id, username: result.username, JWT: result.JWT});
+        logIn(userData);
+        navigate('/dashboard');
     };
     const registerUser = async () => {
         console.log("registering user");

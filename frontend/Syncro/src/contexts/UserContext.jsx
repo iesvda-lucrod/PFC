@@ -1,26 +1,79 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const UserContext = createContext({email: '',
+export const UserContext = createContext({
+    email: '',
     username: '',
-    JWT: '',});
+    JWT: ''
+});
 
 export function UserContextProvider(props) {
     const { children } = props;
+    const redirect = useNavigate();
     const [ user, setUser ] = useState({
         id: '',
         email: '',
         username: '',
         JWT: '',
-        rooms: [],
+        rooms: []
     });
+    const [ isLogged, setIsLogged ] = useState(false);
 
-    const isLogged = () => {
-        return user.email === '' ? false : true;
+    const loadData = () => {
+        try {
+            const localUser = JSON.parse(localStorage.getItem("userInfo"));
+    
+            if (localUser) {
+                //console.log("USERCONTEXT --- Localstorage contains user info:", localUser);
+                //setUser(prev => ({ ...prev, ...localUser }));
+                logIn(localUser);
+            } else {
+                console.log("USERCONTEXT --- No user info in localstorage, redirecting...");
+                logOut();
+            }
+        } catch (error) {
+            console.error("Error parsing localStorage data:", error);
+            logOut();
+        }
+    };
+    
+    useEffect(() => {
+        if (!user.id) {  // Only load if userInfo is empty
+            console.log("USERCONTEXT --- Context not populated, loading from localstorage...");
+            loadData();
+        }
+    }, []); // Runs only once on mount
+
+    useEffect(() => {
+        //console.log("usef user");
+        if (user.id !== "") { //Only update if userinfo is already present
+            console.log("USERCONTEXT --- setting userinfo to ", user);
+            localStorage.setItem('userInfo', JSON.stringify(user));
+        }
+    }, [user]);
+
+    const logOut = () => { //Return to initial value
+        setIsLogged(false);
+        setUser({
+            id: '',
+            email: '',
+            username: '',
+            JWT: '',
+            rooms: []
+        });
+        redirect("auth");
+    }
+
+    const logIn = (userInfo) => {
+        console.log("USERCONTEXT --- Localstorage contains user info:", userInfo);
+        setIsLogged(true);
+        setUser(prev => ({ ...prev, ...userInfo }));
     }
 
     return (
-        <UserContext.Provider value={{userInfo:user, setUserInfo:setUser, isLogged:isLogged()}}>
+        <UserContext.Provider value={{userInfo:user, setUserInfo:setUser, isLogged:isLogged, logOut:logOut, logIn:logIn}}>
             {children}
         </UserContext.Provider>
     );
 }
+

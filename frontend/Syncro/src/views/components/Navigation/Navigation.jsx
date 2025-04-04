@@ -1,34 +1,48 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
-import { Icon_menu, Icon_home, Icon_user, Icon_phone } from "../../../assets/icons";
+import { Icon_menu, Icon_home, Icon_user, Icon_phone, Icon_power } from "../../../assets/icons";
 import './Navigation.css';
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../../contexts/UserContext";
 
 export default function Navigation() {
     const [ isOpen, setIsOpen ] = useState();
+    const { isLogged, logOut } = useContext(UserContext);
+    const navigate = useNavigate();
 
     const triggerMenu = () => {
         setIsOpen(!isOpen);
     }
 
+    const logout = async () => {
+        localStorage.clear();
+        logOut();
+        navigate('/auth');
+    }
+
+    useEffect(() =>  {
+        console.log("Islogged:", isLogged);
+    }, [isLogged]);
+
     return (
-        <div className= {"Navigation "}>
+        <div className= {"Navigation "+(!isLogged ? 'hidden':'')}>
             <div className="MenuControl">
                 <div className="MenuOppener">
                     <button onClick={triggerMenu}><Icon_menu/></button>
-                    
+                </div>
+
+                <div className="MenuRow">
+                    <Link id="navDashboard" to={'/dashboard'}><Icon_home/></Link>
                 </div>
                 <div className="MenuRow">
-                    <button id="navHome" as={Link} to={'/'}><Icon_home/></button>
-                    
+                    <Link to={'/profile'}><Icon_user/></Link>
                 </div>
                 <div className="MenuRow">
-                    <button as={Link} to={'/profile'}><Icon_user/></button>
-                   
+                    <Link to={'/contact'}><Icon_phone/></Link>
                 </div>
+
                 <div className="MenuRow">
-                    <button as={Link} to={'/contact'}><Icon_phone/></button>
-                    
+                    <button to={'/auth'} onClick={() => {logout()}}><Icon_power/></button>
                 </div>
             </div>
 
@@ -37,6 +51,7 @@ export default function Navigation() {
                 <div className="MenuRow"> <span>Phone</span> </div>
                 <div className="MenuRow"> <span>Profile</span> </div>
                 <div className="MenuRow"> <span>Contact</span> </div>
+                <div className="MenuRow"> <span>Log out</span> </div>
             </div>
         </div>
     );

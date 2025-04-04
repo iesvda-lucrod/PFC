@@ -11,7 +11,7 @@ import Navigation from "./views/components/Navigation/Navigation";
 function App() {
 
   return (
-    <div>
+    <div className='App'>
       <BrowserRouter>
       <UserContextProvider>
         

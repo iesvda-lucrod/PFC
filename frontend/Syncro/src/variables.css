@@ -2,11 +2,14 @@
 
 /* Custom variables */
 :root {
-    --background1: ; /* Direct color or rgb values to use in rgba (opacity) */
-    --background2: ;
+    --background1: #eeeeee;
+    --background2: #e0e0e0;
     --background3: ;
 
-    --mainColor1: ;
-    --mainColor2: ;
+    --mainColor1: #2070f0;
+    --mainColor2: #2090f0;
     --mainColor3: ;
+
+    --debug1: #f000f0;
+    --debug2: #a000a0;
 }

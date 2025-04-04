@@ -1,6 +1,9 @@
-import AuthPage from "../../views/pages/AuthPage";
-import HomePage from "../../views/pages/HomePage";
-import NotFoundPage from "../../views/pages/NotFoundPage";
+import { RoomContextProvider } from "../../contexts/RoomContext";
+import AuthPage from "../../views/pages/AuthPage/AuthPage";
+import DashboardPage from "../../views/pages/DashboardPage/DashboardPage";
+import InfoPage from "../../views/pages/InfoPage/InfoPage";
+import NotFoundPage from "../../views/pages/NotFoundPage/NotFoundPage";
+import RoomPage from "../../views/pages/RoomPage/RoomPage";
 
 class RouteData {
     title;
@@ -16,8 +19,11 @@ class RouteData {
 const routesData = [
     new RouteData('404', '*', <NotFoundPage/>),
 
-    new RouteData('home', '', <HomePage/>),
-    new RouteData('home', 'auth', <AuthPage/>),
+    new RouteData('info', '/', <InfoPage/>),
+    new RouteData('auth', '/auth', <AuthPage/>),
+    
+    new RouteData('dashboard', '/dashboard', <DashboardPage/>),
+    new RouteData('room', '/dashboard/:id', <RoomContextProvider><RoomPage/></RoomContextProvider>),
 ];
 
 export default routesData;

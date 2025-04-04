@@ -1,18 +1,23 @@
 .Navigation {
     position: absolute;
     left: 0;
-    border: 2px solid red;
+    top: 50%;
+    transform: translate(0, -50%);
+
+    border: 2px solid var(--mainColor1);
     border-radius: 20px;
 
     transition: all 0.5s ease;
     overflow: hidden;
     display: flex;
 }
+.hidden {visibility: hidden; opacity: 0;}
 
 .MenuControl {
     width: 80px;
 }
 .MenuText {
+    overflow: hidden;
     transition: all 0.5s ease;
 }
 
@@ -24,7 +29,6 @@
 }
 
 .MenuRow {
-    border: 1px solid green;
     width: 100%;
     overflow: hidden;
 }

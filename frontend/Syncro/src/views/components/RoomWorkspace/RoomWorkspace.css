@@ -1,0 +1,10 @@
+.RoomWorkspace {
+    flex: 1;
+
+    background-color: var(--background2);
+}
+
+.RoomWorkspace {
+    flex: 1;
+    overflow: auto;
+}

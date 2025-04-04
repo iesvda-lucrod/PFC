@@ -1,31 +1,40 @@
+import { InvalidTokenError } from "../classes/Errors"; 
+
+
 export default class DatabaseModel {
     baseUrl = 'http://localhost/PFC/backend/database/';
+    token = '';
     constructor(endpointURL) {
         this.ENDPOINT_URL = this.baseUrl+endpointURL;
+        
+        const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+        this.token = userInfo.JWT || '';
     }
 
     async makeRequest(method = 'GET', queryParams = '', reqBody = null) {
         console.log("Making ",method," request to: ", this.ENDPOINT_URL+'?'+queryParams, "Payload:", reqBody);
-        try {
-            let response = await fetch(this.ENDPOINT_URL+'?'+queryParams,
-                {
-                    method: method,
-                    headers: {"Content-Type": "application/json"},
-                    mode: "cors",
-                    ...(reqBody !== null ? { body: JSON.stringify(reqBody) } : {})
-                }
-            );
-            if (!response.ok) {
-                let err = await response.json();
-                throw new Error('Error when fetching resource: '+err.message);
+
+        let response = await fetch(this.ENDPOINT_URL+'?'+queryParams,
+            {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': 'Bearer '+this.token
+                },
+                mode: "cors",
+                ...(reqBody !== null ? { body: JSON.stringify(reqBody) } : {})
             }
-    
-            let result = await response.json();
-            console.log("Request result:",result);
-            return result;
-        } catch (error) {
-            throw error;   
+        );
+        
+        if (!response.ok) {
+            let err = await response.json();
+            
+            throw new Error('Error when fetching resource '+response.status+' '+err.error);
         }
+
+        let result = await response.json();
+        console.log("Request result:",result);
+        return result;
     }
 
     async get(data) {
@@ -42,11 +51,6 @@ export default class DatabaseModel {
         return await this.makeRequest('PUT', queryParams, data);
     }
 
-    /**
-     * Formats an object's entries into a string to place as url params
-     * @param {Object} object 
-     * @returns 
-     */
     queryParamsFromObject(object) {
         let queryString = '';
         Object.entries(object).forEach(([key, value]) => {
@@ -56,4 +60,60 @@ export default class DatabaseModel {
         });
         return queryString;
     }
+    
+}
+
+/**
+ * Formats an object's entries into a string to place as url params
+ * @param {Object} object 
+ * @returns 
+ */
+function queryParamsFromObject(object) {
+    let queryString = '';
+    Object.entries(object).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+        value.forEach((single) => {queryString += '&'+key+'[]='+single;});
+        } else {queryString += '&'+key+'='+value;}
+    });
+    return queryString;
+}
+
+const baseUrl = 'http://localhost/PFC/backend/database/';
+export function useDatabase(endpointURL) {
+    const FINAL_URL = baseUrl+endpointURL;
+
+    const makeRequest = async (method = 'GET', queryParams = '', reqBody = null) => {
+        console.log("Making ",method," request to: ", this.ENDPOINT_URL+'?'+queryParams, "Payload:", reqBody);
+        let response = await fetch(this.ENDPOINT_URL+'?'+queryParams,
+            {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': 'Bearer '+this.token
+                },
+                mode: "cors",
+                ...(reqBody !== null ? { body: JSON.stringify(reqBody) } : {})
+            }
+        );
+        
+        if (!response.ok) {
+            let err = await response.json();
+            
+            throw new Error('Error when fetching resource '+response.status+' '+err.error);
+        }
+
+        let result = await response.json();
+        console.log("Request result:",result);
+        return result;
+    }
+
+    const get = async (data) => {
+        let queryParameters = queryParamsFromObject(data);
+        return await makeRequest('GET', queryParameters)
+    }
+    const post = async (data, queryParams = '') => {return await this.makeRequest('GET', queryParams);}
+    const remove = async (data, queryParams = '') => {return await this.makeRequest('DELETE', queryParams, data);}
+    const put = async (data, queryParams = '') => {return await this.makeRequest('PUT', queryParams, data);}
+
+    return {get, post, delete:remove, put};
 }
