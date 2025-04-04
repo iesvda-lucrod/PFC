@@ -7,42 +7,30 @@ class RoomsTable extends DBConnection {
         parent::__construct("rooms");
     }
 
+    //Complex selects
 
-    public function insertRoom($roomName) {
-        //echo "0.1";var_dump($roomName);
-        $result = $this->insert(['name' => $roomName]);
-        //echo "0.2";
-
-        if (!$result) {
-            throw new Error('Could not insert data');
+    public function hasDuplicates($payload) {
+        $duplicates = $this->selectByField('id', $payload['id']);
+        if (count($duplicates) > 0){
+            return true;
         }
-        $this->execSimpleQuery("SELECT LAST_INSERT_ID() AS id");
-        //echo "0.3";
-
-        return $this->getNextRow();
+        return false;
     }
 
-    //TODO method to user from rooms
     public function getRoomUsers($roomId) {
-        //do
+        $this->execPreparedQuery(
+            "SELECT users.id, users.username users.email FROM users JOIN users_rooms ON users.id = users_rooms.user_id WHERE users_rooms.room_id = :roomId",
+            [':roomId' => $roomId]
+        );
+        $result = $this->getAllRows();
+        return $result;
     }
-
-    public function linkUsers($roomId, $users) {
-        $this->table = 'users_rooms';
-        $users = [1,2];
-        var_dump('ri'. $roomId .'us'. $users); //TODO Multi user is not working cause of wrong bindings
-
-        $rows = ["room_id" => $roomId, "user_id" => $users];
-        if (is_array($users)) {
-            echo "iarr";
-            $rows = [];
-
-            foreach($users as $user) {
-                $rows[] = ["room_id" => $roomId, "user_id" => $user];
-            }
-        }
-        
-        $this->multiInsert([$rows]); //TODO change to multi insert
-        $this->table = 'rooms';
+    public function getUserRooms($userId) {
+        $this->execPreparedQuery(
+            "SELECT rooms.*, users_rooms.user_id FROM rooms JOIN users_rooms ON rooms.id = users_rooms.room_id WHERE users_rooms.user_id = :userId",
+            [':userId' => $userId] 
+        );
+        $result = $this->getAllRows();
+        return $result;
     }
 }

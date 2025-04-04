@@ -17,7 +17,7 @@ class DBConnection {
      * @param mixed $username
      * @param mixed $password
      */
-    function __construct($table, $fields = '*') {
+    public function __construct($table, $fields = '*') {
         $this->server = $_ENV['DB_SERVER'];//getenv('DB_SERVER');
         $this->username  = $_ENV['DB_USER'];//getenv('DB_USER');
         $this->password =  $_ENV['DB_PASSWORD'];//getenv('DB_PASSWORD');
@@ -35,7 +35,7 @@ class DBConnection {
      * Creates the connection with the provided parameters
      * @return void
      */
-    function connect(){
+    public function connect(){
         try {
             $this->connection = new PDO("mysql:host=$this->server; dbname=$this->DB", $this->username, $this->password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -49,10 +49,10 @@ class DBConnection {
      * Deletes the connection
      * @return void
      */
-    function disconnect(){
+    public function disconnect(){
         $this->connection = null;
     }
-    function getConnection(){
+    public function getConnection(){
         return $this->connection;
     }
 
@@ -219,7 +219,7 @@ class DBConnection {
      * @param mixed $data An array containing the arrays of values, all value arrays must have the same format
      */
     public function multiInsert($data) {
-        echo "\n\nIn dbconn:\n";var_dump($data);
+        //echo "\n\nMULTI INSERT DATA:\n"; var_dump($data);
         $fields = implode(', ', array_keys($data[0]));
         $valueHolders = "";
         $subArrays = [];
@@ -234,9 +234,10 @@ class DBConnection {
             }
         }
         $valueHolders = "(:".implode('),(:', $subArrays).")";
-        
-        var_dump($valueHolders);
-        print_r($bindings);
+
+        //echo "\n\nQuery:\n";echo "INSERT INTO $this->table ($fields) VALUES $valueHolders";
+        //print_r($bindings);
+
         return $this->execPreparedQuery(
             "INSERT INTO $this->table ($fields) VALUES $valueHolders",
             $bindings
@@ -249,7 +250,7 @@ class DBConnection {
      * @param mixed $id
      * @return mixed
      */
-    function delete($id): mixed{
+    public function delete($id): mixed{
         //echo "deleting ID:-->".$id."<--";
         return $this->execPreparedQuery(
             "DELETE FROM $this->table WHERE id = :id",
@@ -258,29 +259,69 @@ class DBConnection {
             ]
         );
     }
-
-    //UPDATE
     /**
-     * Updates a record from $table that matches the id at $id with the values defined as [field => value, ...] in $valuesAssoc 
-     * @param mixed $targetId
-     * @param mixed $valuesAssoc
-     * @return mixed
+     * Deletes all records that MATCH ALL of the filters provided
+     * @param mixed $data Array with the conditions to delete [field => value]
      */
-    function update($targetId, $valuesAssoc){
-        $bindings = [':targetId' => $targetId];
-        foreach($valuesAssoc as $field => $value) {
-            $bindings[':'.$field] = $value;
-        };
+    public function multiDelete($data) {
+        $conditionsArray = [];
+        $bindings = [];
+        foreach($data as $key => $value) {
+            $conditionsArray[] = "$key = :$key";
+            $bindings[":$key"] = $value;
+        }
+        $conditions = implode(' AND ', $conditionsArray);
 
-        $formattedFields = implode(',',
-            array_map( function ($key) {
-                return "$key = :$key";
-            },
-            array_keys($valuesAssoc))
-        );
         return $this->execPreparedQuery(
-            "UPDATE $this->table SET $formattedFields WHERE id = :targetId",
-            $bindings,
+            "DELETE FROM $this->table WHERE $conditions",
+            $bindings
+        );
+    }
+
+     //----------//----------//
+    //UPDATE
+    //----------//----------//
+    public function update($identifier, $data) {
+        $fieldsArray = [];
+        $bindings = [];
+        foreach($data as $key => $value) {
+            $fieldsArray[] = "$key = :$key";
+            $bindings[":$key"] = $value;
+        }
+        $fields = implode(', ', $fieldsArray);
+
+        $idenfifierField = array_keys($identifier)[0];
+        $bindings[":$idenfifierField"] = $identifier[$idenfifierField];
+
+        return $this->execPreparedQuery(
+            "UPDATE $this->table SET $fields WHERE $idenfifierField=:$idenfifierField",
+            $bindings
+        );
+    }
+
+    public function multiUpdate($targets, $data, $strict = true) {
+        $argument = $strict ? ' AND ' : ' OR ';
+        $conditionsArray = [];
+        $fieldsArray = [];
+        $bindings = [];
+
+        foreach($data as $key => $value) {
+            $fieldsArray[] = "$key = :$key";
+            $bindings[":$key"] = $value;
+        }
+        $fields = implode(', ', $fieldsArray);
+
+        
+        foreach($targets as $key => $value) {
+            $keyname = isset($bindings[":CONDITION_$key"]) ? ":_CONDITION_$key" : ":CONDITION_$key";
+            $bindings[$keyname] = $value ;
+            $conditionsArray[] = "$key = $keyname";
+        }
+        $conditions = implode($argument, $conditionsArray);
+
+        return $this->execPreparedQuery(
+            "UPDATE $this->table SET $fields WHERE $conditions",
+            $bindings
         );
     }
 }
