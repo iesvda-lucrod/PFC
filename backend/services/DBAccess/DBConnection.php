@@ -60,6 +60,11 @@ class DBConnection {
     //Querying
     //------------------------------------------------------------//
 
+    //Redefined functions for easier manual use
+    protected function beginTransaction() {$this->connection->beginTransaction();}
+    protected function commit() {$this->connection->commit();}
+    protected function rollback() {$this->connection->rollBack();}
+
     /**
      * Safe to use with simple SELECT statements WITHOUT user input see @method execPreparedQuery().
      * @param mixed $query
@@ -69,13 +74,13 @@ class DBConnection {
         $this->stmt = $this->connection->query($query);
     }
     /**
-     * Executes a SQL query with binded parameters, uses transactions and rollbacks in case of error
+     * Executes a SQL query with binded parameters, initiates a transaction to rollback in case of error
      * @param mixed $query The query to execute
      * @param mixed $bindedParams Associative array [:values_to_replace => $variables]
      * @throws \Error
      * @return mixed true if the operations were executed succesfully
      */
-    protected function execPreparedQuery($query, $bindedParams) {
+    protected function execPreparedQueryWithTransaction($query, $bindedParams) {
         $this->connection->beginTransaction();
         try {
             //echo "<br>_-_EXECPREPAREDQUERY";
@@ -92,12 +97,41 @@ class DBConnection {
                 throw new Error("ERROR ON QUERY");
             }
             //echo "<br> QUERY COMMITTED";
-            $this->connection->commit();
+            $this->commit();
             return $success;
         } catch (Throwable $e) {
             echo $e->getMessage();
-            $this->connection->rollBack();
+            $this->rollBack();
         }   
+    }
+
+    /**
+     * Executes a SQL query with binded parameters, 
+     * allows multiple queries to be executed in the same transaction, 
+     * but the transaction must be initiated manually 
+     * @see execPreparedQueryWithTransaction
+     * @param mixed $query
+     * @param mixed $bindedParams
+     * @throws \Error
+     * @return bool
+     */
+    protected function execPreparedQuery($query, $bindedParams) {
+        //echo "<br>_-_EXECPREPAREDQUERY";
+        //echo "<br>_-prepping";
+        $this->stmt = $this->connection->prepare($query);
+        
+        //echo "<br>_-binding";
+        //Bind parameters
+        $success = empty($bindedParams)?
+            $this->stmt->execute()
+            : $this->stmt->execute($bindedParams);
+
+        if (!$success) {
+            throw new Error("ERROR ON QUERY");
+        }
+        //echo "<br> QUERY COMMITTED";
+        $this->connection->commit();
+        return $success; 
     }
 
 
