@@ -1,10 +1,11 @@
 export default class Section {
+    room_id;
     id;
     name;
     color;
-    constructor(name, id = null, color = '') {
+    constructor(room_id, name, id = null) {
+        this.room_id = room_id;
         this.name = name;
         this.id = id;
-        this.color = color;
     }
 }

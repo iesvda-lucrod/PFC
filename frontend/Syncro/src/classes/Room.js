@@ -1,6 +1,8 @@
 export default class Room {
+    id;
     name;
-    constructor(name, members = []) {
+    constructor(name, members = [], id = null) {
+        this.id = id;
         this.setName(name);
         this.members = members;
     }
