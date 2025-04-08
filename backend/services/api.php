@@ -65,3 +65,7 @@ function sendResponse($data = null, $status = 200) {
     echo json_encode($data);
     exit;
 }
+
+function logError($errorMessage, $path = __FILE__,) {
+    file_put_contents(__DIR__.'/error.log', date("Y-m-d H:i:s")."\tAn error ocurred in ".$path.': '.$errorMessage.PHP_EOL, FILE_APPEND);
+};
