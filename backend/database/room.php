@@ -14,21 +14,20 @@ $table = new RoomsTable();
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
         if (isset($_GET['action'])) {
-            if ($_GET['action'] === 'getUserRooms') {
-                unset($_GET['action']);
+            if ($_GET['action'] === 'getUserRooms') {unset($_GET['action']);
                 $result = $table->getUserRooms($_GET['user_id']);
-                sendResponse(['roomInfo' => $result]);
+                sendResponse($result);
             }
             if ($_GET['action'] === 'getRoomUsers') {
                 unset($_GET['action']);
                 $result = $table->getRoomUsers($_GET['user_id']);
-                sendResponse(['roomInfo' => $result]);
+                sendResponse($result);
             }
         }
 
         if (isset($_GET['id'])) {
             $result = $table->selectByField('id', $_GET['id']);
-            sendResponse(['roomInfo' => reset($result)]);
+            sendResponse(reset($result));
         }
 
         $result = $table->selectAll();
@@ -37,8 +36,8 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "POST":
         $payload = handleContentType();
-        if (hasDuplicates($payload)) {sendResponse(['valid' => false, 'error' => ['name' => 'Room with same name already exists']]);}
-        $result = $table->insert($payload);
+        if ($table->hasDuplicates($payload['user_id'], $payload)) {sendResponse(['valid' => false, 'error' => ['name' => 'Room with same name already exists']]);}
+        $result = $table->createRoom($payload);
         if (!$result) {sendResponse(['message' => 'There was a problem inserting the room'], 500);}
         sendResponse(['message' => 'Room created successfully']);
         break;

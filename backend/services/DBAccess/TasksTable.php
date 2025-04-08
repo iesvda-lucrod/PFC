@@ -1,18 +1,18 @@
 <?php
 require_once __DIR__."/DBConnection.php";
 
-class SectionsTable extends DBConnection {
+class TasksTable extends DBConnection {
     public function __construct()
     {
-        parent::__construct("sections");
+        parent::__construct("tasks");
     }
 
-    public function hasDuplicates($room_id, $sectionData) {
+    public function hasDuplicates($section_id, $taskData) {
         $this->execPreparedQueryWithTransaction(
-            "SELECT * FROM sections WHERE room_id = :room_id AND name = :name",
+            "SELECT * FROM tasks WHERE room_id = :room_id AND name = :name",
             [
-                ':room_id' => $room_id,
-                ':name'=> $sectionData['name']
+                ':room_id' => $section_id,
+                ':name'=> $taskData['name']
             ]
         );
         $duplicates = $this->getAllRows();
@@ -22,13 +22,13 @@ class SectionsTable extends DBConnection {
         return false;
     }
 
-    public function createSection($data) {
+    public function createTask($data) {
         try {
 
             $this->beginTransaction();
             $this->execPreparedQuery(
-                "SELECT MAX(position) as lastPosition FROM sections WHERE room_id = :room_id",
-                [':room_id' => $data['room_id']]
+                "SELECT MAX(position) as lastPosition FROM tasks WHERE section_id = :section_id",
+                [':section_id' => $data['section_id']]
             );
             $lastPosition = $this->getNextRow()['lastPosition'];
             $data['position'] = $lastPosition !== null ? $lastPosition+1 : 1;

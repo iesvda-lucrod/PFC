@@ -78,7 +78,7 @@ class DBConnection {
      * @param mixed $query The query to execute
      * @param mixed $bindedParams Associative array [:values_to_replace => $variables]
      * @throws \Error
-     * @return mixed true if the operations were executed succesfully
+     * @return mixed True if the query was successfull (Throws an error if it wasn't)
      */
     protected function execPreparedQueryWithTransaction($query, $bindedParams) {
         $this->connection->beginTransaction();
@@ -112,8 +112,8 @@ class DBConnection {
      * @see execPreparedQueryWithTransaction
      * @param mixed $query
      * @param mixed $bindedParams
-     * @throws \Error
-     * @return bool
+     * @throws \Error When query fails
+     * @return bool True if the query was successfull (Throws an error if it wasn't)
      */
     protected function execPreparedQuery($query, $bindedParams) {
         //echo "<br>_-_EXECPREPAREDQUERY";
@@ -127,10 +127,8 @@ class DBConnection {
             : $this->stmt->execute($bindedParams);
 
         if (!$success) {
-            throw new Error("ERROR ON QUERY");
+            throw new Error("ERROR ON QUERY: $query");
         }
-        //echo "<br> QUERY COMMITTED";
-        $this->connection->commit();
         return $success; 
     }
 
@@ -235,7 +233,6 @@ class DBConnection {
      * @return mixed
      */
     public function insert($valuesAssoc) {
-        
         $fields = array_keys($valuesAssoc);
 
         $bindings = [];

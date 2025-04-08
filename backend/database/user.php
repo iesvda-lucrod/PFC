@@ -1,9 +1,5 @@
 <?php
 
-
-//TODO trycatch with response 400 for badly formatted requests (e.g missing fields)
-//TODO trycatch with response 500 for server errors (e.g. connection issues)
-
 require_once __DIR__."/../services/api.php";
 require_once __DIR__."/../services/DBAccess/UsersTable.php";
 require_once __DIR__."/../services/emailer/mailjet.php";
@@ -21,37 +17,37 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "POST": //Registering a user
         try {
-            
             $payload = handleContentType();
 
-            if ($payload['action'] === 'register') { 
-                unset($payload['action']);
-                if (hasDuplicates($payload)) {
+            if ($payload['action'] === 'register') { unset($payload['action']);
+                $data = $payload['data'];
+                if ($table->hasDuplicates($data)) {
                     sendResponse(['valid'=> false, 'errors' => ['Email is already registered']]);
                 }
-                $result = $table->insert($payload); //1 if correct or throws Error
+                $result = $table->insert($data); //1 if correct or throws Error
                 //TODO send confirmation email (figure out confirmation link) link to backend api page
                 //sendEmail();
                 sendResponse(['valid'=> true]);
             }
 
             if ($payload['action'] === 'login'){ unset($payload['action']);
-                if (!hasDuplicates($payload)) {
+                $data = $payload['data'];
+                if (!$table->hasDuplicates($data)) {
                     sendResponse(['valid'=> false, 'errors' => ['email' => 'Email not registered']], 400);
                 }
-                $userData = $table->getUserCredentials($payload);
-                if ($payload['password'] !== $userData['password']) {
+                $userData = $table->getUserCredentials($data);
+                if ($data['password'] !== $userData['password']) {
                     sendResponse(['valid'=> false, 'errors' => ['password' => 'Incorrect password']], 400);
                 }
                 unset($userData['password']);
                 $userJWT = generateJWT($userData);
-                sendResponse(['valid'=> true, 'userInfo' => ['id'=> $userData['id'],'username'=> $userData['username'], 'JWT' => $userJWT]]);
+                sendResponse(['valid'=> true, 'user' => ['id'=> $userData['id'],'email' => $userData['email'], 'username'=> $userData['username']], 'JWT' => $userJWT]);
                 break;
             }
             sendResponse(['message' => 'Action not supported', 400]);
             
         } catch (Error $e) {
-            sendResponse(['message' => 'There was an error in the server'], 400);
+            sendResponse(['message' => 'There was an error in the server'], 500);
         }
         break;
 
@@ -79,16 +75,3 @@ exit;
 
 
 
-/**
- * Check if user is duplicated by its email
- * @param mixed $data
- * @return bool
- */
-function hasDuplicates($data) {
-    global $table;
-    $result = $table->selectByField('email', $data['email']);
-    if (count($result) > 0) {
-        return true;
-    }
-    return false;
-}
