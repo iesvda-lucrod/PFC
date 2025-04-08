@@ -1,11 +1,9 @@
 import { useContext, useState } from 'react';
 import { UserContext } from '../../../contexts/UserContext';
 import './RoomForm.css';
-import RoomModel from '../../../models/RoomModel';
 
-export default function RoomForm({submitAction = null}) {
-    const { userInfo, setUserInfo } = useContext(UserContext);
-    const roomModel = new RoomModel();
+export default function RoomForm({submitAction = console.err("Form submitted, no action provided")}) {
+    const { userInfo } = useContext(UserContext);
     const [ roomInfo, setRoomInfo ] = useState({
         name: '',
     });
@@ -20,17 +18,8 @@ export default function RoomForm({submitAction = null}) {
         if (!validateRoomInfo()) {
             return false;
         }
-        createRoom();
-        if (submitAction) submitAction();
+        submitAction();
     }
-
-    const createRoom = async () => {
-        await roomModel.post({...roomInfo, user_id:userInfo.id});
-        let newRoomList = await roomModel.getUserRooms(userInfo.id);
-        setUserInfo({...userInfo, rooms: [...newRoomList]});
-    }
-
-    
 
     const validateRoomInfo = () => {
         //console.log("This users room names",userInfo.rooms.map((room) => room.name))

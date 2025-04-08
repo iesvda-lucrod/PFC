@@ -1,11 +1,11 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import UserModel from "../../../models/UserModel";
+import { useUser } from "../../../models/useUser";
 import { UserContext } from "../../../contexts/UserContext";
 
 export default function AuthForm() {
     const { userInfo, logIn } = useContext(UserContext);
-    const userModel = new UserModel();
+    const model = useUser();
     let navigate = useNavigate();
     const [ isRegistering, setIsRegistering ] = useState(false);
     const [ formData, setFormData ] = useState({
@@ -57,25 +57,6 @@ export default function AuthForm() {
         return errors;
     }
 
-    const loginUser = async () => {
-        console.log("logging user");
-        let valErrors = validateData();
-        if (Object.keys(valErrors).length > 0) {
-            setValidationErrors(valErrors);
-            return;
-        }
-
-        let result = await userModel.post({action:'login', email: formData.email, password: formData.password});
-        if (!result.valid) {
-            setValidationErrors({...validationErrors, email: result.errors.email, password: result.errors.password});
-            return;
-        }
-
-        const userData = {...userInfo, email: formData.email, id: result.id, username: result.username, JWT: result.JWT}
-        console.log('login correct, saving to context...', {...userInfo, email: formData.email, id: result.id, username: result.username, JWT: result.JWT});
-        logIn(userData);
-        navigate('/dashboard');
-    };
     const registerUser = async () => {
         console.log("registering user");
         let valErrors = validateRegisterData();
@@ -84,17 +65,35 @@ export default function AuthForm() {
             return;
         }
 
-        let requestPayload = {action: 'register', ...formData}; delete requestPayload.confirmPassword;
-        let result = await userModel.post(requestPayload);
-        
+        let requestPayload = {action: 'register', data:{...formData}}; delete requestPayload.data.confirmPassword;
+        let result = await model.post(requestPayload);
+
         console.log("request result:", result);
         if (!result.valid) {
             setValidationErrors({...validationErrors, email: result.cause.email});
             return;
         }
-
         loginUser();
+    }
+    const loginUser = async () => {
+        let valErrors = validateData();
+        if (Object.keys(valErrors).length > 0) {
+            setValidationErrors(valErrors);
+            return;
+        }
+
+        let result = await model.post({action:'login', data:{email: formData.email, password: formData.password}});
+        if (!result.valid) {
+            setValidationErrors({...validationErrors, email: result.errors.email, password: result.errors.password});
+            return;
+        }
+
+        const userData = {...userInfo, email: result.user.email, id: result.user.id, username: result.user.username, JWT: result.JWT}
+        console.log('login correct, saving to context...', {...userInfo, email: result.user.email, id: result.user.id, username: result.user.username, JWT: result.JWT});
+        logIn(userData);
+        navigate('/dashboard');
     };
+    
 
     return (
         <div>

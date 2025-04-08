@@ -1,28 +1,41 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import FormInput from '../FormInput/FormInput';
 import './SectionForm.css';
-import { RoomContext } from '../../../contexts/RoomContext';
+import { useRoomContext } from '../../../contexts/RoomContext';
+import useSection from '../../../models/useSection';
+import Section from '../../../classes/Section';
 
-export default function SectionForm({ sectionData = {}, mode = 'create' }) {
-    const room_id = sectionData;
+export default function SectionForm({ sectionData = {}, editMode = false , submitAction}) {
+    const {
+        room:{roomInfo},
+        section: {sections, setSections}
+    } = useRoomContext();
     const [ formData, setFormData ] = useState({
-        name: '',
+        name: sectionData.name || '',
     });
+    const sectionModel = useSection();
 
     const handleChange = (e) => {
         const field = e.target;
         setFormData({...formData, [field.name]: field.value});
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Submitted", formData);
+        if (editMode) await sectionModel.updateSection({id: roomInfo.id, ...formData});
+        else await sectionModel.createSection(new Section(roomInfo.id, formData.name));
+
+        let response = await sectionModel.getRoomSections(roomInfo.id);
+        console.log(sections);
+        setSections([...response]);
+        if (submitAction) submitAction();
     }
 
     return (
         <div className='SectionForm'>
             <form onSubmit={(e) => {handleSubmit(e)}}>
                 <FormInput name={'name'} placeholder='Section name...' onChange={(e) => {handleChange(e)}}></FormInput>
+                <button type='submit'>Done</button>
             </form>
         </div>
     );

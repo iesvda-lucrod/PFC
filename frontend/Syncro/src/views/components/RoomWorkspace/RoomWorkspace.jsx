@@ -1,17 +1,24 @@
+import { useRoomContext } from '../../../contexts/RoomContext';
+import Section from '../Section/Section';
 import './RoomWorkspace.css'
-export default function RoomWorkspace({roomInfo}) {
+export default function RoomWorkspace({ sections }) {
+    const {
+        section: {sectionModel, setSections}
+    } = useRoomContext();
 
-    const loadSections = () => {
-        return ;
-    }
-
-    const loadTasks = () => {
-        return ;
+    const removeSection = async (section) => {
+        let newSectionList = await sectionModel.deleteSection(section);
+        console.log("setting to nwe ", newSectionList);
+        setSections(newSectionList);
     }
 
     return (
         <div className='RoomWorkspace'>
-            henlo
+        {
+            sections.map((section) => {
+                return <Section key={section.id} sectionInfo={section} onClose={() => {removeSection(section)}}/>
+            })
+        }
         </div>
     );
 }
