@@ -602,3 +602,4 @@ backend/vendor/vlucas/phpdotenv/src/Store/File/Paths.php
 backend/vendor/vlucas/phpdotenv/src/Store/File/Reader.php
 backend/vendor/vlucas/phpdotenv/src/Util/Regex.php
 backend/vendor/vlucas/phpdotenv/src/Util/Str.php
+backend/config.php
