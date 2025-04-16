@@ -1,32 +1,38 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import useSection from "../models/useSection";
 import useRoom from "../models/useRoom";
-import { useParams } from "react-router-dom";
 import useTask from "../models/useTask";
+import useAuth from "../models/useAuth";
 
 export const RoomContext = createContext(null);
 
 export function RoomContextProvider(props) {
-    const params = useParams();
     const { children } = props;
-    const [ room, setRoom ] = useState({
-        id: '',
-        name: '',
-        users: [],
-    });
-    
-
-    const roomModel = useRoom();
-    const sectionModel = useSection();
-    const taskModel = useTask();
+    const {token} = useAuth();
+    const roomModel = useRoom(token);
+    const sectionModel = useSection(token);
+    const taskModel = useTask(token);
+    const [isRoomSelected, setIsRoomSelected] = useState(false);
 
     useEffect(() => {
-        loadRoomData();
-    }, []);
+        console.log("IN room context USEFF");
+        if (isRoomSelected) {
+            console.log("---> Loading data");
+            loadRoomData();
+        }
+    }, [roomModel.room.id]);
+
+    const setRoomId = (id) => {
+        console.log("setting id")
+        roomModel.setRoom({...roomModel.room, id: id});
+        setIsRoomSelected(true);
+    }
+
     const loadRoomData = async () => {
-        let roomInfo = await roomModel.get({id: params.id})
+        let roomInfo = await roomModel.getRoomInfo(roomModel.room.id);
+        console.log("RESULTING INFO ", roomInfo);
         let sections = await sectionModel.getRoomSections(roomInfo.id);
-        setRoom({...roomInfo});
+        roomModel.setRoom({...roomInfo});
         sectionModel.setRoomSections([...sections]);
         console.log("Result: ", roomInfo, sections);
 
@@ -42,9 +48,10 @@ export function RoomContextProvider(props) {
     return (
         <RoomContext.Provider 
             value={{
-                room: {roomModel, roomInfo:room, setRoomInfo:setRoom},
+                setRoomId,
+                room: {roomModel, roomInfo:roomModel.room, setRoomInfo:roomModel.setRoom},
                 section: {sectionModel, sections:sectionModel.roomSections, setSections:sectionModel.setRoomSections},
-                task: {taskModel}
+                task: {taskModel, }
             }}
         >
             {children}
@@ -54,6 +61,7 @@ export function RoomContextProvider(props) {
 
 export function useRoomContext(){
     const context = useContext(RoomContext);
+
     if (!context) {
         throw new Error("useRoomContext must be used within a RoomContextProvider");
     }

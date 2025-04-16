@@ -1,35 +1,47 @@
-import { useContext, useState } from 'react';
-import { UserContext } from '../../../contexts/UserContext';
+import { useState } from 'react';
+import { useUserContext } from '../../../contexts/UserContext';
 import './RoomForm.css';
+import { useRoomContext } from '../../../contexts/RoomContext';
+import Section from '../../../classes/Section';
+import Room from '../../../classes/Room';
+import useRoom from '../../../models/useRoom';
 
-export default function RoomForm({submitAction = console.err("Form submitted, no action provided")}) {
-    const { userInfo } = useContext(UserContext);
-    const [ roomInfo, setRoomInfo ] = useState({
-        name: '',
+export default function RoomForm({editMode = false, roomInfo = {}, submitAction = console.err("Form submitted, no action provided")}) {
+    const { userInfo, setUserInfo } = useUserContext();
+    const [ formData, setFormData ] = useState({
+        name: roomInfo.name || '',
     });
+    const roomModel = useRoom();
     const [ validationErrors, setValidationErrors ] = useState('');
 
     const handleChange = (e) => {
         const field = e.target;
-        setRoomInfo({...roomInfo, [field.name]: field.value});
+        setFormData({...formData, [field.name]: field.value});
+        console.log("FORMDATA: ", {...formData, [field.name]: field.value});
     }
-    const handleSubmit = (e) => {
+    const handleSubmit =  async (e) => {
         e.preventDefault();
         if (!validateRoomInfo()) {
             return false;
         }
-        submitAction();
+        console.log(roomInfo.name);
+        if (editMode) await roomModel.updateRoom({...formData});
+        else await roomModel.createRoom(userInfo.id, new Room(formData.name));
+
+        let response = await roomModel.getUserRooms(userInfo.id);
+        setUserInfo({...userInfo, rooms: response});
+        if (submitAction) submitAction();
     }
 
     const validateRoomInfo = () => {
         //console.log("This users room names",userInfo.rooms.map((room) => room.name))
 
-        if (/[^a-zA-Z0-9À-ÖØ-öø-ÿ\s]/.test(roomInfo.name)) {
+        if (/[^a-zA-Z0-9À-ÖØ-öø-ÿ\s]/.test(formData.name)) {
             setValidationErrors("Room name can only contain letters, spaces and numbers");
             return;
         }
 
-        if (userInfo.rooms.map((room) => room.name).includes(roomInfo.name)) {
+        if (userInfo.rooms.map((room) => room.name).includes(formData.name)) {
             setValidationErrors("Room with the same name already exists");
             return false;
         };

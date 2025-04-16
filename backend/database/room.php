@@ -6,10 +6,8 @@ require_once __DIR__.'/../services/api.php';
 handleCorsRequest();
 
 require_once __DIR__."/../services/DBAccess/RoomsTable.php";
-
 $table = new RoomsTable();
-
-//verifyToken(); //TODO TURN ON JWT VERIFICATION AGAIN
+$token = verifyToken();
 
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
@@ -36,27 +34,27 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "POST":
         $payload = handleContentType();
-        if ($table->hasDuplicates($payload['user_id'], $payload)) {sendResponse(['valid' => false, 'error' => ['name' => 'Room with same name already exists']]);}
-        $result = $table->createRoom($payload);
-        if (!$result) {sendResponse(['message' => 'There was a problem inserting the room'], 500);}
-        sendResponse(['message' => 'Room created successfully']);
+
+        if ($table->hasDuplicates($payload['data']['user_id'], $payload['data']['room'])) {sendResponse(['valid' => false, 'error' => ['name' => 'Room with same name already exists']]);}
+        $roomInfo = $table->createRoom($payload['data']);
+        sendResponse(valid:true, message:'Room created successgully', data:['room' => $roomInfo]);
         break;
 
     case "DELETE":
         $payload = handleContentType();
         $result = $table->delete($payload['id']);
         if (!$result) sendResponse(['message' => 'There was an error deleting the room'], 500);
-        sendResponse(['message' => 'Room deleted successfully']);
+        sendResponse(valid:true, message:'Room deleted successfully');
         break;
     
     case "PUT":
         $payload = handleContentType();
         $result = $table->update($payload['id'], $payload['newValues']);
-        if (!$result) sendResponse(['message'=> 'There was an error updating the room'], 500);
-        sendResponse(['message'=> 'Room info updated successfully']);
+        if (!$result) sendResponse(valid: false, message:'There was an error updating the room', responseCode:500);
+        sendResponse(valid: true, message:'Room info updated successfully');
         break;
     default: 
-        sendResponse(['message' => 'Method not allowed'], 405);
+        sendResponse(valid:false, message:'Method not allowed', responseCode:405);
         break;
 }
 exit;

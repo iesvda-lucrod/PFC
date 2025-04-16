@@ -2,18 +2,17 @@ import { useState } from 'react';
 import FormInput from '../FormInput/FormInput';
 import './SectionForm.css';
 import { useRoomContext } from '../../../contexts/RoomContext';
-import useSection from '../../../models/useSection';
 import Section from '../../../classes/Section';
 
 export default function SectionForm({ sectionData = {}, editMode = false , submitAction}) {
     const {
         room:{roomInfo},
-        section: {sections, setSections}
+        section: {sectionModel, sections, setSections}
     } = useRoomContext();
+
     const [ formData, setFormData ] = useState({
         name: sectionData.name || '',
     });
-    const sectionModel = useSection();
 
     const handleChange = (e) => {
         const field = e.target;

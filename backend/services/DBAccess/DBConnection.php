@@ -115,7 +115,7 @@ class DBConnection {
      * @throws \Error When query fails
      * @return bool True if the query was successfull (Throws an error if it wasn't)
      */
-    protected function execPreparedQuery($query, $bindedParams) {
+    protected function execPreparedQuery($query, $bindedParams = []) {
         //echo "<br>_-_EXECPREPAREDQUERY";
         //echo "<br>_-prepping";
         $this->stmt = $this->connection->prepare($query);
@@ -194,34 +194,21 @@ class DBConnection {
     }
 
     /**
-     * Selects all rows from $this->table that match the field => value pairs from the associative array $assocNameValues
-     * comparison defaults to equal values but other operators (<, <=, >, >=) can be specified in the value (Ex: '>=2')
-     *  @param mixed $assocNameValues
-     *  @return mixed
+     * Select the $this->table's rows that match the specified filters
+     * @param mixed $filters Associative array containing the filters (field => value, field2 = value2, ...)
      */
-    public function selectByFilters($assocNameValues) {
-        $fields = [];
-        foreach ($assocNameValues as $fieldName => $fieldValue) {
-            $expressionCheck = substr($fieldValue,0,2);
-            if ($expressionCheck == '<=' || $expressionCheck == '>=') {
-                $expression = $expressionCheck;
-            } else if ($expressionCheck[0] == '<' || $expressionCheck[0] == '>') {
-                $expression = $expressionCheck[0];
-            } else {
-                $expression = '=';
-            }
-            $fields[] = $fieldName.$expression.' :'.$fieldName;
+    public function filteredSelect($filters) {
+        $filtersArray = [];
+        $bindedParams = [];
+        foreach( $filters as $key => $value ) {
+            $filtersArray[] = "$key = :$key";
+            $bindedParams[":$key"] = $value;
         }
-        $filters = implode(' AND ', $fields);
-
-        $bindings = [];
-        foreach($assocNameValues as $field => $value) {
-            $bindings[':'.$field] = $value;
-        };
+        $queryFilters = implode(' AND ', $filtersArray);
 
         $this->execPreparedQuery(
-            "SELECT $this->fields FROM $this->table WHERE $filters",
-            $bindings,
+            "SELECT $this->fields FROM $this->table WHERE $queryFilters",
+            $bindedParams
         );
         return $this->getAllRows();
     }

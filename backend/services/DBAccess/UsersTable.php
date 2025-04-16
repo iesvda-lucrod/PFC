@@ -4,21 +4,12 @@ require_once __DIR__ . '/DBConnection.php';
 class UsersTable extends DBConnection{ 
     public function __construct()
     {
-        parent::__construct("users", 'id, email, username');
+        parent::__construct("users", 'id, email, password, username');
     }
 
-    /**
-     * Check if user is duplicated by its email
-     * @param mixed $data
-     * @return bool
-     */
-    public function hasDuplicates($data) {
-        global $table;
-        $result = $table->selectByField('email', $data['email']);
-        if (count($result) > 0) {
-            return true;
-        }
-        return false;
+    public function getUserFromEmail($userData) {
+        $result = $this->filteredSelect(['email' => $userData['email']]);
+        return isset($result[0]) ? $result[0] : null;
     }
 
     public function getUserCredentials($userData) {
@@ -27,4 +18,20 @@ class UsersTable extends DBConnection{
         $this->fields = 'id, email, username, password';
         return $credentials;
     }
+
+    public function registerUserData($userData) {
+        try {
+            $this->beginTransaction();
+            $this->insert($userData);
+            $this->execPreparedQuery('SELECT * FROM users WHERE id = LAST_INSERT_ID()');
+            $result = $this->getAllRows()[0];
+            unset($result['password']);
+            $this->commit();
+            return $result;
+        } catch (PDOException $e) {
+            $this->rollback();
+            return null;
+        }
+    }
+    
 }

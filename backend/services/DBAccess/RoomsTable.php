@@ -13,7 +13,7 @@ class RoomsTable extends DBConnection {
             "SELECT * FROM rooms r JOIN users_rooms u_r ON r.id = u_r.room_id WHERE user_id = :user_id AND name = :name",
             [
                 ':user_id' => $userId,
-                ':name'=> $payload['room']['name']
+                ':name'=> $payload['name']
             ]
         );
         $duplicates = $this->getAllRows();
@@ -41,23 +41,27 @@ class RoomsTable extends DBConnection {
     }
 
     //INSERT
-    public function createRoom($data) { 
+    public function createRoom($data) {
         $user_id = $data['user_id'];
-        $roomData = $data['room'];
+        $room = $data['room'];
+        $roomData = ['name' => $room['name']];
 
         $this->beginTransaction();
+        var_dump($roomData);
         try {
-            $this->insert($roomData);
-            $result = $this->execPreparedQuery(
+            //$this->insert($roomData);
+            $this->execPreparedQuery("SELECT * FROM rooms WHERE id = (SELECT LAS_INSERT_ID())", []);
+            $roomInfo = $this->getAllRows()[0];
+            $this->execPreparedQuery(
                 "INSERT INTO users_rooms (user_id, room_id, role) VALUES (:user_id, (SELECT LAST_INSERT_ID()), 'owner')",
                 [':user_id' => $user_id]
             );
             $this->commit();
-            return $result;
+            return $roomInfo;
         }
         catch (Error $e) {
             $this->rollBack();
-            return false;
+            throw $e;
         }
     }
 }

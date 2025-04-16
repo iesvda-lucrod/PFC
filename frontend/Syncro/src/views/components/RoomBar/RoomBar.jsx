@@ -11,9 +11,8 @@ export default function RoomBar({roomInfo}) {
             <h2>{roomInfo.name}</h2>
             <button onClick={() => {setOpenSectionForm(true)}}>+ Section</button>
             <Modal isOpen={openSectionForm} setIsOpen={setOpenSectionForm}>
-                <SectionForm sectionData={{room_id: roomInfo.id}} submitAction={setOpenSectionForm(false)}/>
+                <SectionForm sectionData={{room_id: roomInfo.id}} submitAction={() => {setOpenSectionForm(false)}}/>
             </Modal>
-            
 
             <button>Options</button>
             <div>Users</div>

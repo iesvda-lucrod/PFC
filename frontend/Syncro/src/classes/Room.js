@@ -8,7 +8,7 @@ export default class Room {
     }
 
     setName(name) {
-        if (!(typeof name === 'string')) throw new Error("Invalid type: name must be a string");
+        if (!(typeof name === 'string')) throw new Error("Invalid type: name must be a string "+ typeof name+" found");
         this.name = name 
     }
 

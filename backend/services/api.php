@@ -11,35 +11,12 @@ require_once __DIR__."/JWT/JWT.php";
  */
 function handleContentType(){
     $rawData = file_get_contents('php://input');
-        if ($_SERVER['CONTENT_TYPE'] == 'application/json') {
-            return json_decode($rawData, true);
-        }else if ($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded'){
-            return  $rawData;
-        } else {
-            sendResponse(["message" => 'Unsuported media type'], 415);
-            exit; //Terminates script execution to prevent requesting to database
-        }
+
+    if ($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded') return  $rawData;
+    if ($_SERVER['CONTENT_TYPE'] == 'application/json') return json_decode($rawData, true);
+
+    sendResponse(valid:false, message:'Unsuported media type', responseCode:415);
 }
-
-/**
- * Retrieves, verifies and returns the JWT token data,
- * sends invalid response if token is not valid or present
- * @return stdClass|null
- */
-function verifyToken() {
-    $headers = apache_request_headers();
-    if (!isset($headers['Authorization'])) {
-        sendResponse(['valid' => false, 'error' => 'Token not found'], 401);
-    }
-
-    $jwt = trim(str_replace('Bearer ', '', $headers['Authorization']));
-    $decodedToken = decodeJWT($jwt);
-    if (!$decodedToken) {
-        sendResponse(['valid' => false, 'error' => 'Invalid token'], 401);
-    }
-
-    return $decodedToken;
-};
 
 function handleCorsRequest() {
     header("Access-Control-Allow-Origin: *");
@@ -52,18 +29,25 @@ function handleCorsRequest() {
     }
 }
 
-
-
 /**
  * Echo a response with data and a code
  * @param mixed $data
  * @param mixed $status
  * @return void
  */
-function sendResponse($data = null, $status = 200) {
-    http_response_code($status);
-    echo json_encode($data);
-    exit;
+function sendResponse($valid, $message, $data = null, $errors = null, $responseCode = 200) {
+    header('Content-Type: application/json');
+
+    $response = [
+        'valid' => $valid,
+        'message'=> $message,
+    ]
+    + ($data ? ['data'=> $data] : [])
+    + ($valid ? ['warnings' => $errors] : ['errors'=> $errors]);
+
+    http_response_code($responseCode);
+    echo json_encode($response);
+    exit; //Prevent further execution
 }
 
 function logError($errorMessage, $path = __FILE__,) {

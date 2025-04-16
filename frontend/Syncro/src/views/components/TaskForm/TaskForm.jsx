@@ -6,7 +6,10 @@ import Section from '../../../classes/Section';
 import Task from '../../../classes/Task';
 
 export default function TaskForm({ sectionId, sectionData: taskData = {}, editMode = false , submitAction}) {
-    const { taskModel, sections, setSections} = useRoomContext();
+    const { 
+        task: {taskModel},
+        section: {sections, setSections}
+    } = useRoomContext();
 
     //Selecting current section
     const section = sections[sectionId];
@@ -14,7 +17,7 @@ export default function TaskForm({ sectionId, sectionData: taskData = {}, editMo
 
 
     const [ formData, setFormData ] = useState({
-        name: taskData.name || '',
+        title: taskData.title || '',
         description: taskData.description || '',
     });
 
@@ -25,8 +28,10 @@ export default function TaskForm({ sectionId, sectionData: taskData = {}, editMo
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (editMode) await taskModel.updateSection({id: sectionId, ...formData});
-        else await taskModel.createSection(new Task(sectionId, ...formData));
+        console.log("Submitting", {sectionId, ...formData});
+        
+        if (editMode) await taskModel.updateTask({id: sectionId, ...formData});
+        else await taskModel.createTask({sectionId, ...formData});
 
         let response = await taskModel.getRoomSections(sectionId);
         console.log(response);
@@ -37,7 +42,8 @@ export default function TaskForm({ sectionId, sectionData: taskData = {}, editMo
     return (
         <div className='TaskForm'>
             <form onSubmit={(e) => {handleSubmit(e)}}>
-                <FormInput name={'name'} placeholder='Task name...' onChange={(e) => {handleChange(e)}}></FormInput>
+                <FormInput name='title' placeholder='Task title...' onChange={(e) => {handleChange(e)}}></FormInput>
+                <FormInput name='description' placeholder='Task description...' onChange={(e) => {handleChange(e)}}></FormInput>
                 <button type='submit'>Done</button>
             </form>
         </div>

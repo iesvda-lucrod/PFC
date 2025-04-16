@@ -1,11 +1,7 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const UserContext = createContext({
-    email: '',
-    username: '',
-    JWT: ''
-});
+export const UserContext = createContext(null);
 
 export function UserContextProvider(props) {
     const { children } = props;
@@ -75,5 +71,13 @@ export function UserContextProvider(props) {
             {children}
         </UserContext.Provider>
     );
+}
+
+export function useUserContext() {
+    const context = useContext(UserContext);
+        if (!context) {
+            throw new Error("useUserContext must be used within a UserContextProvider");
+        }
+        return context;
 }
 

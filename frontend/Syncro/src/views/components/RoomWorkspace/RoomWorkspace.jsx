@@ -10,6 +10,8 @@ export default function RoomWorkspace({ sections }) {
         let newSectionList = await sectionModel.deleteSection(section);
         console.log("setting to nwe ", newSectionList);
         setSections(newSectionList);
+
+        //TODO GET TASKS
     }
 
     return (

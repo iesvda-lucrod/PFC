@@ -1,8 +1,10 @@
+import { useState } from "react";
 import Task from "../classes/Task";
 import useDatabase from "./useDatabase";
 
-export default function useTask() {
-    const model = useDatabase('task.php');
+export default function useTask(token) {
+    const model = useDatabase('task.php', token);
+    const [ roomTasks, setRoomTasks ] = useState({});
 
     const createTask = async (taskInfo) => {
         const payload = new Task(taskInfo);
@@ -22,6 +24,7 @@ export default function useTask() {
 
     const getSectionTasks = async (sectionId) => {
         let result = await model.get({section_id: sectionId});
+        setRoomTasks({...roomTasks, [sectionId]:result});
         return result;
     }
 

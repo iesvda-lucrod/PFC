@@ -13,33 +13,31 @@ switch($_SERVER['REQUEST_METHOD']){
     case "GET":
         //$table->selectAll();
         $result = $table->selectByField('room_id', $_GET['room_id']);
-        sendResponse( $result);
+        sendResponse(valid: true, message:'Sections fetched successfully');
         break;
 
     case "POST":
         $payload = handleContentType();
-        if ($table->hasDuplicates($payload['room_id'], $payload)) {sendResponse(['valid' => false, 'error' => ['name' => 'Section with same name already exists']]);}
+        if ($table->hasDuplicates($payload['room_id'], $payload)) {sendResponse(valid:false, message:'Could not create section', errors:['name' => 'Section with same name already exists']);}
         $result = $table->createSection($payload);
-        if (!$result) {sendResponse(['message' => 'There was a problem inserting the section'], 500);}
-        //sendResponse(['message' => 'Section created successfully']);
-        $newRoomList = $table->selectByField('room_id', $payload['room_id']);
-        sendResponse([$newRoomList]);
+        if (!$result) {sendResponse(valid: false, message: 'There was a problem creating the section', responseCode: 500);}
+        $newSectionList = $table->selectByField('room_id', $payload['room_id']);
+        sendResponse(valid:true, message:'Section created successfully', data:['sections' => $newSectionList]);
         break;
 
     case "DELETE":
         $payload = handleContentType();
         $result = $table->delete($payload['id']);
-        if (!$result) sendResponse(['message' => 'There was a problem deleting the section'], 500);
-        //sendResponse(['message' => 'Section deleted successfully']);
+        if (!$result) sendResponse(valid:false, message:'There was a problem deleting the section', responseCode:500);
         $newRoomList = $table->selectByField('room_id', $payload['room_id']);
-        sendResponse($newRoomList);
+        sendResponse(valid:true, message:'Section deleted successfully', data:['roomList' => $newRoomList]);
         break;
     
     case "PUT":
         
         break;
     default: 
-        sendResponse(['message' => 'Method not allowed'], 405);
+        sendResponse(valid:false, message:'Method not allowed', responseCode:405);
         break;
 }
 exit;

@@ -1,4 +1,13 @@
 .RoomPage {
+    position: relative;
     display: flex;
     flex-direction: column;
+}
+
+.roomContent {
+    position: relative;
+    flex: 1;
+    background-color: aqua;
+
+    overflow-x: hidden;
 }

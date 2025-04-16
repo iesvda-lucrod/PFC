@@ -2,8 +2,8 @@ import { useState } from "react";
 import Section from "../classes/Section";
 import useDatabase from "./useDatabase";
 
-export default function useSection() {
-    const model = useDatabase('section.php');
+export default function useSection(token) {
+    const model = useDatabase('section.php', token);
     const [ roomSections, setRoomSections ] = useState([]);
 
     const getRoomSections = async (roomId) => {

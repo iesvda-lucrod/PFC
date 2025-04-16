@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../../contexts/UserContext";
+import { useEffect, useState } from "react";
+import { UserContext, useUserContext } from "../../../contexts/UserContext";
 
 import RoomForm from "../../components/RoomForm/RoomForm";
 import Modal from "../../components/Modal/Modal";
@@ -10,14 +10,17 @@ import './DashboardPage.css';
 
 export default function DashboardPage() {
     const [ openRoomForm, setOpenRoomForm ] = useState(false);
-    const { userInfo, setUserInfo, isLogged } = useContext(UserContext);
+    const { userInfo, setUserInfo, isLogged } = useUserContext();
     const roomModel = useRoom();
 
     useEffect(() => {
         if (!isLogged) {
+            console.log("User is NOT loggeddd...");
             return;
         }
+        console.log("User is logged, loading data...");
         const loadData = async () => {
+            console.log("USER INFO",userInfo);
             let response = await roomModel.getUserRooms(userInfo.id);
             setUserInfo({...userInfo, rooms: response});
             console.log("userInfo", {...userInfo, rooms: response});
@@ -26,7 +29,7 @@ export default function DashboardPage() {
     }, []);
 
     const deleteRoom = async (id) => {
-        let result = await roomModel.delete({id: id});
+        let result = await roomModel.deleteRoom(id);
         if (result) {
             let newRoomList = userInfo.rooms.filter((room) => room.id !== id);
             setUserInfo({...userInfo, rooms: newRoomList});

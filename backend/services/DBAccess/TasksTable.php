@@ -9,10 +9,10 @@ class TasksTable extends DBConnection {
 
     public function hasDuplicates($section_id, $taskData) {
         $this->execPreparedQueryWithTransaction(
-            "SELECT * FROM tasks WHERE room_id = :room_id AND name = :name",
+            "SELECT * FROM tasks WHERE section_id = :section_id AND title = :title",
             [
-                ':room_id' => $section_id,
-                ':name'=> $taskData['name']
+                ':section_id' => $section_id,
+                ':title'=> $taskData['title']
             ]
         );
         $duplicates = $this->getAllRows();
@@ -32,6 +32,7 @@ class TasksTable extends DBConnection {
             );
             $lastPosition = $this->getNextRow()['lastPosition'];
             $data['position'] = $lastPosition !== null ? $lastPosition+1 : 1;
+            //var_dump($data);
             $result = $this->insert($data);
 
             $this->commit();
