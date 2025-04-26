@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const ENDPOINT_URL = 'http://localhost/eadbae/eadbae_backend/api/';
+const ENDPOINT_URL = 'http://localhost/PFC/backend/database/';
 export default function useDatabase(resource, token = null) {
     const [ isLoading, setIsLoading ] = useState(false);
     const FINAL_URL= ENDPOINT_URL+resource;
