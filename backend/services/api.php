@@ -50,6 +50,6 @@ function sendResponse($valid, $message, $data = null, $errors = null, $responseC
     exit; //Prevent further execution
 }
 
-function logError($errorMessage, $path = __FILE__,) {
+function logError($errorMessage, $path = __FILE__) {
     file_put_contents(__DIR__.'/error.log', date("Y-m-d H:i:s")."\tAn error ocurred in ".$path.': '.$errorMessage.PHP_EOL, FILE_APPEND);
 };
