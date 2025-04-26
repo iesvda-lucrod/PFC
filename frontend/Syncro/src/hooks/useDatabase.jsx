@@ -1,14 +1,9 @@
-//TODO translate classes into hooks to implement JWT redirection??
-
 const BASE_URL = 'http://localhost/PFC/backend/database/';
 export default function useDatabase(endpointURL) {
     const ENDPOINT_URL = BASE_URL + endpointURL;
 
 
 }
-
-
-
 
 import { useState, useEffect, useCallback } from 'react';
 

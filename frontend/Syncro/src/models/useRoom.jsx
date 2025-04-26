@@ -3,7 +3,7 @@ import useDatabase  from "./useDatabase";
 import Room from "../classes/Room";
 
 export default function useRoom(token) {
-    const model = useDatabase('room.php', token);
+    const {model, isLoading} = useDatabase('room.php', token);
 
     const [ room, setRoom ] = useState({
         id: '',

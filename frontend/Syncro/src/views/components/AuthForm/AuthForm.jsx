@@ -1,11 +1,12 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../models/useUser";
+import useAuth from "../../../models/useAuth";
 import { UserContext } from "../../../contexts/UserContext";
 
 export default function AuthForm() {
     const { userInfo, logIn } = useContext(UserContext);
-    const model = useUser();
+    const { register, login, isLogged } = useAuth();
     let navigate = useNavigate();
     const [ isRegistering, setIsRegistering ] = useState(false);
     const [ formData, setFormData ] = useState({
@@ -66,7 +67,7 @@ export default function AuthForm() {
         }
 
         let requestPayload = {action: 'register', data:{...formData}}; delete requestPayload.data.confirmPassword;
-        let result = await model.post(requestPayload);
+        let result = await register(requestPayload);
 
         console.log("request result:", result);
         if (!result.valid) {
@@ -82,14 +83,15 @@ export default function AuthForm() {
             return;
         }
 
-        let result = await model.post({action:'login', data:{email: formData.email, password: formData.password}});
-        if (!result.valid) {
-            setValidationErrors({...validationErrors, email: result.errors.email, password: result.errors.password});
+        let response = await login({email: formData.email, password: formData.password});
+        if (!response.valid) {
+            setValidationErrors({...validationErrors, email: response.errors.email, password: response.errors.password});
             return;
         }
 
-        const userData = {...userInfo, email: result.user.email, id: result.user.id, username: result.user.username, JWT: result.JWT}
-        console.log('login correct, saving to context...', {...userInfo, email: result.user.email, id: result.user.id, username: result.user.username, JWT: result.JWT});
+        console.log("LOGIN RESULT", response );
+        const userData = {...userInfo, email: response.data.user.email, id: response.data.user.id, username: response.data.user.username, JWT: response.data.JWT}
+        console.log('login correct, saving to context...', {...userInfo, email: response.data.user.email, id: response.data.user.id, username: response.data.user.username, JWT: response.data.JWT});
         logIn(userData);
         navigate('/dashboard');
     };

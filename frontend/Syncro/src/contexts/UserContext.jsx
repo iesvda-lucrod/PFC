@@ -18,13 +18,9 @@ export function UserContextProvider(props) {
     const loadData = () => {
         try {
             const localUser = JSON.parse(localStorage.getItem("userInfo"));
-    
             if (localUser) {
-                //console.log("USERCONTEXT --- Localstorage contains user info:", localUser);
-                //setUser(prev => ({ ...prev, ...localUser }));
                 logIn(localUser);
             } else {
-                console.log("USERCONTEXT --- No user info in localstorage, redirecting...");
                 logOut();
             }
         } catch (error) {
@@ -34,14 +30,13 @@ export function UserContextProvider(props) {
     };
     
     useEffect(() => {
-        if (!user.id) {  // Only load if userInfo is empty
+        if (!user.id) {
             console.log("USERCONTEXT --- Context not populated, loading from localstorage...");
             loadData();
         }
-    }, []); // Runs only once on mount
+    }, []);
 
     useEffect(() => {
-        //console.log("usef user");
         if (user.id !== "") { //Only update if userinfo is already present
             console.log("USERCONTEXT --- setting userinfo to ", user);
             localStorage.setItem('userInfo', JSON.stringify(user));
@@ -57,7 +52,7 @@ export function UserContextProvider(props) {
             JWT: '',
             rooms: []
         });
-        redirect("auth");
+        redirect("/auth");
     }
 
     const logIn = (userInfo) => {
