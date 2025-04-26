@@ -1,14 +1,12 @@
 import { useState } from "react";
-import AuthExpiredError from "../utils/AuthExpiredError";
 
-const ENDPOINT_URL = 'http://localhost/PFC/backend/database/';
+const ENDPOINT_URL = 'http://localhost/eadbae/eadbae_backend/api/';
 export default function useDatabase(resource, token = null) {
     const [ isLoading, setIsLoading ] = useState(false);
     const FINAL_URL= ENDPOINT_URL+resource;
 
-
     const requestResource = async(reqMethod = 'GET', reqBody = null, queryParameters = '') => {
-        console.log("MAKING A REQUEST: \n\tURL: ", FINAL_URL+'?'+queryParameters, "\n\tMETHOD: ", reqMethod, "\n\tBODY: ", reqBody);
+        console.log("MAKING A REQUEST: \n\tURL: ", FINAL_URL+'?'+queryParameters, "\n\tMETHOD: ", reqMethod, "\n\tBODY: ", reqBody, '\n\ttoken', token?true:false);
         setIsLoading(true);
 
         let response = await fetch(FINAL_URL+'?'+queryParameters,
@@ -22,19 +20,20 @@ export default function useDatabase(resource, token = null) {
                 ...(reqBody !== null? {body: JSON.stringify(reqBody)}: {})
             }
         );
-        
+
         if (!response.ok) {
             let error = await response.json();
+            console.error("Call to ",FINAL_URL+'?'+queryParameters,"response: \n", error);
             if (response.status >= 500) {
                 throw new Error('There was an error in the server, please try again later');
             }
             if (response.status === 401) {
-                throw new AuthExpiredError('Token expired, identification required');
+                throw new Error("Authentication error: "+error.message);
             }
             throw new Error(error.message);
         }
         let data = await response.json();
-        //console.log("base model data",data);
+        console.log("Call to ",FINAL_URL+'?'+queryParameters,"response: \n",data);
         setIsLoading(false);
         return data;
     }
@@ -59,10 +58,10 @@ export default function useDatabase(resource, token = null) {
 
 const queryParamsBuilder = (params) => {
     //params is an object containing key => value or key => array[values]
-    console.log('BUILDING PARAMS FROM:', params);
+    //console.log('BUILDING PARAMS FROM:', params);
     let query = '';
     Object.entries(params).forEach(([key, values]) => {
-        console.log(key, values, (typeof values));
+        //console.log(key, values, (typeof values));
         if (!(Array.isArray(values))){
             if (values.toString() !== '') {
                 query += `&${key}=${values}`;    
@@ -73,6 +72,6 @@ const queryParamsBuilder = (params) => {
             });
         }
     });
-    console.log('Built query', query);
+    //console.log('Built query', query);
     return query;
 }
