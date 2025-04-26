@@ -5,14 +5,12 @@ import { UserContext } from "../../../contexts/UserContext";
 
 export default function AuthPage() {
     console.log('inauth');
-    const { userInfo, isLogged } = useContext(UserContext);
+    const { isLogged } = useContext(UserContext);
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log('inauthEFF',isLogged);
-
         if (isLogged) {
-            console.log('redirecting cause: ', userInfo.id);
+            console.log('User is already logged, redirecting...');
             navigate('/dashboard');
         }
     }, [isLogged]);

@@ -8,8 +8,7 @@ export default function useAuth() {
     const { isLoading, model } = useDatabase('auth.php', token);
 
     const registerUser = async (userData) => {
-        if (!(userData instanceof User)) {throw new Error('Please use an instance of User to ensure correct format')};
-        let result = await model.post({action: 'register'});
+        let result = await model.post({action: 'register', user: {...userData}});
         return result;
     }
     const loginUser = async (userData) => {

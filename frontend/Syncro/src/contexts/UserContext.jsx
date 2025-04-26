@@ -1,11 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext(null);
 
 export function UserContextProvider(props) {
     const { children } = props;
-    const redirect = useNavigate();
     const [ user, setUser ] = useState({
         id: '',
         email: '',
@@ -52,7 +50,6 @@ export function UserContextProvider(props) {
             JWT: '',
             rooms: []
         });
-        redirect("/auth");
     }
 
     const logIn = (userInfo) => {

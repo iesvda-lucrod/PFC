@@ -30,7 +30,7 @@ switch($_SERVER['REQUEST_METHOD']){
 function registerUser($userData) {
     $table = new UsersTable();
     if (isRegistered($table, $userData)) {
-        sendResponse(valid:false, message:'Could not register the user', errors:'Email is already registered');
+        sendResponse(valid:false, message:'Could not register the user', errors:['email' => 'Email is already registered']);
     }
     $result = $table->registerUserData($userData);
     //TODO send confirmation email (figure out confirmation link) link to backend api page

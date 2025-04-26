@@ -2,12 +2,13 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../models/useUser";
 import useAuth from "../../../models/useAuth";
-import { UserContext } from "../../../contexts/UserContext";
+import { useUserContext } from "../../../contexts/UserContext";
 
 export default function AuthForm() {
-    const { userInfo, logIn } = useContext(UserContext);
+    const { userInfo, logIn } = useUserContext();
     const { register, login, isLogged } = useAuth();
     let navigate = useNavigate();
+
     const [ isRegistering, setIsRegistering ] = useState(false);
     const [ formData, setFormData ] = useState({
         email: '',
@@ -59,19 +60,16 @@ export default function AuthForm() {
     }
 
     const registerUser = async () => {
-        console.log("registering user");
         let valErrors = validateRegisterData();
         if (Object.keys(valErrors).length > 0) {
             setValidationErrors(valErrors);
             return;
         }
 
-        let requestPayload = {action: 'register', data:{...formData}}; delete requestPayload.data.confirmPassword;
-        let result = await register(requestPayload);
-
-        console.log("request result:", result);
-        if (!result.valid) {
-            setValidationErrors({...validationErrors, email: result.cause.email});
+        console.log("Registering user...");
+        let response = await register({email:formData.email, password:formData.password, username:formData.username});
+        if (!response.valid) {
+            setValidationErrors({...validationErrors, ...response.errors});
             return;
         }
         loginUser();
@@ -83,15 +81,14 @@ export default function AuthForm() {
             return;
         }
 
+        console.log("Logging in...");
         let response = await login({email: formData.email, password: formData.password});
         if (!response.valid) {
-            setValidationErrors({...validationErrors, email: response.errors.email, password: response.errors.password});
+            setValidationErrors({...validationErrors, ...response.errors});
             return;
         }
 
-        console.log("LOGIN RESULT", response );
         const userData = {...userInfo, email: response.data.user.email, id: response.data.user.id, username: response.data.user.username, JWT: response.data.JWT}
-        console.log('login correct, saving to context...', {...userInfo, email: response.data.user.email, id: response.data.user.id, username: response.data.user.username, JWT: response.data.JWT});
         logIn(userData);
         navigate('/dashboard');
     };

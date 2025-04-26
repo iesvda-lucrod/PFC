@@ -14,18 +14,12 @@ export default function DashboardPage() {
     const roomModel = useRoom();
 
     useEffect(() => {
-        if (!isLogged) {
-            console.log("User is NOT loggeddd...");
-            return;
-        }
-        console.log("User is logged, loading data...");
-        const loadData = async () => {
-            console.log("USER INFO",userInfo);
+        console.log("Fetching rooms...");
+        const loadUserRooms = async () => {
             let response = await roomModel.getUserRooms(userInfo.id);
             setUserInfo({...userInfo, rooms: response});
-            console.log("userInfo", {...userInfo, rooms: response});
         };
-        loadData();
+        loadUserRooms();
     }, []);
 
     const deleteRoom = async (id) => {
