@@ -7,7 +7,7 @@ handleCorsRequest();
 
 $table = new SectionsTable();
 
-//verifyToken(); //TODO TURN ON JWT VERIFICATION AGAIN
+verifyToken();
 
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
