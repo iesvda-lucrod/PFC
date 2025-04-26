@@ -126,7 +126,7 @@ export default function AuthForm() {
                 <button type="submit">{isRegistering ? 'Register' : 'Log in'}</button>
             </form>
 
-            <button onClick={() => {setIsRegistering(!isRegistering)}}>{isRegistering ? "Already have an account?" : "Don't have an account yet?"}</button>
+            <button onClick={() => {setValidationErrors({email: '', password: '', confirmPassword: '', username: ''});setIsRegistering(!isRegistering)}}>{isRegistering ? "Already have an account?" : "Don't have an account yet?"}</button>
             
         </div>
     );
