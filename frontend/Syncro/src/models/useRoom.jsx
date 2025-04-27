@@ -1,19 +1,13 @@
-import { useState } from "react";
 import useDatabase  from "./useDatabase";
 import Room from "../classes/Room";
 
 export default function useRoom(token) {
     const {model, isLoading} = useDatabase('room.php', token);
 
-    const [ room, setRoom ] = useState({
-        id: '',
-        name: '',
-        users: [],
-    });
-
     const getRoomInfo = async (roomId) => {
         return await model.get({id: roomId});
     }
+
     const getUserRooms = async (userId) => {
         return await model.get({action: 'getUserRooms', user_id: userId});
     }
@@ -37,5 +31,5 @@ export default function useRoom(token) {
         return result;
     }
 
-    return {room, setRoom, getRoomInfo, getUserRooms, getRoomUsers, createRoom, deleteRoom, updateRoom}
+    return {isLoading, model:{getRoomInfo, getUserRooms, getRoomUsers, createRoom, deleteRoom, updateRoom}}
 }

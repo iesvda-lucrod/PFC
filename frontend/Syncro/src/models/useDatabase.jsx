@@ -1,12 +1,15 @@
 import { useState } from "react";
 
 const ENDPOINT_URL = 'http://localhost/PFC/backend/database/';
-export default function useDatabase(resource, token = null) {
+export default function useDatabase(resource, authToken = null) {
     const [ isLoading, setIsLoading ] = useState(false);
     const FINAL_URL= ENDPOINT_URL+resource;
 
-    const requestResource = async(reqMethod = 'GET', reqBody = null, queryParameters = '') => {
-        console.log("MAKING A REQUEST: \n\tURL: ", FINAL_URL+'?'+queryParameters, "\n\tMETHOD: ", reqMethod, "\n\tBODY: ", reqBody, '\n\ttoken', token?true:false);
+    const requestResource = async(reqMethod, data = null, token = authToken) => {
+        const queryParameters = reqMethod === 'GET' ? queryParamsBuilder(data) : '';
+        const reqBody = reqMethod === 'GET' ? null : data;
+        
+        console.log("MAKING A REQUEST: \n\tURL: ", FINAL_URL+'?'+queryParameters, "\n\tMETHOD: ", reqMethod, "\n\tBODY: ", reqBody, '\n\tTOKEN:', token);
         setIsLoading(true);
 
         let response = await fetch(FINAL_URL+'?'+queryParameters,
@@ -32,25 +35,24 @@ export default function useDatabase(resource, token = null) {
             }
             throw new Error(error.message);
         }
-        let data = await response.json();
-        console.log("Call to ",FINAL_URL+'?'+queryParameters,"response: \n",data);
+        let responseData = await response.json();
+        console.log("Call to ",FINAL_URL+'?'+queryParameters,"response: \n",responseData);
         setIsLoading(false);
-        return data;
+        return responseData;
     }
 
-    const get = async (filters = {}) => {
-        let queryParameters = queryParamsBuilder(filters);
-        let result =  await requestResource('GET', null, queryParameters);
+    const get = async (filters = {}, token = authToken) => {
+        let result =  await requestResource('GET', filters, token);
         return result;
     }
-    const post = async (data) => {
-       return await requestResource('POST', data);
+    const post = async (data, token = authToken) => {
+       return await requestResource('POST', data, token);
     }
-    const remove = async(data) => {
-        return await requestResource('DELETE', data);
+    const remove = async(data, token = authToken) => {
+        return await requestResource('DELETE', data, token);
     }
-    const put = async (data) => {
-        return await requestResource('PUT', data);
+    const put = async (data, token = authToken) => {
+        return await requestResource('PUT', data, token);
     }
 
     return {model:{get, post, delete:remove, put}, isLoading};

@@ -47,11 +47,11 @@ class RoomsTable extends DBConnection {
         $roomData = ['name' => $room['name']];
 
         $this->beginTransaction();
-        var_dump($roomData);
+        //var_dump($roomData);
         try {
-            //$this->insert($roomData);
-            $this->execPreparedQuery("SELECT * FROM rooms WHERE id = (SELECT LAS_INSERT_ID())", []);
-            $roomInfo = $this->getAllRows()[0];
+            $this->insert($roomData);
+            $this->execPreparedQuery("SELECT * FROM rooms WHERE id = (SELECT LAST_INSERT_ID())", []);
+            $roomInfo = $this->getAllRows();
             $this->execPreparedQuery(
                 "INSERT INTO users_rooms (user_id, room_id, role) VALUES (:user_id, (SELECT LAST_INSERT_ID()), 'owner')",
                 [':user_id' => $user_id]

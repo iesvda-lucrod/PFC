@@ -1,20 +1,16 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../../contexts/UserContext";
+import useAuth from "../../../models/useAuth";
 
 export default function AuthPage() {
-    console.log('inauth');
-    const { isLogged } = useContext(UserContext);
+    const { checkLoggedStatus } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isLogged) {
-            console.log('User is already logged, redirecting...');
-            navigate('/dashboard');
-        }
-    }, [isLogged]);
-    
+        (async () => {if ((await checkLoggedStatus())) navigate('/dashboard');})();
+    }, [checkLoggedStatus, navigate]);
+
     return (
         <div className="AuthPage">
             <AuthForm></AuthForm>

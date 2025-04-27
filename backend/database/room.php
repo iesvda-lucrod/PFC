@@ -14,12 +14,12 @@ switch($_SERVER['REQUEST_METHOD']){
         if (isset($_GET['action'])) {
             if ($_GET['action'] === 'getUserRooms') {unset($_GET['action']);
                 $result = $table->getUserRooms($_GET['user_id']);
-                sendResponse($result);
+                sendResponse(valid:true, message:'User rooms fetched successfully', data: $result);
             }
             if ($_GET['action'] === 'getRoomUsers') {
                 unset($_GET['action']);
                 $result = $table->getRoomUsers($_GET['user_id']);
-                sendResponse($result);
+                sendResponse(valid:true, message:'Room users fetched successfully', data: $result);
             }
         }
 
@@ -35,8 +35,8 @@ switch($_SERVER['REQUEST_METHOD']){
     case "POST":
         $payload = handleContentType();
 
-        if ($table->hasDuplicates($payload['data']['user_id'], $payload['data']['room'])) {sendResponse(['valid' => false, 'error' => ['name' => 'Room with same name already exists']]);}
-        $roomInfo = $table->createRoom($payload['data']);
+        if ($table->hasDuplicates($payload['user_id'], $payload['room'])) {sendResponse(valid:false, message:'There was a problem creating the room', errors: ['name' => 'Room with same name already exists']);}
+        $roomInfo = $table->createRoom($payload);
         sendResponse(valid:true, message:'Room created successgully', data:['room' => $roomInfo]);
         break;
 

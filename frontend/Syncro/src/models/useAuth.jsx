@@ -1,11 +1,31 @@
 import { useState } from "react";
 import useDatabase from "./useDatabase";
-import User from "../classes/User";
 
 export default function useAuth() {
-    //populate from ls?
-    const [ token, setToken ] = useState(null);
-    const { isLoading, model } = useDatabase('auth.php', token);
+    const [ token, setToken ] = useState(() => {
+        return localStorage.getItem('token');
+    });
+    const { isLoading, model } = useDatabase('auth.php');
+
+    const checkLoggedStatus = async () => {
+        console.log("Checking user logged status...");
+        const storedToken = localStorage.getItem('token');
+        if (!storedToken) {
+            console.log("Token not found in LS...");
+            return null;
+        }
+        setToken(storedToken);
+
+        try {
+            const response = await model.post({action: 'verifyToken'}, storedToken); //Server side validation
+            console.log('Token verification result: ', response.valid);
+            return response.valid ? response.data.token : null;
+        } catch (e) {
+            console.error('Error decoding token:', e);
+            localStorage.removeItem('token');
+            return null;
+        }
+    }
 
     const registerUser = async (userData) => {
         let result = await model.post({action: 'register', user: {...userData}});
@@ -13,32 +33,14 @@ export default function useAuth() {
     }
     const loginUser = async (userData) => {
         let result = await model.post({action: 'login', user: {...userData}});
-        localStorage.setItem('token', JSON.stringify(result.data.JWT));
+        localStorage.setItem('token', result.data.JWT);
         setToken(result.data.JWT);
         return result;
     }
-
-    const isLogged = async () => {
-        const storedToken = localStorage.getItem('token');
-        if (!storedToken) {
-            return false;
-        }
-        setToken(storedToken);
-
-        try {
-            const isValid = model.post({action: 'verifyToken'}); //Server side validation
-            return isValid;
-        } catch (e) {
-            console.error('Error decoding token:', e);
-            localStorage.removeItem('token');
-            return false;
-        }
-    }
-    
     const logout = async () => {
         localStorage.removeItem('token');
         setToken(null);
     }
 
-    return {isLoading, register:registerUser, login:loginUser, isLogged, logout}
+    return {isLoading, register:registerUser, login:loginUser, checkLoggedStatus, logout, token}
 }

@@ -13,10 +13,10 @@ switch($_SERVER['REQUEST_METHOD']){
             if ($request['action'] === 'register'){
                 registerUser($request['user']);
             }
-            if ($request['action'] === 'login') { unset($request['action']);
+            if ($request['action'] === 'login') {
                 loginUser($request['user']);
             }
-            if ($request['action'] == 'verifyToken') { unset($request['action']);
+            if ($request['action'] == 'verifyToken') {
                 $decodedToken = verifyToken();
                 sendResponse(valid:true, message: 'Token verified successfully', data: ['token' => $decodedToken]);
             }

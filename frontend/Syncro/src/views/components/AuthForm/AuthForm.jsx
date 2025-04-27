@@ -1,12 +1,11 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../../models/useUser";
 import useAuth from "../../../models/useAuth";
 import { useUserContext } from "../../../contexts/UserContext";
 
 export default function AuthForm() {
-    const { userInfo, logIn } = useUserContext();
-    const { register, login, isLogged } = useAuth();
+    const { userInfo, saveUserInContext } = useUserContext();
+    const { register, login } = useAuth();
     let navigate = useNavigate();
 
     const [ isRegistering, setIsRegistering ] = useState(false);
@@ -89,7 +88,7 @@ export default function AuthForm() {
         }
 
         const userData = {...userInfo, email: response.data.user.email, id: response.data.user.id, username: response.data.user.username, JWT: response.data.JWT}
-        logIn(userData);
+        saveUserInContext(userData);
         navigate('/dashboard');
     };
     

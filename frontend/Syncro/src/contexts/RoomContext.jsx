@@ -8,19 +8,23 @@ export const RoomContext = createContext(null);
 
 export function RoomContextProvider(props) {
     const { children } = props;
-    const {token} = useAuth();
-    const roomModel = useRoom(token);
-    const sectionModel = useSection(token);
-    const taskModel = useTask(token);
-    const [isRoomSelected, setIsRoomSelected] = useState(false);
+    const { token } = useAuth();
+    const { isLoading:roomIsLoading, model:roomModel } = useRoom(token);
+    //const sectionModel = useSection(token);
+    //const taskModel = useTask(token);
+    const [ roomInfo, setRoomInfo ] = useState(null);
+    const [ isRoomSelected, setIsRoomSelected ] = useState(false);
 
     useEffect(() => {
-        console.log("IN room context USEFF");
+        const loadRoomData = async () => {
+            console.log("Fetching room info... (WIP)");
+            setIsRoomSelected(true);
+        }
+
         if (isRoomSelected) {
-            console.log("---> Loading data");
             loadRoomData();
         }
-    }, [roomModel.room.id]);
+    }, [isRoomSelected]);
 
     const setRoomId = (id) => {
         console.log("setting id")
@@ -28,30 +32,15 @@ export function RoomContextProvider(props) {
         setIsRoomSelected(true);
     }
 
-    const loadRoomData = async () => {
-        let roomInfo = await roomModel.getRoomInfo(roomModel.room.id);
-        console.log("RESULTING INFO ", roomInfo);
-        let sections = await sectionModel.getRoomSections(roomInfo.id);
-        roomModel.setRoom({...roomInfo});
-        sectionModel.setRoomSections([...sections]);
-        console.log("Result: ", roomInfo, sections);
-
-        sections.forEach(async (section) => {
-            let tasks = await taskModel.getSectionTasks(section.id);
-            section.tasks = tasks;
-        });
-
-        sectionModel.setRoomSections([...sections]);
-        console.log("Result: ", roomInfo, sections);
-    }
+    
 
     return (
         <RoomContext.Provider 
             value={{
                 setRoomId,
-                room: {roomModel, roomInfo:roomModel.room, setRoomInfo:roomModel.setRoom},
-                section: {sectionModel, sections:sectionModel.roomSections, setSections:sectionModel.setRoomSections},
-                task: {taskModel, }
+                room: {roomModel, roomInfo:roomModel, setRoomInfo:roomModel},
+                //section: {sectionModel, sections:sectionModel.roomSections, setSections:sectionModel.setRoomSections},
+                //task: {taskModel, }
             }}
         >
             {children}

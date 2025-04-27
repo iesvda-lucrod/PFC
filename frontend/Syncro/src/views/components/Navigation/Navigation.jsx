@@ -2,30 +2,30 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { Icon_menu, Icon_home, Icon_user, Icon_phone, Icon_power } from "../../../assets/icons";
 import './Navigation.css';
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../../contexts/UserContext";
+import { useEffect, useState } from "react";
+import { UserContext, useUserContext } from "../../../contexts/UserContext";
+import useAuth from "../../../models/useAuth";
 
 export default function Navigation() {
+     
     const [ isOpen, setIsOpen ] = useState();
-    const { isLogged, logOut } = useContext(UserContext);
+    const { logout } = useAuth();
+    const { userInfo, removeUserFromContext } = useUserContext();
     const navigate = useNavigate();
 
     const triggerMenu = () => {
         setIsOpen(!isOpen);
     }
 
-    const logout = async () => {
+    const handleLogoutClick = async () => {
         localStorage.clear();
-        logOut();
+        logout();
+        removeUserFromContext();
         navigate('/auth');
     }
 
-    useEffect(() =>  {
-        console.log("Islogged:", isLogged);
-    }, [isLogged]);
-
     return (
-        <div className= {"Navigation "+(!isLogged ? 'hidden':'')}>
+        <div className= {"Navigation "+(!userInfo ? 'hidden':'')}>
             <div className="MenuControl">
                 <div className="MenuOppener">
                     <button onClick={triggerMenu}><Icon_menu/></button>
@@ -42,7 +42,7 @@ export default function Navigation() {
                 </div>
 
                 <div className="MenuRow">
-                    <button to={'/auth'} onClick={() => {logout()}}><Icon_power/></button>
+                    <button to={'/auth'} onClick={() => {handleLogoutClick()}}><Icon_power/></button>
                 </div>
             </div>
 

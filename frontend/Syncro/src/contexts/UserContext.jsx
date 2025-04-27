@@ -1,65 +1,25 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 export const UserContext = createContext(null);
 
 export function UserContextProvider(props) {
     const { children } = props;
-    const [ user, setUser ] = useState({
-        id: '',
-        email: '',
-        username: '',
-        JWT: '',
-        rooms: []
-    });
-    const [ isLogged, setIsLogged ] = useState(false);
+    const [ user, setUser ] = useState(null);
 
-    const loadData = () => {
-        try {
-            const localUser = JSON.parse(localStorage.getItem("userInfo"));
-            if (localUser) {
-                logIn(localUser);
-            } else {
-                logOut();
-            }
-        } catch (error) {
-            console.error("Error parsing localStorage data:", error);
-            logOut();
-        }
-    };
-    
-    useEffect(() => {
-        if (!user.id) {
-            console.log("USERCONTEXT --- Context not populated, loading from localstorage...");
-            loadData();
-        }
-    }, []);
-
-    useEffect(() => {
-        if (user.id !== "") { //Only update if userinfo is already present
-            console.log("USERCONTEXT --- setting userinfo to ", user);
-            localStorage.setItem('userInfo', JSON.stringify(user));
-        }
-    }, [user]);
-
-    const logOut = () => { //Return to initial value
-        setIsLogged(false);
-        setUser({
-            id: '',
-            email: '',
-            username: '',
-            JWT: '',
-            rooms: []
-        });
+    const saveUserInfo = (userInfo) => {
+        //console.log("Saving to localstorage:", userInfo);
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+        if (!userInfo.rooms) userInfo.rooms = [];
+        setUser({...userInfo});
     }
 
-    const logIn = (userInfo) => {
-        console.log("USERCONTEXT --- Localstorage contains user info:", userInfo);
-        setIsLogged(true);
-        setUser(prev => ({ ...prev, ...userInfo }));
+    const clearUserInfo = () => { //Return to initial value
+        localStorage.clear('userInfo');
+        setUser(null);
     }
 
     return (
-        <UserContext.Provider value={{userInfo:user, setUserInfo:setUser, isLogged:isLogged, logOut:logOut, logIn:logIn}}>
+        <UserContext.Provider value={{userInfo:user, removeUserFromContext:clearUserInfo, saveUserInContext:saveUserInfo}}>
             {children}
         </UserContext.Provider>
     );
@@ -67,9 +27,9 @@ export function UserContextProvider(props) {
 
 export function useUserContext() {
     const context = useContext(UserContext);
-        if (!context) {
-            throw new Error("useUserContext must be used within a UserContextProvider");
-        }
-        return context;
+    if (!context) {
+        throw new Error("useUserContext must be used within a UserContextProvider");
+    }
+    return context;
 }
 
