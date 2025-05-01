@@ -8,7 +8,7 @@ class UsersTable extends DBConnection{
     }
 
     public function getUserFromEmail($userData) {
-        $result = $this->filteredSelect(['email' => $userData['email']]);
+        $result = $this->selectByField('email', $userData['email']);
         return isset($result[0]) ? $result[0] : null;
     }
 
