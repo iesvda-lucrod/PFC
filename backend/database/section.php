@@ -13,7 +13,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "GET":
         //$table->selectAll();
         $result = $table->selectByField('room_id', $_GET['room_id']);
-        sendResponse(valid: true, message:'Sections fetched successfully');
+        sendResponse(valid: true, message:'Sections fetched successfully', data:$result);
         break;
 
     case "POST":

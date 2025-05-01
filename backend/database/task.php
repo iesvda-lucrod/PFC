@@ -13,8 +13,8 @@ verifyToken();
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
         //$table->selectAll();
-        $result = $table->selectByField('section_id', $_GET['section_id']);
-        sendResponse(valid:true, message:'Tasks fetched successfully', data:['tasks' => $result]);
+        $result = $table->filteredSelect($_GET, false);
+        sendResponse(valid:true, message:'Tasks fetched successfully', data:$result);
         break;
 
     case "POST":
