@@ -2,30 +2,61 @@ import './RoomPage.css';
 import { useRoomContext } from "../../../contexts/RoomContext";
 import RoomBar from "../../components/RoomBar/RoomBar";
 import RoomWorkspace from "../../components/RoomWorkspace/RoomWorkspace";
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import RoomDetailsPanel from '../../components/RoomDetailsPanel/RoomDetailsPanel';
+import useAuth from '../../../models/useAuth';
+import { useUserContext } from '../../../contexts/UserContext';
 
 export default function RoomPage() {
     const params = useParams();
+    const navigate = useNavigate();
+
+    const { token, checkLoggedStatus } = useAuth();
+    const { user:userInfo, saveUserInContext } = useUserContext();
+    
     const {
-        setRoomId,
-        room: {roomInfo},
-        section: {sections},
+        room: {roomInfo, setRoomInfo, roomModel},
     } = useRoomContext(params.id);
 
+    
+
+    const hasRunRef = useRef(false);
     useEffect(() => {
-        setRoomId(params.id);
-        //TODO check if room from useparams is from user, redirect if not
+        if (hasRunRef.current) return; //React Fast Refresh (only on dev mode) calls the function twice, this prevents it from happening for visual clarity
+        hasRunRef.current = true;
+        const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+        saveUserInContext(storedUserInfo);
+        
+        const isUserPartOfRoom = async () => {    
+            const response = await roomModel.getRoomUsers(params.id);
+            const memberIds = response.data.map((member) => (member.id));
+            return memberIds.includes(storedUserInfo.id);
+        }
+
+        (async () => {
+            console.log("Checking user authorization to room...");
+            if (!(await checkLoggedStatus() && await isUserPartOfRoom())) {
+                navigate('/auth');
+            } else {
+                console.log("Fetching room information...");
+                const response = await roomModel.getRoomInfo(params.id);
+                setRoomInfo({...roomInfo, ...response.data});
+            }
+        })();
     }, []);
     
 
     return (
         <div className="page RoomPage">
-            <div></div>
-            <RoomBar roomInfo={roomInfo}/>
+            {
+                roomInfo && <RoomBar roomInfo={roomInfo}/>
+            }
+            
             <div className='roomContent'>
-                <RoomWorkspace sections={sections}/>
+                {
+                //<RoomWorkspace sections={sections}/>
+                }
                 <RoomDetailsPanel></RoomDetailsPanel>
             </div>
             
