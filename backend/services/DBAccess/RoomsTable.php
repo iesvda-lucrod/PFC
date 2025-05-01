@@ -23,9 +23,9 @@ class RoomsTable extends DBConnection {
         return false;
     }
 
-    public function getRoomUsers($roomId) {
+    public function getRoomMembers($roomId) {
         $this->execPreparedQuery(
-            "SELECT users.id, users.username users.email FROM users JOIN users_rooms ON users.id = users_rooms.user_id WHERE users_rooms.room_id = :roomId",
+            "SELECT users.id, users.username, users.email FROM users JOIN users_rooms ON users.id = users_rooms.user_id WHERE users_rooms.room_id = :roomId",
             [':roomId' => $roomId]
         );
         $result = $this->getAllRows();

@@ -16,20 +16,21 @@ switch($_SERVER['REQUEST_METHOD']){
                 $result = $table->getUserRooms($_GET['user_id']);
                 sendResponse(valid:true, message:'User rooms fetched successfully', data: $result);
             }
-            if ($_GET['action'] === 'getRoomUsers') {
+            if ($_GET['action'] === 'getRoomMembers') {
                 unset($_GET['action']);
-                $result = $table->getRoomUsers($_GET['user_id']);
+                $result = $table->getRoomMembers($_GET['room_id']);
                 sendResponse(valid:true, message:'Room users fetched successfully', data: $result);
             }
         }
 
         if (isset($_GET['id'])) {
             $result = $table->selectByField('id', $_GET['id']);
-            sendResponse(reset($result));
+            sendResponse(valid:true, message:'Room information fetched successfully', data:reset($result));
         }
 
         $result = $table->selectAll();
-        sendResponse(['rooms'=> $result]);
+        sendResponse(valid:true, message:'Room information fetched successfully', data:$result);
+
         break;
 
     case "POST":
