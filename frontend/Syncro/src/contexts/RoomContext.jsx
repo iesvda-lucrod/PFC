@@ -9,22 +9,37 @@ export const RoomContext = createContext(null);
 export function RoomContextProvider(props) {
     const { children } = props;
     const { token } = useAuth();
-    const { isLoading:roomIsLoading, model:roomModel } = useRoom(token);
+
+    const { isLoading:roomIsLoading, model:roomModel }          = useRoom(token);
+    const { isLoading:sectionIsLoading, model:sectionModel }    = useSection(token);
+    const { isLoading:taskIsLoading, model:taskModel }          = useTask(token);
     
     const [ roomInfo, setRoomInfo ] = useState(null);
+    const [ sections, setSections ] = useState(null);
+    const [ tasks, setTasks ]       = useState(null);
 
-    const loadRoomInfo = async (id) => {
-        const roomData = await roomModel.getRoomInfo(id);
-        setRoomInfo(roomData);
+    const loadRoomInfo = async (roomId) => {
+        console.log("Fetching room info...");
+        const roomResponse = await roomModel.getRoomInfo(roomId);
+        setRoomInfo(roomResponse.data);
+        console.log("Fething room sections...");
+        const sectionResponse = await sectionModel.getRoomSections(roomId);
+        setSections(sectionResponse.data);
+
+        const sectionIds = sectionResponse.data.map((section) => section.id);
+        const taskResponse = await taskModel.getSectionTasks(sectionIds);
+        //let orderedTasks = taskResponse.data.map+(map) => {}
+
+        console.log("Room information:", roomResponse.data, "Sections:",sectionResponse.data, "Tasks:", taskResponse.data);
     }
 
     return (
-        <RoomContext.Provider 
+        <RoomContext.Provider
             value={{
                 loadRoomInfo,
-                room: {roomInfo, roomModel},
-                //section: {sectionModel, sections:sectionModel.roomSections, setSections:sectionModel.setRoomSections},
-                //task: {taskModel, }
+                room: {roomIsLoading, roomInfo, roomModel},
+                section: {sectionIsLoading, sections, sectionModel},
+                task: {taskIsLoading, tasks, taskModel}
             }}
         >
             {children}

@@ -31,5 +31,5 @@ export default function useRoom(token) {
         return result;
     }
 
-    return {isLoading, model:{getRoomInfo, getUserRooms, getRoomUsers: getRoomMembers, createRoom, deleteRoom, updateRoom}}
+    return {isLoading, model:{getRoomInfo, getUserRooms, getRoomMembers, createRoom, deleteRoom, updateRoom}}
 }

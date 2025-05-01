@@ -1,10 +1,8 @@
-import { useState } from "react";
 import Section from "../classes/Section";
 import useDatabase from "./useDatabase";
 
 export default function useSection(token) {
-    const model = useDatabase('section.php', token);
-    const [ roomSections, setRoomSections ] = useState([]);
+    const { isLoading, model } = useDatabase('section.php', token);
 
     const getRoomSections = async (roomId) => {
         console.log("fetching room sections: ", {room_id: roomId});
@@ -27,5 +25,5 @@ export default function useSection(token) {
         return result;
     }
 
-    return {roomSections, setRoomSections, getRoomSections, createSection, deleteSection, updateSection}
+    return {isLoading, model:{getRoomSections, createSection, deleteSection, updateSection}}
 }

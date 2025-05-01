@@ -3,8 +3,7 @@ import Task from "../classes/Task";
 import useDatabase from "./useDatabase";
 
 export default function useTask(token) {
-    const model = useDatabase('task.php', token);
-    const [ roomTasks, setRoomTasks ] = useState({});
+    const {isLoading, model} = useDatabase('task.php', token);
 
     const createTask = async (taskInfo) => {
         const payload = new Task(taskInfo);
@@ -24,9 +23,8 @@ export default function useTask(token) {
 
     const getSectionTasks = async (sectionId) => {
         let result = await model.get({section_id: sectionId});
-        setRoomTasks({...roomTasks, [sectionId]:result});
         return result;
     }
 
-    return {getSectionTasks, createTask, deleteTask, editTask}
+    return {isLoading, model:{getSectionTasks, createTask, deleteTask, editTask}}
 }
