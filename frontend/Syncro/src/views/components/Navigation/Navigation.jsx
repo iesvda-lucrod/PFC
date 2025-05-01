@@ -47,7 +47,7 @@ export default function Navigation() {
             </div>
 
             <div className={"MenuText "+(isOpen ? 'MenuOpen' : 'MenuClosed')}>
-                <div className="MenuRow"> <span>Menu</span> </div>
+                
                 <div className="MenuRow"> <span>Phone</span> </div>
                 <div className="MenuRow"> <span>Profile</span> </div>
                 <div className="MenuRow"> <span>Contact</span> </div>

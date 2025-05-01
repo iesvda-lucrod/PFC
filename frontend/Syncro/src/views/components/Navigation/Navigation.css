@@ -10,16 +10,15 @@
     transition: all 0.5s ease;
     overflow: hidden;
     display: flex;
+
+    background-color: var(--backgroundColor1);
 }
 .hidden {visibility: hidden; opacity: 0;}
 
 .MenuControl {
     width: 80px;
 }
-.MenuText {
-    overflow: hidden;
-    transition: all 0.5s ease;
-}
+
 
 .MenuOpen {
     width: 120px;
@@ -31,4 +30,12 @@
 .MenuRow {
     width: 100%;
     overflow: hidden;
+    display: flex;
+
+    align-items: center;
+}
+
+.MenuText {
+    overflow: hidden;
+    transition: all 0.5s ease;
 }
