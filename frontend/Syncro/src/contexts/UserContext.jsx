@@ -1,10 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const UserContext = createContext(null);
 
 export function UserContextProvider(props) {
     const { children } = props;
-    const [ user, setUser ] = useState(null);
+    const [ user, setUser ] = useState(() => {console.log("CONTEXT: setting userinfo to:", localStorage.getItem('userInfo')); return JSON.parse(localStorage.getItem('userInfo')) || null});
 
     const saveUserInfo = (userInfo) => {
         //console.log("Saving to localstorage:", userInfo);
@@ -27,6 +27,7 @@ export function UserContextProvider(props) {
 
 export function useUserContext() {
     const context = useContext(UserContext);
+
     if (!context) {
         throw new Error("useUserContext must be used within a UserContextProvider");
     }

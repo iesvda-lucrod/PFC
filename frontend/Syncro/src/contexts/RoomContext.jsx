@@ -10,35 +10,19 @@ export function RoomContextProvider(props) {
     const { children } = props;
     const { token } = useAuth();
     const { isLoading:roomIsLoading, model:roomModel } = useRoom(token);
-    //const sectionModel = useSection(token);
-    //const taskModel = useTask(token);
-    const [ roomInfo, setRoomInfo ] = useState(null);
-    const [ isRoomSelected, setIsRoomSelected ] = useState(false);
-
-    useEffect(() => {
-        const loadRoomData = async () => {
-            console.log("Fetching room info... (WIP)");
-            setIsRoomSelected(true);
-        }
-
-        if (isRoomSelected) {
-            loadRoomData();
-        }
-    }, [isRoomSelected]);
-
-    const setRoomId = (id) => {
-        console.log("setting id")
-        roomModel.setRoom({...roomModel.room, id: id});
-        setIsRoomSelected(true);
-    }
-
     
+    const [ roomInfo, setRoomInfo ] = useState(null);
+
+    const loadRoomInfo = async (id) => {
+        const roomData = await roomModel.getRoomInfo(id);
+        setRoomInfo(roomData);
+    }
 
     return (
         <RoomContext.Provider 
             value={{
-                setRoomId,
-                room: {roomModel, roomInfo:roomModel, setRoomInfo:roomModel},
+                loadRoomInfo,
+                room: {roomInfo, roomModel},
                 //section: {sectionModel, sections:sectionModel.roomSections, setSections:sectionModel.setRoomSections},
                 //task: {taskModel, }
             }}
