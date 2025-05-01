@@ -197,15 +197,24 @@ class DBConnection {
      * Select the $this->table's rows that match the specified filters
      * @param mixed $filters Associative array containing the filters (field => value, field2 = value2, ...)
      */
-    public function filteredSelect($filters) {
+    public function filteredSelect($filters, $strict = true) {
+        $argument = $strict ? ' AND ' : ' OR ';
         $filtersArray = [];
         $bindedParams = [];
-        foreach( $filters as $key => $value ) {
-            $filtersArray[] = "$key = :$key";
-            $bindedParams[":$key"] = $value;
+        foreach( $filters as $key => $values ) {
+            if (is_array($values)) {
+                foreach($values as $index => $value) {
+                    $filtersArray[] = "$key = :$key$index";
+                    $bindedParams[":$key$index"] = $value;
+                }
+            } else {
+                $filtersArray[] = "$key = :$key";
+                $bindedParams[":$key"] = $value;
+            }
         }
-        $queryFilters = implode(' AND ', $filtersArray);
+        $queryFilters = implode(" $argument ", $filtersArray);
 
+        //echo "SELECT $this->fields FROM $this->table WHERE $queryFilters \nBindings: ";var_dump($bindedParams);
         $this->execPreparedQuery(
             "SELECT $this->fields FROM $this->table WHERE $queryFilters",
             $bindedParams
