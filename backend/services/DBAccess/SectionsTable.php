@@ -24,7 +24,6 @@ class SectionsTable extends DBConnection {
 
     public function createSection($data) {
         try {
-
             $this->beginTransaction();
             $this->execPreparedQuery(
                 "SELECT MAX(position) as lastPosition FROM sections WHERE room_id = :room_id",
@@ -34,14 +33,18 @@ class SectionsTable extends DBConnection {
             $data['position'] = $lastPosition !== null ? $lastPosition+1 : 1;
             $result = $this->insert($data);
 
+            //Retrive data
+            $this->execPreparedQuery('SELECT * FROM sections WHERE id = LAST_INSERT_ID()');
+            $sectionData = $this->getNextRow();
             $this->commit();
-            return $result;
-        }
-        catch (Error $e) {
+
+            return $sectionData;
+
+        } catch (Error $e) {
             echo $e->getMessage();
             logError($e->getMessage());
             $this->rollBack();
-            return false;
+            throw $e;
         }
     }
 }

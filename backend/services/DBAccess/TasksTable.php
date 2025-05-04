@@ -33,7 +33,10 @@ class TasksTable extends DBConnection {
             $lastPosition = $this->getNextRow()['lastPosition'];
             $data['position'] = $lastPosition !== null ? $lastPosition+1 : 1;
             //var_dump($data);
-            $result = $this->insert($data);
+            $this->insert($data);
+
+            $this->execPreparedQuery("SELECT * FROM tasks WHERE id = LAST_INSERT_ID()");
+            $result = $this->getNextRow();
 
             $this->commit();
             return $result;
@@ -42,7 +45,7 @@ class TasksTable extends DBConnection {
             echo $e->getMessage();
             logError($e->getMessage());
             $this->rollBack();
-            return false;
+            throw $e;
         }
     }
 }
