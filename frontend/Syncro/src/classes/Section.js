@@ -3,7 +3,7 @@ export default class Section {
     id;
     name;
     color;
-    constructor(room_id, name, id = null) {
+    constructor(room_id, name, id = null, tasks = []) {
         this.room_id = room_id;
         this.name = name;
         this.id = id;
