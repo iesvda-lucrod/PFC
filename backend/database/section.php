@@ -18,11 +18,13 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "POST":
         $payload = handleContentType();
-        if ($table->hasDuplicates($payload['room_id'], $payload)) {sendResponse(valid:false, message:'Could not create section', errors:['name' => 'Section with same name already exists']);}
-        $result = $table->createSection($payload);
-        if (!$result) {sendResponse(valid: false, message: 'There was a problem creating the section', responseCode: 500);}
-        $newSectionList = $table->selectByField('room_id', $payload['room_id']);
-        sendResponse(valid:true, message:'Section created successfully', data:['sections' => $newSectionList]);
+        try {
+            if ($table->hasDuplicates($payload['room_id'], $payload)) sendResponse(valid:false, message:'Could not create section', errors:['name' => 'Section with same name already exists']);
+            $result = $table->createSection($payload);
+            sendResponse(valid:true, message:'Section created successfully', data:$result);
+        } catch (Error $e) {
+            sendResponse(valid: false, message: 'There was a problem creating the section', responseCode: 500);
+        }
         break;
 
     case "DELETE":

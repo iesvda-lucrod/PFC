@@ -19,10 +19,13 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "POST":
         $payload = handleContentType();
-        if ($table->hasDuplicates($payload['section_id'], $payload)) {sendResponse(valid:false, message:'Could not create the task', errors:'Task with same name already exists');}
-        $result = $table->createTask($payload);
-        if (!$result) {sendResponse(valid: false, message:'There was a problem inserting the task', responseCode:500);}
-        sendResponse(valid:true, message:'Task created successfully');
+        try {
+            if ($table->hasDuplicates($payload['section_id'], $payload)) sendResponse(valid:false, message:'Could not create the task', errors:'Task with same name already exists');
+            $result = $table->createTask($payload);
+            sendResponse(valid:true, message:'Task created successfully', data:$result);
+        } catch (Error $e) {
+            sendResponse(valid: false, message:'There was a problem inserting the task', responseCode:500);
+        }
         break;
 
     case "DELETE":
