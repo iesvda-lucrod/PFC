@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './RoomBar.css';
 import Modal from '../Modal/Modal';
 import SectionForm from '../SectionForm/SectionForm';
@@ -6,18 +6,12 @@ import SectionForm from '../SectionForm/SectionForm';
 export default function RoomBar({roomInfo}) {
     const [ openSectionForm, setOpenSectionForm ] = useState(false);
 
-    useEffect(() => {
-        console.log("rbaR", roomInfo);
-    }, [])
-
     return (
         <div className="RoomBar">
             <h2>{roomInfo.name}</h2>
             <button onClick={() => {setOpenSectionForm(true)}}>+ Section</button>
             <Modal isOpen={openSectionForm} setIsOpen={setOpenSectionForm}>
-                {
-                    //<SectionForm sectionData={{room_id: roomInfo.id}} submitAction={() => {setOpenSectionForm(false)}}/>
-                }
+                <SectionForm sectionData={{room_id: roomInfo.id}} submitAction={() => {setOpenSectionForm(false)}}/>
             </Modal>
 
             <button>Options</button>

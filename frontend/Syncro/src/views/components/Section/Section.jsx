@@ -1,30 +1,18 @@
 import { useState } from 'react';
 import './Section.css'
 import Task from '../Task/Task';
-import { useRoomContext } from '../../../contexts/RoomContext';
 import Modal from '../Modal/Modal';
 import TaskForm from '../TaskForm/TaskForm';
 
-export default function Section({ sectionInfo, tasks, onClose}) {
-    const [mockTask] = useState([
-        {id: 1, name: 'A'},
-        {id: 2, name: 'B'},
-        {id: 3, name: 'C'},
-    ]);
-    const {task: {taskModel}} = useRoomContext();
+export default function Section({ sectionInfo, onClose }) {
     const [ openTaskForm, setOpenTaskForm ] = useState(false);
-
-    const addTask = () => {
-        setOpenTaskForm(true);
-    }
-
 
     return (
         <div className="Section">
             <div className='header'>
-                Section id: {sectionInfo.id}
-                Section name: {sectionInfo.name}
-                <button onClick={() => {addTask()}}>+ task</button>
+                <span>Section id: {sectionInfo.id}</span>
+                <span>____Section name: {sectionInfo.name}</span>
+                <button onClick={() => setOpenTaskForm(true)}>+ task</button>
                 <button onClick={onClose}>X</button>
             </div>
 
@@ -34,10 +22,15 @@ export default function Section({ sectionInfo, tasks, onClose}) {
             
             
             <div>
-                {tasks.map((task) => {
+            {
+                sectionInfo.tasks.map((task) => {
+                    console.log("Creating task with ", task);
                     return <Task key={task.id} taskInfo={task}></Task>
-                })}
+                })
+            }
             </div>
+            
+            
         </div>
     );
 }

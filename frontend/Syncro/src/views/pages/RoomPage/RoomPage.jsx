@@ -13,11 +13,13 @@ export default function RoomPage() {
     const navigate = useNavigate();
 
     const { token, checkLoggedStatus } = useAuth();
-    const { user:userInfo, saveUserInContext } = useUserContext();
+    const { saveUserInContext } = useUserContext();
     
     const {
-        room: {roomInfo, setRoomInfo, roomModel},
-    } = useRoomContext(params.id);
+        loadRoomInfo,
+        room: {roomInfo, roomModel},
+        section: {sections}
+    } = useRoomContext(params.id, token);
 
     
 
@@ -28,8 +30,9 @@ export default function RoomPage() {
         const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
         saveUserInContext(storedUserInfo);
         
-        const isUserPartOfRoom = async () => {    
-            const response = await roomModel.getRoomUsers(params.id);
+        const isUserPartOfRoom = async () => {   
+            console.log("Checking user is a member of the room...") 
+            const response = await roomModel.getRoomMembers(params.id);
             const memberIds = response.data.map((member) => (member.id));
             return memberIds.includes(storedUserInfo.id);
         }
@@ -40,8 +43,7 @@ export default function RoomPage() {
                 navigate('/auth');
             } else {
                 console.log("Fetching room information...");
-                const response = await roomModel.getRoomInfo(params.id);
-                setRoomInfo({...roomInfo, ...response.data});
+                loadRoomInfo(params.id);
             }
         })();
     }, []);
@@ -55,7 +57,7 @@ export default function RoomPage() {
             
             <div className='roomContent'>
                 {
-                //<RoomWorkspace sections={sections}/>
+                    sections && <RoomWorkspace sections={sections}/>
                 }
                 <RoomDetailsPanel></RoomDetailsPanel>
             </div>

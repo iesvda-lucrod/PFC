@@ -22,11 +22,16 @@ export default function SectionForm({ sectionData = {}, editMode = false , submi
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (editMode) await sectionModel.updateSection({id: roomInfo.id, ...formData});
-        else await sectionModel.createSection(new Section(roomInfo.id, formData.name));
+        else {
+            let response = await sectionModel.createSection(new Section(roomInfo.id, formData.name));
+            let createdSection = {...response.data, tasks: []};
+            setSections(prev => {
+                let newMap = new Map(prev);
+                newMap.set(createdSection.id, createdSection)
+                return newMap;
+            });
+        }
 
-        let response = await sectionModel.getRoomSections(roomInfo.id);
-        console.log(sections);
-        setSections([...response]);
         if (submitAction) submitAction();
     }
 
