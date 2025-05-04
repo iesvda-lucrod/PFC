@@ -1,3 +1,4 @@
+import { RoomContextProvider } from "../../contexts/RoomContext";
 import AuthPage from "../../views/pages/AuthPage/AuthPage";
 import DashboardPage from "../../views/pages/DashboardPage/DashboardPage";
 import InfoPage from "../../views/pages/InfoPage/InfoPage";
@@ -12,7 +13,7 @@ const routesData = [
     {title: 'auth', path: '/auth', element: <AuthPage/>},
 
     {title: 'dashboard', path: '/dashboard', element: <DashboardPage/>},
-    {title: 'room', path: '/dashboard/:id', element: <RoomPage/>},
+    {title: 'room', path: '/dashboard/:id', element: <RoomContextProvider><RoomPage/></RoomContextProvider>},
 ];
 
 export default routesData;
