@@ -15,13 +15,9 @@ function App() {
     <div className='App'>
       <BrowserRouter>
       <UserContextProvider>
-      <RoomContextProvider>
-
         <Navigation/>
 
         <Router />
-
-      </RoomContextProvider>
       </UserContextProvider>
       </BrowserRouter>
 
