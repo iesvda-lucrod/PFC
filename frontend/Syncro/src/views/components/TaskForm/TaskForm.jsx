@@ -6,15 +6,18 @@ import Section from '../../../classes/Section';
 import Task from '../../../classes/Task';
 
 export default function TaskForm({ sectionId, sectionData: taskData = {}, editMode = false , submitAction}) {
-    const { 
+    const {
         task: {taskModel},
         section: {sections, setSections}
     } = useRoomContext();
 
-    //Selecting current section
-    const section = sections[sectionId];
-    const setSection = () => {setSections([...sections, sections[sectionId] = section])};
-
+    const setSection = (newSectionData) => {
+        setSections(prev => {
+            const newMap = new Map(prev);
+            newMap.set(sectionId, newSectionData);
+            return newMap;
+        });
+    };
 
     const [ formData, setFormData ] = useState({
         title: taskData.title || '',
@@ -28,14 +31,14 @@ export default function TaskForm({ sectionId, sectionData: taskData = {}, editMo
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Submitting", {sectionId, ...formData});
-        
         if (editMode) await taskModel.updateTask({id: sectionId, ...formData});
-        else await taskModel.createTask({sectionId, ...formData});
+        else {
+            let response = await taskModel.createTask(new Task({sectionId: sectionId, ...formData}));
 
-        let response = await taskModel.getRoomSections(sectionId);
-        console.log(response);
-        setSection();
+            let newTaskList = [...sections.get(sectionId).tasks, response.data];
+            setSection({...sections.get(sectionId), tasks: newTaskList});
+        }
+
         if (submitAction) submitAction();
     }
 

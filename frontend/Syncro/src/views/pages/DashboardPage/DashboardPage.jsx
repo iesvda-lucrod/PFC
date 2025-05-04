@@ -27,10 +27,9 @@ export default function DashboardPage() {
         };
 
         (async () => {
-            console.log("Checking...");
+            console.log("Checking user logged status...");
             if (!(await checkLoggedStatus())) navigate('/auth');
             else loadUserRooms();
-            
         })();
     }, [navigate]);
 
