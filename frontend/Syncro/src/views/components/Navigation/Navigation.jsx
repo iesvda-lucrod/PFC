@@ -27,7 +27,7 @@ export default function Navigation() {
     return (
         <div className= {"Navigation "+(!userInfo ? 'hidden':'')}>
             <div className="MenuControl">
-                <div className="MenuOppener">
+                <div className="MenuToggler">
                     <button onClick={triggerMenu}><Icon_menu/></button>
                 </div>
 
