@@ -29,10 +29,12 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "DELETE":
         $payload = handleContentType();
-        $result = $table->delete($payload['id']);
-        if (!$result) sendResponse(valid:false, message:'There was a problem deleting the section', responseCode:500);
-        $newRoomList = $table->selectByField('room_id', $payload['room_id']);
-        sendResponse(valid:true, message:'Section deleted successfully', data:['roomList' => $newRoomList]);
+        try {
+            $table->delete($payload['id']);
+            sendResponse(valid: true, message:'Task deleted successfully');
+        } catch (Error $e) {
+            sendResponse(valid:false, message:'There was a problem deleting the task', responseCode:500);
+        }
         break;
     
     case "PUT":

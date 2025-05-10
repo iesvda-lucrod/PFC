@@ -29,11 +29,23 @@ switch($_SERVER['REQUEST_METHOD']){
         break;
 
     case "DELETE":
-       
+        $payload = handleContentType();
+        try {
+            $table->delete($payload['id']);
+            sendResponse(valid: true, message:'Task deleted successfully');
+        } catch (Error $e) {
+            sendResponse(valid:false, message:'There was a problem deleting the task', responseCode:500);
+        }
         break;
     
     case "PUT":
-        
+        $payload = handleContentType();
+        try {
+            $table->update(['id' => $payload['id']], $payload);
+            sendResponse(valid: true, message:'Task updated successfully');
+        } catch (Error $e) {
+            sendResponse(valid:false, message:'There was a problem updating the task', errors:[$e->getTraceAsString()], responseCode:500);
+        }
         break;
     default: 
         sendResponse(valid:false, message:'Method not allowed', responseCode:405);
