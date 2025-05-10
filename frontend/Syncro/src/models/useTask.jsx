@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Task from "../classes/Task";
 import useDatabase from "./useDatabase";
 
@@ -10,11 +9,11 @@ export default function useTask(token) {
         let result = await model.post(taskInfo);
         return result;
     }
-    const deleteTask = async (targetId) => {
-        let result = await model.delete(targetId);
+    const deleteTask = async (target) => {
+        let result = await model.delete({id: target.id});
         return result;
     }
-    const editTask = async (taskInfo) => {
+    const updateTask = async (taskInfo) => {
         const payload = new Task(taskInfo);
         let result = await model.put(payload);
         return result;
@@ -25,5 +24,5 @@ export default function useTask(token) {
         return result;
     }
 
-    return {isLoading, model:{getSectionTasks, createTask, deleteTask, editTask}}
+    return {isLoading, model:{getSectionTasks, createTask, deleteTask, updateTask}}
 }

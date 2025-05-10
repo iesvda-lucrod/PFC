@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../models/useAuth";
-import { useUserContext } from "../../../contexts/UserContext";
+import { useUserContext } from "../../../contexts/UserContext/UserContext";
 
 export default function AuthForm() {
     const { userInfo, saveUserInContext } = useUserContext();

@@ -1,58 +1,65 @@
-.RoomDetailsPanel {
+.RoomSidePanel {
     position: absolute;
 
     height: 100%;
     width: 30%;
     right: -30%;
 
-    background-color: var(--background1);
+    background-color: var(--backgroundColor1);
 
     box-sizing: border-box;
     padding: 20px 40px;
-    
+
     display: flex;
     flex-direction: column;
 
-    transition:right 0.2s ease;
+    transition: right 0.2s ease;
 }
 
-.RoomDetailsPanel .toggleButton  {
+.RoomSidePanel .toggleButton {
     position: absolute;
     right: 100%;
     top: 50%;
 }
-.RoomDetailsPanel.open {
+
+.RoomSidePanel.open {
     right: 0;
 }
 
 
-.RoomDetailsPanel .header {
+.RoomSidePanel .header {
     border-bottom: 2px solid var(--mainColorDark);
 }
+
 .detailsTitle {
     background-color: var(--background2);
     border-radius: 20px;
     padding: 20px;
 }
 
-.RoomDetailsPanel .content {
-    
+.RoomSidePanel .content {
+
     background-color: var(--background2);
     border-radius: 20px;
     padding: 20px;
     flex: 1;
 }
+
 .detailsDescription {
     display: flex;
 }
 
-.RoomDetailsPanel .actions {
+.RoomSidePanel .actions {
     border-top: 2px solid var(--mainColorDark);
     display: flex;
     justify-content: center;
-    align-items: center;   
+    align-items: center;
 }
 
-.RoomDetailsPanel .actions > button {
+.RoomSidePanel .actions>button {
     flex: 1;
+}
+
+.test {
+    background-color: red;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { UserContext, useUserContext } from "../../../contexts/UserContext";
+import { UserContext, useUserContext } from "../../../contexts/UserContext/UserContext";
 
 import RoomForm from "../../components/RoomForm/RoomForm";
 import Modal from "../../components/Modal/Modal";

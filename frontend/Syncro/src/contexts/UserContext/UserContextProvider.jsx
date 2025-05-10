@@ -1,13 +1,15 @@
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
+import { UserContext } from "./UserContext";
 
-export const UserContext = createContext(null);
 
 export function UserContextProvider(props) {
     const { children } = props;
-    const [ user, setUser ] = useState(() => {console.log("CONTEXT: setting userinfo to:", localStorage.getItem('userInfo')); return JSON.parse(localStorage.getItem('userInfo')) || null});
+    const [ user, setUser ] = useState(() => {
+        console.log("CONTEXT: setting userinfo to:", localStorage.getItem('userInfo'));
+        return JSON.parse(localStorage.getItem('userInfo'));
+    });
 
     const saveUserInfo = (userInfo) => {
-        //console.log("Saving to localstorage:", userInfo);
         localStorage.setItem('userInfo', JSON.stringify(userInfo));
         if (!userInfo.rooms) userInfo.rooms = [];
         setUser({...userInfo});
@@ -24,13 +26,3 @@ export function UserContextProvider(props) {
         </UserContext.Provider>
     );
 }
-
-export function useUserContext() {
-    const context = useContext(UserContext);
-
-    if (!context) {
-        throw new Error("useUserContext must be used within a UserContextProvider");
-    }
-    return context;
-}
-

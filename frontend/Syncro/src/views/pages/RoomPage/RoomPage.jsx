@@ -1,12 +1,12 @@
 import './RoomPage.css';
-import { useRoomContext } from "../../../contexts/RoomContext";
+import { useRoomContext } from "../../../contexts/RoomContext/RoomContext";
 import RoomBar from "../../components/RoomBar/RoomBar";
 import RoomWorkspace from "../../components/RoomWorkspace/RoomWorkspace";
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import RoomDetailsPanel from '../../components/RoomDetailsPanel/RoomDetailsPanel';
+import RoomSidePanel from '../../components/RoomSidePanel/RoomSidePanel';
 import useAuth from '../../../models/useAuth';
-import { useUserContext } from '../../../contexts/UserContext';
+import { useUserContext } from '../../../contexts/UserContext/UserContext';
 
 export default function RoomPage() {
     const params = useParams();
@@ -20,8 +20,6 @@ export default function RoomPage() {
         room: {roomInfo, roomModel},
         section: {sections}
     } = useRoomContext(params.id, token);
-
-    
 
     const hasRunRef = useRef(false);
     useEffect(() => {
@@ -59,7 +57,7 @@ export default function RoomPage() {
                 {
                     sections && <RoomWorkspace sections={sections}/>
                 }
-                <RoomDetailsPanel></RoomDetailsPanel>
+                <RoomSidePanel></RoomSidePanel>
             </div>
             
         </div>

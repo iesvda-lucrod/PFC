@@ -1,36 +1,56 @@
-import { useState } from 'react';
 import './Section.css'
 import Task from '../Task/Task';
-import Modal from '../Modal/Modal';
+import { useRoomContext } from '../../../contexts/RoomContext/RoomContext';
 import TaskForm from '../TaskForm/TaskForm';
 
-export default function Section({ sectionInfo, onClose }) {
-    const [ openTaskForm, setOpenTaskForm ] = useState(false);
+export default function Section({ sectionInfo }) {
+    const {
+        section: { sectionModel },
+        sidePanel: { setPanel, setPanelOpen, resetPanel }
+        
+    }  = useRoomContext();
+
+    const panelInfo = {
+        header: sectionInfo.name,
+        content: [],
+        actions: [],
+    }
+    const triggerPanel = () => {
+        setPanel(panelInfo);
+    }
+
+    const removeSection = async (e) => {
+        e.stopPropagation();
+        console.log("truger delet", sectionInfo);
+        const result = await sectionModel.deleteSection(sectionInfo);
+        resetPanel();
+    }
+
+    const showTaskForm = (e) => {
+        e.stopPropagation();
+
+        setPanel({
+            header:"Create a task",
+            content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false}/>],
+            actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:() => {setPanelOpen(false)}}]
+        });
+    }
 
     return (
         <div className="Section">
-            <div className='header'>
-                <span>Section id: {sectionInfo.id}</span>
-                <span>____Section name: {sectionInfo.name}</span>
-                <button onClick={() => setOpenTaskForm(true)}>+ task</button>
-                <button onClick={onClose}>X</button>
+            <div className='header' onClick={triggerPanel}>
+                <h4>{sectionInfo.name}</h4>
+                <button onClick={(e) => showTaskForm(e)}>+</button>
+                <button onClick={(e) => removeSection(e)}>X</button>
             </div>
 
-            <Modal isOpen={openTaskForm} setIsOpen={setOpenTaskForm}>
-                <TaskForm sectionId={sectionInfo.id} submitAction={() => setOpenTaskForm(false)}></TaskForm>
-            </Modal>
-            
-            
             <div>
             {
                 sectionInfo.tasks.map((task) => {
-                    console.log("Creating task with ", task);
                     return <Task key={task.id} taskInfo={task}></Task>
                 })
             }
             </div>
-            
-            
         </div>
     );
 }

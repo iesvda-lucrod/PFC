@@ -1,18 +1,24 @@
-import { useState } from 'react';
 import './RoomBar.css';
-import Modal from '../Modal/Modal';
 import SectionForm from '../SectionForm/SectionForm';
+import { useRoomContext } from '../../../contexts/RoomContext/RoomContext';
 
 export default function RoomBar({roomInfo}) {
-    const [ openSectionForm, setOpenSectionForm ] = useState(false);
+    const {
+        sidePanel: { setPanel, resetPanel }
+    } = useRoomContext();
+
+    const showSectionForm = () => {
+            setPanel({
+                header:"Create a section",
+                content: [<SectionForm key='sectionForm' editMode={false}/>],
+                actions: [{key:'confirmSection', name:"Confirm", targetForm:'SectionForm'},{key:'cancelSection',name:'Cancel', function:resetPanel}]
+            });
+        }
 
     return (
         <div className="RoomBar">
             <h2>{roomInfo.name}</h2>
-            <button onClick={() => {setOpenSectionForm(true)}}>+ Section</button>
-            <Modal isOpen={openSectionForm} setIsOpen={setOpenSectionForm}>
-                <SectionForm sectionData={{room_id: roomInfo.id}} submitAction={() => {setOpenSectionForm(false)}}/>
-            </Modal>
+            <button onClick={showSectionForm}>+ Section</button>
 
             <button>Options</button>
             <div>Users</div>

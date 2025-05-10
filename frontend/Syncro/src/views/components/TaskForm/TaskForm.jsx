@@ -1,23 +1,15 @@
 import { useState } from 'react';
 import FormInput from '../FormInput/FormInput';
 import './TaskForm.css';
-import { RoomContext, useRoomContext } from '../../../contexts/RoomContext';
-import Section from '../../../classes/Section';
+import { useRoomContext } from '../../../contexts/RoomContext/RoomContext';
 import Task from '../../../classes/Task';
 
-export default function TaskForm({ sectionId, sectionData: taskData = {}, editMode = false , submitAction}) {
+export default function TaskForm({ sectionId, taskData = {}, editMode = false , submitAction}) {
     const {
         task: {taskModel},
-        section: {sections, setSections}
     } = useRoomContext();
 
-    const setSection = (newSectionData) => {
-        setSections(prev => {
-            const newMap = new Map(prev);
-            newMap.set(sectionId, newSectionData);
-            return newMap;
-        });
-    };
+    
 
     const [ formData, setFormData ] = useState({
         title: taskData.title || '',
@@ -31,24 +23,19 @@ export default function TaskForm({ sectionId, sectionData: taskData = {}, editMo
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (editMode) await taskModel.updateTask({id: sectionId, ...formData});
+        console.log("subbmitting, formdata: ", formData);
+        if (editMode) {console.log("updating, taskData", taskData, "formdata", formData, "result", {...taskData, ...formData}); await taskModel.updateTask({...taskData, ...formData});}
         else {
-            let response = await taskModel.createTask(new Task({sectionId: sectionId, ...formData}));
-
-            let newTaskList = [...sections.get(sectionId).tasks, response.data];
-            setSection({...sections.get(sectionId), tasks: newTaskList});
+            await taskModel.createTask(new Task({sectionId: sectionId, ...formData}));
         }
 
         if (submitAction) submitAction();
     }
 
     return (
-        <div className='TaskForm'>
-            <form onSubmit={(e) => {handleSubmit(e)}}>
-                <FormInput name='title' placeholder='Task title...' onChange={(e) => {handleChange(e)}}></FormInput>
-                <FormInput name='description' placeholder='Task description...' onChange={(e) => {handleChange(e)}}></FormInput>
-                <button type='submit'>Done</button>
-            </form>
-        </div>
-    );
+        <form id='TaskForm' onSubmit={(e) => {handleSubmit(e)}}>
+            <FormInput name='title' placeholder='Task title...' value={formData.title} onChange={(e) => {handleChange(e)}} ></FormInput>
+            <FormInput name='description' placeholder='Task description...' value={formData.description} onChange={(e) => {handleChange(e)}}></FormInput>
+        </form>
+    )
 }

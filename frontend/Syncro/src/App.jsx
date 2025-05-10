@@ -3,8 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './App.css'
 import './variables.css'
 import Router from './features/routing/Router';
-import { UserContextProvider } from './contexts/UserContext';
-import { RoomContextProvider } from './contexts/RoomContext';
+import { UserContextProvider } from './contexts/UserContext/UserContextProvider';
 
 //UI Component imports
 import Navigation from "./views/components/Navigation/Navigation";

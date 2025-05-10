@@ -1,4 +1,4 @@
-import { RoomContextProvider } from "../../contexts/RoomContext";
+import { RoomContextProvider } from "../../contexts/RoomContext/RoomContextProvider";
 import AuthPage from "../../views/pages/AuthPage/AuthPage";
 import DashboardPage from "../../views/pages/DashboardPage/DashboardPage";
 import InfoPage from "../../views/pages/InfoPage/InfoPage";
