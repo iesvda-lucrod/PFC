@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../models/useAuth";
 import { useUserContext } from "../../../contexts/UserContext/UserContext";
+import FormInput from "../FormInput/FormInput";
 
 export default function AuthForm() {
     const { userInfo, saveUserInContext } = useUserContext();
@@ -23,8 +24,8 @@ export default function AuthForm() {
         setValidationErrors({...validationErrors, [field.name]: ''});
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    const handleSubmit = (e) => {
+        e.preventDefault();
         {isRegistering ? registerUser() : loginUser()}
     }
     const validateData = () => {
@@ -95,33 +96,18 @@ export default function AuthForm() {
 
     return (
         <div>
-            <form onSubmit={() => {handleSubmit(event)}}>
-                <div className="inputGroup">
-                    <label htmlFor="email">Email:</label>
-                    <input id="email" name="email" type="text" placeholder="Enter email" onChange={() => {handleChange(event)}}/>
-                    <span className="errorMessage">{validationErrors.email}</span>
-                </div>
+            <form onSubmit={(e) => {handleSubmit(e)}}>
 
-                <div className="inputGroup">
-                    <label htmlFor="password">Password:</label>
-                    <input id="password" name="password" type="password" placeholder="Enter pass" onChange={() => {handleChange(event)}}/>
-                    <span className="errorMessage">{validationErrors.password}</span>
-                    </div>
+                <FormInput name="email" type="text" placeholder="Enter email" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.email}/>
+                <FormInput name="password" type="password" placeholder="Enter password" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.password}/>
 
-                {isRegistering ? (
+                {isRegistering && 
                 <>
-                <div className="inputGroup">
-                    <label htmlFor="confirmPassword">Confirm password:</label>
-                    <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm password" onChange={() => {handleChange(event)}}/>
-                    <span className="errorMessage">{validationErrors.confirmPassword}</span>
-                </div>
-                <div className="inputGroup">
-                    <label htmlFor="username">Username:</label>
-                    <input id="username" name="username" type="text" placeholder="Choose username" onChange={() => {handleChange(event)}}/>
-                    <span className="errorMessage">{validationErrors.username}</span>
-                </div>
+                <FormInput id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm password" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.confirmPassword}/>
+                <FormInput id="username" name="username" type="text" placeholder="Choose username" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.username}/>
                 </>
-                ) : <></>}
+                }
+                
                 <button type="submit">{isRegistering ? 'Register' : 'Log in'}</button>
             </form>
 
