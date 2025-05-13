@@ -31,7 +31,7 @@ export default function SectionForm({ sectionData = {}, editMode = false , submi
 
     return (
         <form id='SectionForm' onSubmit={(e) => {handleSubmit(e)}}>
-            <FormInput name={'name'} placeholder='Section name...' onChange={(e) => {handleChange(e)}}></FormInput>
+            <FormInput name={'name'} placeholder='Section name...' onChange={(e) => {handleChange(e)}}/>
         </form>
     );
 }

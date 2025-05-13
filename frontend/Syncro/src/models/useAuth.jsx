@@ -5,7 +5,7 @@ export default function useAuth() {
     const [ token, setToken ] = useState(() => {
         return localStorage.getItem('token');
     });
-    const { isLoading, model } = useDatabase('auth.php');
+    const { isLoading, model } = useDatabase('auth.php', token);
 
     const checkLoggedStatus = async () => {
         console.log("Checking user logged status...");
@@ -42,5 +42,33 @@ export default function useAuth() {
         setToken(null);
     }
 
-    return {isLoading, register:registerUser, login:loginUser, checkLoggedStatus, logout, token}
+    const sendVerificationEmail = async (userData) => {
+        let result = await model.post({action: 'sendVerificationEmail', user: {...userData}});
+        return result;
+    }
+
+    const verifyEmailCode = async (email, code) => {
+        let result = await model.post({action: 'verifyEmailCode', email: email, code: code});
+        return result;
+    }
+
+    const checkEmailVerified = () => {
+
+    }
+
+    return {
+        isLoading,
+
+        register:registerUser,
+        login:loginUser,
+        logout,
+
+        sendVerificationEmail,
+        verifyEmailCode,
+
+        checkLoggedStatus,
+        checkEmailVerified,
+
+        token
+    }
 }

@@ -22,13 +22,12 @@ export default function Section({ sectionInfo }) {
     const removeSection = async (e) => {
         e.stopPropagation();
         console.log("truger delet", sectionInfo);
-        const result = await sectionModel.deleteSection(sectionInfo);
+        const response = await sectionModel.deleteSection(sectionInfo);
         resetPanel();
     }
 
     const showTaskForm = (e) => {
         e.stopPropagation();
-
         setPanel({
             header:"Create a task",
             content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false}/>],

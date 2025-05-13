@@ -5,7 +5,7 @@ import { UserContext } from "./UserContext";
 export function UserContextProvider(props) {
     const { children } = props;
     const [ user, setUser ] = useState(() => {
-        console.log("CONTEXT: setting userinfo to:", localStorage.getItem('userInfo'));
+        //console.log("CONTEXT: setting userinfo to:", localStorage.getItem('userInfo'));
         return JSON.parse(localStorage.getItem('userInfo'));
     });
 

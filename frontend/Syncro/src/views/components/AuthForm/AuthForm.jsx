@@ -19,6 +19,7 @@ export default function AuthForm() {
     const [ validationErrors, setValidationErrors ] = useState({...formData});
 
     const handleChange = (event) => {
+        console.log("change", event.target.name, event.target.value);
         const field = event.target;
         setFormData({...formData, [field.name]: field.value});
         setValidationErrors({...validationErrors, [field.name]: ''});
@@ -60,6 +61,7 @@ export default function AuthForm() {
     }
 
     const registerUser = async () => {
+        console.log("fd", formData);
         let valErrors = validateRegisterData();
         if (Object.keys(valErrors).length > 0) {
             setValidationErrors(valErrors);
@@ -98,13 +100,13 @@ export default function AuthForm() {
         <div>
             <form onSubmit={(e) => {handleSubmit(e)}}>
 
-                <FormInput name="email" type="text" placeholder="Enter email" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.email}/>
-                <FormInput name="password" type="password" placeholder="Enter password" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.password}/>
+                <FormInput label="Email" name="email" type="text" placeholder="Enter email" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.email}/>
+                <FormInput label="Password" name="password" type="password" placeholder="Enter password" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.password}/>
 
                 {isRegistering && 
                 <>
-                <FormInput id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm password" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.confirmPassword}/>
-                <FormInput id="username" name="username" type="text" placeholder="Choose username" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.username}/>
+                <FormInput label='Confirm password' name="confirmPassword" type="password" placeholder="Confirm password" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.confirmPassword}/>
+                <FormInput label='Username' name="username" type="text" placeholder="Choose username" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.username}/>
                 </>
                 }
                 

@@ -5,7 +5,6 @@ export default function useTask(token) {
     const {isLoading, model} = useDatabase('task.php', token);
 
     const createTask = async (taskInfo) => {
-        console.log("sending", taskInfo);
         let result = await model.post(taskInfo);
         return result;
     }
