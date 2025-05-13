@@ -18,13 +18,15 @@ export default function RoomPage() {
     const {
         loadRoomInfo,
         room: {roomInfo, roomModel},
-        section: {sections}
+        section: {sections},
+        sidePanel: { resetPanel }
     } = useRoomContext(params.id, token);
 
     const hasRunRef = useRef(false);
     useEffect(() => {
         if (hasRunRef.current) return; //React Fast Refresh (only on dev mode) calls the function twice, this prevents it from happening for visual clarity
         hasRunRef.current = true;
+
         const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
         saveUserInContext(storedUserInfo);
         
@@ -41,10 +43,18 @@ export default function RoomPage() {
                 navigate('/auth');
             } else {
                 console.log("Fetching room information...");
-                loadRoomInfo(params.id);
+                await loadRoomInfo(params.id);
             }
         })();
     }, []);
+
+    const hasLoaded = useRef(false);
+    useEffect(() => {
+        if (roomInfo && !hasLoaded.current) {
+            resetPanel();
+            hasLoaded.current = true;
+        }
+    }, [roomInfo, resetPanel]);
     
 
     return (

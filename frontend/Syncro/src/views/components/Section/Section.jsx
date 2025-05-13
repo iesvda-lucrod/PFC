@@ -2,6 +2,8 @@ import './Section.css'
 import Task from '../Task/Task';
 import { useRoomContext } from '../../../contexts/RoomContext/RoomContext';
 import TaskForm from '../TaskForm/TaskForm';
+import { useEffect, useRef } from 'react';
+import SectionForm from '../SectionForm/SectionForm';
 
 export default function Section({ sectionInfo }) {
     const {
@@ -10,20 +12,35 @@ export default function Section({ sectionInfo }) {
         
     }  = useRoomContext();
 
-    const panelInfo = {
-        header: sectionInfo.name,
-        content: [],
-        actions: [],
-    }
     const triggerPanel = () => {
-        setPanel(panelInfo);
+        setPanel({
+            header: sectionInfo.name,
+            content: sectionInfo.description,
+            actions: [{key:'editSection',name:"Edit", function:editSection}],
+        });
     }
+    
+    const firstLoad = useRef(true);
+    useEffect(() => {
+        console.log("SECTIONINFO CHANGED");
+        if (firstLoad.current) firstLoad.current = false;
+        else triggerPanel();
+    }, [sectionInfo.name]); //TODO this works, but need to update everytime
+
 
     const removeSection = async (e) => {
         e.stopPropagation();
-        console.log("truger delet", sectionInfo);
         const response = await sectionModel.deleteSection(sectionInfo);
         resetPanel();
+    }
+
+    async function editSection () {
+        const newPanelData = {
+            header: "Editing task",
+            content: [<SectionForm key='sectionForm' sectionData={sectionInfo} editMode={true}/>],
+            actions: [{key:'confirmsECTION', name:"Confirm", targetForm:'SectionForm'},{key:'cancelTask',name:'Cancel', function:triggerPanel}]
+        }
+        setPanel(newPanelData);
     }
 
     const showTaskForm = (e) => {
@@ -39,15 +56,18 @@ export default function Section({ sectionInfo }) {
         <div className="Section">
             <div className='header' onClick={triggerPanel}>
                 <h4>{sectionInfo.name}</h4>
-                <button onClick={(e) => showTaskForm(e)}>+</button>
-                <button onClick={(e) => removeSection(e)}>X</button>
+                <button type='button' aria-label="Add task"     onClick={(e) => showTaskForm(e)}>+</button>
+                <button type='button' aria-label="Delete task"  onClick={(e) => removeSection(e)}>X</button>
             </div>
 
             <div>
-            {
+            {sectionInfo.tasks.length > 0 ? (
                 sectionInfo.tasks.map((task) => {
                     return <Task key={task.id} taskInfo={task}></Task>
                 })
+                ) : (
+                    <p>No tasks yet</p>
+                )
             }
             </div>
         </div>

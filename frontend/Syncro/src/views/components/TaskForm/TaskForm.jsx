@@ -9,8 +9,6 @@ export default function TaskForm({ sectionId, taskData = {}, editMode = false , 
         task: {taskModel},
     } = useRoomContext();
 
-    
-
     const [ formData, setFormData ] = useState({
         title: taskData.title || '',
         description: taskData.description || '',
@@ -24,7 +22,10 @@ export default function TaskForm({ sectionId, taskData = {}, editMode = false , 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("subbmitting, formdata: ", formData);
-        if (editMode) {console.log("updating, taskData", taskData, "formdata", formData, "result", {...taskData, ...formData}); await taskModel.updateTask({...taskData, ...formData});}
+        if (editMode) {
+            console.log("updating, taskData", taskData, "formdata", formData, "result", {...taskData, ...formData});
+            await taskModel.updateTask({...taskData, ...formData});
+        }
         else {
             await taskModel.createTask(new Task({sectionId: sectionId, ...formData}));
         }
@@ -34,8 +35,8 @@ export default function TaskForm({ sectionId, taskData = {}, editMode = false , 
 
     return (
         <form id='TaskForm' onSubmit={(e) => {handleSubmit(e)}}>
-            <FormInput name='title' placeholder='Task title...' value={formData.title} onChange={(e) => {handleChange(e)}} ></FormInput>
-            <FormInput name='description' placeholder='Task description...' value={formData.description} onChange={(e) => {handleChange(e)}}></FormInput>
+            <FormInput label='Title' name='title' placeholder='Task title...' value={formData.title} onChange={(e) => {handleChange(e)}} ></FormInput>
+            <FormInput label='Description' name='description' placeholder='Task description...' value={formData.description} onChange={(e) => {handleChange(e)}}></FormInput>
         </form>
     )
 }

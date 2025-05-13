@@ -8,7 +8,7 @@ export default function RoomSidePanel() {
     }  = useRoomContext();
 
     useEffect(() => {
-        console.log("current content", panelInfo);
+        console.log("Sidepanel content changed:", panelInfo);
     }, [panelInfo]);
 
     return (
@@ -22,7 +22,7 @@ export default function RoomSidePanel() {
 
             <div className="content">
                 {panelInfo.content}
-                {/*<div className='detailsDescription'></div>*/}
+                {/*TODO <div className='detailsDescription'></div>*/}
             </div>
 
             <div className="actions">
