@@ -1,11 +1,12 @@
 import useDatabase from "./useDatabase";
 
-export function useUser() {
-    const model = useDatabase('user.php');
+export default function useUser(token) {
+    const {isLoading, model} = useDatabase('user.php', token);
 
-    const getUserRooms = async (user_id) => {
-        return await model.get({action: 'getUserRooms', user_id});
+    const getUserInfo = async(userData) => {
+        let result = await model.get({email: userData.email});
+        return result;
     }
 
-    return {getUserRooms, ...model}
+    return {model: { getUserInfo }}
 }
