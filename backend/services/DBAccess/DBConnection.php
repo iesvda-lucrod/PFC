@@ -212,11 +212,12 @@ class DBConnection {
                 $bindedParams[":$key"] = $value;
             }
         }
-        $queryFilters = implode(" $argument ", $filtersArray);
+
+        $queryFilters = $filters ? 'WHERE '.implode(" $argument ", $filtersArray):'';
 
         //echo "SELECT $this->fields FROM $this->table WHERE $queryFilters \nBindings: ";var_dump($bindedParams);
         $this->execPreparedQuery(
-            "SELECT $this->fields FROM $this->table WHERE $queryFilters",
+            "SELECT $this->fields FROM $this->table $queryFilters",
             $bindedParams
         );
         return $this->getAllRows();
