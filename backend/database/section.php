@@ -38,7 +38,13 @@ switch($_SERVER['REQUEST_METHOD']){
         break;
     
     case "PUT":
-        
+        $payload = handleContentType();
+        try {
+            $table->update(['id' => $payload['id']], $payload);
+            sendResponse(valid: true, message:'Section updated successfully');
+        } catch (\Throwable $th) {
+            sendResponse(valid:false, message:'There was a problem updating the task', responseCode:500);
+        }
         break;
     default: 
         sendResponse(valid:false, message:'Method not allowed', responseCode:405);
