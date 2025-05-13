@@ -9,6 +9,12 @@ $token = verifyToken();
 
 $table = new UsersTable();
 switch($_SERVER['REQUEST_METHOD']){
+    case "GET": 
+        if (!isset($_GET['email'])) sendResponse(valid:false, message:"Invalid request", responseCode:400);
+        $userData = $table->getUserFromEmail($_GET);
+        unset($userData['password']);
+        sendResponse(valid:true, message:'User information retrieved successfully', data:$userData);
+        break;
     case "DELETE":
         $payload = handleContentType();
         $result = $table->delete($payload['user']['id']);

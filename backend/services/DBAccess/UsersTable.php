@@ -11,6 +11,13 @@ class UsersTable extends DBConnection{
         $result = $this->selectByField('email', $userData['email']);
         return isset($result[0]) ? $result[0] : null;
     }
+    public function getFullUserFromEmail($userData) {
+        $this->fields = '*';
+        $result = $this->getUserFromEmail($userData);
+        $this->fields = 'id, email, password, username';
+        return $result;
+    }
+
 
     public function getUserCredentials($userData) {
         $this->fields = 'id, email, username, password';
@@ -30,7 +37,7 @@ class UsersTable extends DBConnection{
             return $result;
         } catch (PDOException $e) {
             $this->rollback();
-            return null;
+            throw $e;
         }
     }
     

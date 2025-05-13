@@ -3,13 +3,13 @@ require_once __DIR__ ."/../../config.php";
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-function generateJWT($userData) {
-    $userPayload = $userData !== null ? ['user' => $userData] : [];
+function generateJWT($contents) {
+    $aditionalContents = ($contents !== null) ? ['user' => $contents] : [];
     $payload = [
         'iss' => 'Syncro',
         'iat' => time(),
         'exp' => (time()+60*60), //1h login time
-    ] + $userPayload;
+    ] + $aditionalContents;
 
     $jwt = JWT::encode($payload, $_SERVER['JWT_KEY'], 'HS256');
     return $jwt;
