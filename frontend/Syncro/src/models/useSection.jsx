@@ -20,7 +20,7 @@ export default function useSection(token) {
         return result;
     }
     const updateSection = async (sectionInfo) => {
-        const payload = new Section(sectionInfo);
+        const payload = new Section({...sectionInfo});
         let result = await model.put(payload);
         return result;
     }
