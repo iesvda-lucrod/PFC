@@ -46,7 +46,7 @@ export function RoomContextProvider(props) {
 
         setRoomInfo(roomResponse.data);
         setSections(sectionResponse.data);
-        setTasks(taskResponse.data); //TODO do i need this?
+        setTasks(taskResponse.data);
 
         console.log("Room information:", roomResponse.data, "Sections:",sectionResponse.data, "Tasks:", taskResponse.data);
     }
@@ -65,6 +65,7 @@ export function RoomContextProvider(props) {
         });
     };
     const resetPanel = () => {
+        console.log("Setting panel to default");
         sidePanelFunctions.setPanel({
             header: roomInfo.name,
             content: [roomInfo.description],
@@ -105,9 +106,11 @@ export function RoomContextProvider(props) {
             return response;
         }
     
-        const updateSection = async (target, sectionData) => {
-            const response = await sectionCRUDModel.updateSection(target.id, sectionData);
-            if (response.valid) setIndividualSection(target.id, sectionData);
+        const updateSection = async (sectionData) => {
+            console.log("section updated", sectionData);
+            const response = await sectionCRUDModel.updateSection(sectionData);
+            if (response.valid) setIndividualSection(sectionData.id, sectionData);
+            
             return response;
 
         }
