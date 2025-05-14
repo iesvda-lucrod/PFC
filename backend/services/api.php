@@ -43,7 +43,7 @@ function sendResponse($valid, $message, $data = null, $errors = null, $responseC
         'message'=> $message,
     ]
     + (isset($data) ? ['data'=> $data] : [])
-    + ($valid ? ['warnings' => $errors || []] : ['errors'=> $errors || []]);
+    + ($valid ? ['warnings' => $errors] : ['errors'=> $errors]);
 
     http_response_code($responseCode);
     echo json_encode($response);
