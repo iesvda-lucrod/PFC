@@ -1,34 +1,17 @@
 <?php
-    /**
-     * GET --> SELECT
-     * POST --> INSERT
-     * PUT --> UPDATE
-     * DELETE --> DELETE
-     */
+$token = verifyToken();
 
-    function parseImage(){
-        $imgInfo = file_get_contents('php://input');
-        return json_decode($imgInfo, true);
-    }
-
-    $IMAGE_FOLDER_URL = __DIR__ . '/../../assets/images/products/';
-    //echo $IMAGE_FOLDER_URL;
+    $IMAGE_FOLDER_URL = __DIR__ . '/../../assets/images/';
 
     switch($_SERVER['REQUEST_METHOD']){
         case "POST":
-            $imgInfo = parseImage();
-
-            $result = file_put_contents($IMAGE_FOLDER_URL.$imgInfo['imgUrl'], base64_decode($imgInfo['imgData']));
-            if ($result === false) {
-                http_response_code(500);
-                echo json_encode(["message" => "Failed to write the file"]);
-                exit;
-            }
-            echo json_encode($result); //this returns the number of bytes that were written
+            $img_temp_path = $_FILES['image']['tmp_path'];
+            $img_name = $_FILES['image']['tmp_path'];
+            move_uploaded_file($img_temp_path, $IMAGE_FOLDER_URL.$img_name);
+            sendResponse(valid:true);
             break;
 
         case "DELETE":
-            $imgInfo = parseImage();
             $result = unlink($IMAGE_FOLDER_URL.$imgInfo['imgUrl']);
             if (!$result) {
                 http_response_code(500);
@@ -36,6 +19,9 @@
                 exit;
             }
             echo json_encode($result); //this returns true
+            break;
+        case "PUT":
+
             break;
     }
     exit;
