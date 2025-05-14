@@ -2,7 +2,7 @@
 
 require_once __DIR__."/../services/api.php";
 require_once __DIR__."/../services/DBAccess/UsersTable.php";
-require_once __DIR__."/../services/emailer/mailer.php";
+require_once __DIR__."/../services/emailer/emailer.php";
 
 handleCorsRequest();
 
@@ -28,7 +28,12 @@ switch($_SERVER['REQUEST_METHOD']){
             if ($request['action'] == 'verifyEmailCode') {
                 verifyEmailCode($request['email'], $request['code']);
             }
-            if ($request['action'] === 'verifyEmail') {}
+            if ($request['action'] === 'isEmailVerified') {
+                $table = new UsersTable();
+                $result = $table->isUserEmailVerified($request['email']);
+                sendResponse(valid:$result, message:'User email verification has been checked');
+            }
+            
         }
         break;
     default:
@@ -61,7 +66,8 @@ function loginUser($data) {
         if (!isRegistered($table, $data)) {
             sendResponse(valid: false, message:'Could not login', errors: ['email' => 'This email is not registered']);
         }
-        $userData = $table->getUserFromEmail($data);
+        $userData = $table->getUnprotectedUserFromEmail($data);
+        
         if ($data['password'] !== $userData['password']) {
             sendResponse(valid: false, message:'Could not login', errors: ['email' => 'Incorrect password']);
         }
@@ -77,7 +83,7 @@ function loginUser($data) {
 
 //Check if the user is present in the database
 function isRegistered($table, $data) {
-    $duplicates = $table->getUserFromEmail($data);
+    $duplicates = $table->getUserFromEmail($data['email']);
     if ($duplicates) {
         return true;
     }
@@ -99,7 +105,7 @@ function verifyEmailCode($userEmail, $inputCode) {
         sendResponse(valid:false, message:'There was an error verifying the email', errors:['email' => 'Email not registered']);
     }
 
-    $targetUserInfo = $table->getFullUserFromEmail(['email' => $userEmail]);
+    $targetUserInfo = $table->getUnprotectedUserFromEmail(['email' => $userEmail]);
     $verificationCode = $targetUserInfo['verification_code'];
     $codeExpiration = $targetUserInfo['verification_code_expiration'];
     

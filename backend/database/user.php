@@ -2,7 +2,7 @@
 
 require_once __DIR__."/../services/api.php";
 require_once __DIR__."/../services/DBAccess/UsersTable.php";
-require_once __DIR__."/../services/emailer/mailjet.php";
+require_once __DIR__."/../services/emailer/emailer.php";
 
 handleCorsRequest();
 $token = verifyToken();
@@ -11,8 +11,7 @@ $table = new UsersTable();
 switch($_SERVER['REQUEST_METHOD']){
     case "GET": 
         if (!isset($_GET['email'])) sendResponse(valid:false, message:"Invalid request", responseCode:400);
-        $userData = $table->getUserFromEmail($_GET);
-        unset($userData['password']);
+        $userData = $table->getUserFromEmail($_GET['email']);
         sendResponse(valid:true, message:'User information retrieved successfully', data:$userData);
         break;
     case "DELETE":
