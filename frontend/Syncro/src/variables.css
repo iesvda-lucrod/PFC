@@ -3,12 +3,16 @@
 /* Custom variables */
 :root {
     --backgroundColor1: #eeeeee;
-    --backgroundColor2: #e0e0e0;
+    --backgroundColor2: #d0d0d0;
     --backgroundColor3: ;
 
     --mainColor1: #2070f0;
     --mainColorLight: #2090f0;
     --mainColorDark: #2050f0;
+
+
+    --warningColor: #f0f0a0;
+    --errorColor: #f07070;
 
     --debug1: #f000f0;
     --debug2: #a000a0;
