@@ -3,15 +3,17 @@ import { useUserContext } from "../../../contexts/UserContext/UserContext";
 import { useEffect, useState } from "react";
 import useAuth from "../../../models/useAuth";
 import useUser from "../../../models/useUser";
-import ProfileForm from "./components/ProfileForm/ProfileForm";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import FormInput from "../../components/FormInput/FormInput";
+import "./ProfilePage.css";
 
 export default function ProfilePage() {
-    const { token, checkLoggedStatus } = useAuth();
+    const { token, isLoading:isLoadingAuth, checkLoggedStatus, sendVerificationEmail,  checkEmailVerified} = useAuth();
     const { model:userModel } = useUser(token);
 
     const { userInfo } = useUserContext();
     const [ fullUserInfo, setFullUserInfo ] = useState(null);
-    const [ tempUserInfo, setTempUserInfo ] = useState({...fullUserInfo});
+    const [ tempUserInfo, setTempUserInfo ] = useState(null);
 
     const [ editMode, setEditMode ] = useState(false);
 
@@ -21,7 +23,10 @@ export default function ProfilePage() {
 
         const loadUserInfo = async () => {
             const response = await userModel.getUserInfo(userInfo);
-            setFullUserInfo(response.data);
+            const isVerified = await checkEmailVerified(userInfo.email);
+            console.log("userdata fetched: ", response.data)
+            setFullUserInfo({...response.data, verified: isVerified});
+            setTempUserInfo({...response.data, verified: isVerified});
         }
 
         (async () => {
@@ -31,29 +36,30 @@ export default function ProfilePage() {
         })();
     }, []);
 
-    const applyChanges = () => {
-        console.log("aaaa");
-    }
-
     return (
         <div className="ProfilePage">
-            <h3>Profile information</h3>
+            <div className="ProfileCard">
             {
-                fullUserInfo && 
-                <>
-                <ProfileForm userData={fullUserInfo} editMode={editMode}></ProfileForm>
-                {
-                    editMode ?
-                    <>
-                    <button onClick={applyChanges}>Confirm changes</button>
-                    <button onClick={() => setEditMode(false)}>Cancel changes</button>
-                    </>
-                    :
-                    <button onClick={() => setEditMode(true)}>Edit</button>
-                }
-                </>
-                
+                fullUserInfo ? 
+                <div>
+                    <p>Username: {fullUserInfo.username}</p>
+                    <p>Email: {fullUserInfo.email}</p>
+
+                    {
+                        !fullUserInfo.verified &&
+                        <div className="emailNotVerifiedWarning">
+                            <span>This email is not verified, email verification is needed for collaborative rooms</span>
+                            <button>Send verification email</button>
+                        </div>
+                    }
+
+                    <button>Change password</button>
+
+                </div>
+                :
+                <LoadingSpinner /> 
             }
+            </div>
         </div>
     );
 }

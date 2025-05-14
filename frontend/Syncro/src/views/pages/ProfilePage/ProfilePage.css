@@ -1,0 +1,18 @@
+.ProfilePage{}
+
+.ProfileCard {
+    border: 2px solid var(--mainColor1);
+    border-radius: 20px;
+
+    max-width: 500px;
+    margin: auto;
+
+    padding: 20px;
+}
+
+.emailNotVerifiedWarning {
+    background-color: var(--warningColor);
+    border: 1px solid var(--mainColorDark);
+    border-radius: 10px;
+    padding: 10px;
+}
