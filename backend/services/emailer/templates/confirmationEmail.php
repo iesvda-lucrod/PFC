@@ -27,7 +27,7 @@ function generateVerificationEmailTemplate($userData, $code) {
           font-weight:bold;
           text-decoration:none;
           "
-          href="http://{$_ENV['SERVER_URL']}/verify-email?email={$userData['email']}&code={$code}">Confirm email</a></p>
+          href="http://{$_ENV['SERVER_URL']}/verify-email?email={$userData['email']}&code={$code}">http://{$_ENV['SERVER_URL']}/verify-email?email={$userData['email']}&code={$code}</a></p>
           <p>With a confirmed email you will be able to collaborate with others in group rooms!</p>
       </div>
       EOD
