@@ -33,8 +33,10 @@ export default function useAuth() {
     }
     const loginUser = async (userData) => {
         let result = await model.post({action: 'login', user: {...userData}});
-        localStorage.setItem('token', result.data.JWT);
-        setToken(result.data.JWT);
+        if (result.valid) {
+            localStorage.setItem('token', result.data.JWT);
+            setToken(result.data.JWT);
+        }
         return result;
     }
     const logout = async () => {
@@ -52,8 +54,9 @@ export default function useAuth() {
         return result;
     }
 
-    const checkEmailVerified = () => {
-
+    const checkEmailVerified = async (userEmail) => {
+        let result = await model.post({action: 'isEmailVerified', email: userEmail});
+        return result.valid;
     }
 
     return {
