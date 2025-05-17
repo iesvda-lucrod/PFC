@@ -35,6 +35,7 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "POST":
         $payload = handleContentType();
+        //TODO implement an openSession/Socket and a getSessionStatus to connect to the socket or create it
 
         if ($table->hasDuplicates($payload['user_id'], $payload['room'])) {sendResponse(valid:false, message:'There was a problem creating the room', errors: ['name' => 'Room with same name already exists']);}
         $roomInfo = $table->createRoom($payload);

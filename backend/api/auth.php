@@ -66,15 +66,14 @@ function loginUser($data) {
         if (!isRegistered($table, $data)) {
             sendResponse(valid: false, message:'Could not login', errors: ['email' => 'This email is not registered']);
         }
-        $userData = $table->getUnprotectedUserFromEmail($data);
-        
-        if ($data['password'] !== $userData['password']) {
+        $storedUserData = $table->getUnprotectedUserFromEmail($data['email']);
+        if ($data['password'] !== $storedUserData['password']) {
             sendResponse(valid: false, message:'Could not login', errors: ['email' => 'Incorrect password']);
         }
-        unset($userData['password']);
+        unset($storedUserData['password']);
     
-        $jwt = generateJWT($userData);
-        sendResponse(valid:true, message:'Login successful', data: ['user' => $userData, 'JWT'=> $jwt]);
+        $jwt = generateJWT($storedUserData);
+        sendResponse(valid:true, message:'Login successful', data: ['user' => $storedUserData, 'JWT'=> $jwt]);
     } catch (\Throwable $th) {
         logError($th->getMessage());
         sendResponse(valid:false, message:'There was an error in the server', responseCode:500);
@@ -105,7 +104,7 @@ function verifyEmailCode($userEmail, $inputCode) {
         sendResponse(valid:false, message:'There was an error verifying the email', errors:['email' => 'Email not registered']);
     }
 
-    $targetUserInfo = $table->getUnprotectedUserFromEmail(['email' => $userEmail]);
+    $targetUserInfo = $table->getUnprotectedUserFromEmail($userEmail);
     $verificationCode = $targetUserInfo['verification_code'];
     $codeExpiration = $targetUserInfo['verification_code_expiration'];
     
