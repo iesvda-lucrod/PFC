@@ -33,7 +33,6 @@ switch($_SERVER['REQUEST_METHOD']){
                 $result = $table->isUserEmailVerified($request['email']);
                 sendResponse(valid:$result, message:'User email verification has been checked');
             }
-            
         }
         break;
     default:

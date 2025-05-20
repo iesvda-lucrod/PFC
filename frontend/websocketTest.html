@@ -8,7 +8,7 @@
 <body>
     
     <script>
-    const ws = new WebSocket("ws://127.0.0.1:9503");
+    const ws = new WebSocket("ws://127.0.0.1:9502");
 
     ws.onopen = function() {
         console.log("Connected to WebSocket server");
@@ -20,6 +20,7 @@
     };
 
     ws.onclose = function() {
+        //ws.send
         console.log("WebSocket connection closed");
     };
 

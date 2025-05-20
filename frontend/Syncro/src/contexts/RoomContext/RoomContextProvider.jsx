@@ -5,6 +5,7 @@ import useTask from "../../models/useTask";
 import useAuth from "../../models/useAuth";
 import useSidePanel from "../../models/useSidePanel";
 import { RoomContext } from "./RoomContext";
+import useWebSocket from "../../models/useWebSocket";
 
 
 export function RoomContextProvider(props) {
@@ -15,6 +16,8 @@ export function RoomContextProvider(props) {
     const { isLoading:sectionIsLoading, model:sectionCRUDModel }    = useSection(token);
     const { isLoading:taskIsLoading, model:taskCRUDModel }          = useTask(token);
     const sidePanelFunctions = useSidePanel();
+
+    const { newMessageReceived, sendJsonMessage } = useWebSocket();
 
     const [ roomInfo, setRoomInfo ] = useState(null);
     const [ sections, setSections ] = useState(null);
