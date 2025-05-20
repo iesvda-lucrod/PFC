@@ -19,7 +19,8 @@ export default function RoomPage() {
         loadRoomInfo,
         room: {roomInfo, roomModel},
         section: {sections},
-        sidePanel: { resetPanel }
+        sidePanel: { resetPanel },
+        webSocket: {initWebSocket, sendJsonMesage}
     } = useRoomContext(params.id, token);
 
     const hasRunRef = useRef(false);
@@ -44,6 +45,7 @@ export default function RoomPage() {
             } else {
                 console.log("Fetching room information...");
                 await loadRoomInfo(params.id);
+                
             }
         })();
     }, []);

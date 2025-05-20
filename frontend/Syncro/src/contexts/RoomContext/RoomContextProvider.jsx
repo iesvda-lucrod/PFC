@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSection from "../../models/useSection";
 import useRoom from "../../models/useRoom";
 import useTask from "../../models/useTask";
@@ -17,7 +17,13 @@ export function RoomContextProvider(props) {
     const { isLoading:taskIsLoading, model:taskCRUDModel }          = useTask(token);
     const sidePanelFunctions = useSidePanel();
 
-    const { newMessageReceived, sendJsonMessage } = useWebSocket();
+    const { initWebSocket, newMessageReceived, sendJsonMessage } = useWebSocket(token);
+
+    useEffect(() => {
+        if (!newMessageReceived) return;
+            console.log("received", newMessageReceived);
+            triggerStateUpdate(newMessageReceived);
+    },[newMessageReceived]);
 
     const [ roomInfo, setRoomInfo ] = useState(null);
     const [ sections, setSections ] = useState(null);
@@ -52,6 +58,8 @@ export function RoomContextProvider(props) {
         setTasks(taskResponse.data);
 
         console.log("Room information:", roomResponse.data, "Sections:",sectionResponse.data, "Tasks:", taskResponse.data);
+        console.log("Initiating web socket...");
+        initWebSocket(roomResponse.data.id);
     }
 
     const getTaskSection = (taskData) => {
@@ -83,7 +91,8 @@ export function RoomContextProvider(props) {
                 room:       { roomIsLoading,    roomInfo,   setRoomInfo,                        roomModel:roomCRUDModel},
                 section:    { sectionIsLoading, sections,   setSections, setIndividualSection,  sectionModel:{...sectionModelWrapper(), getRoomSections:sectionCRUDModel.getRoomSections}},
                 task:       { taskIsLoading,    tasks,      setTasks,                           taskModel:{...taskModelWrapper(), getSectionTasks:taskCRUDModel.getSectionTasks, }},
-                sidePanel:  { ...sidePanelFunctions, resetPanel}
+                sidePanel:  { ...sidePanelFunctions, resetPanel},
+                webSocket:  { initWebSocket, sendJsonMessage}
             }}
         >
             {children}
@@ -97,22 +106,21 @@ export function RoomContextProvider(props) {
     function sectionModelWrapper() {
         const createSection = async (sectionData) => {
             const response = await sectionCRUDModel.createSection(sectionData);
-            const createdSection = response.data;
-            if (response.valid) setSections(prevSectionList => [...prevSectionList, {...createdSection, tasks: []}]);
+            if (response.valid) console.log("section create success");
             return response;
         }
     
         const deleteSection = async (target) => {
             console.log("deletin:", target);
             const response = await sectionCRUDModel.deleteSection(target);
-            if (response.valid) setSections(prevSectionList => prevSectionList.filter((section) => section.id !== target.id));
+            if (response.valid) console.log("Section delete success");
             return response;
         }
     
         const updateSection = async (sectionData) => {
-            console.log("section updated", sectionData);
+            
             const response = await sectionCRUDModel.updateSection(sectionData);
-            if (response.valid) setIndividualSection(sectionData.id, sectionData);
+            if (response.valid) console.log("section updated", sectionData);
             
             return response;
 
@@ -127,34 +135,60 @@ export function RoomContextProvider(props) {
     function taskModelWrapper() {
         const createTask = async (taskData) => {
             const response = await taskCRUDModel.createTask(taskData);
-            if (response.valid) {
-                let newTaskList = [...getTaskSection(response.data).tasks, response.data]; //Add the created task
-                setIndividualSection(response.data.section_id, {...getTaskSection(response.data), tasks: newTaskList});
-            }
+            if (response.valid) {console.log("CREATE operation successful");}
             return response;
         }
     
         const deleteTask = async (target) => {
             const response = await taskCRUDModel.deleteTask(target);
-            if (response.valid) {
-                let newTaskList = [...getTaskSection(target).tasks].filter((task) => task.id != target.id); //Filter out the deleted task
-                setIndividualSection(target.section_id, {...getTaskSection(target), tasks: newTaskList});
-            }
+            if (response.valid) {console.log("DELETE operation successful");}
             return response;
         }
     
         const updateTask = async (taskData) => {
             const response = await taskCRUDModel.updateTask(taskData);
-            if (response.valid) {
-                const sectionTasks = getTaskSection(taskData).tasks;
-                const newTaskList = [...sectionTasks];
-                const taskIndex = sectionTasks.findIndex((task) => task.id === taskData.id);
-                newTaskList[taskIndex] = taskData;
-                setIndividualSection(taskData.section_id, {...getTaskSection(taskData), tasks: newTaskList});
-            }
+            if (response.valid) {console.log("UPDATE operation successful");}
             return response;
         }
         return {createTask, deleteTask, updateTask}
+    }
+
+    function triggerStateUpdate(payload) {
+        switch (payload.targetType) {
+            case 'task':
+                if (payload.operationType === 'create') {
+                    let newTaskList = [...getTaskSection(payload.data).tasks, payload.data]; //Add the created task
+                    setIndividualSection(payload.data.section_id, {...getTaskSection(payload.data), tasks: newTaskList});
+                    break;
+                }
+                if (payload.operationType === 'delete') {
+                    const target = payload.data;
+                    let newTaskList = [...getTaskSection(target).tasks].filter((task) => task.id != target.id); //Filter out the deleted task
+                    setIndividualSection(target.section_id, {...getTaskSection(target), tasks: newTaskList});
+                }
+                if (payload.operationType === 'update') {
+                    const sectionTasks = getTaskSection(payload.data).tasks;
+                    const newTaskList = [...sectionTasks];
+                    const taskIndex = sectionTasks.findIndex((task) => task.id === payload.data.id);
+                    newTaskList[taskIndex] = payload.data;
+                    setIndividualSection(payload.data.section_id, {...getTaskSection(payload.data), tasks: newTaskList});
+                }
+                break;
+            case 'section':
+                if (payload.operationType === 'create') setSections(prevSectionList => [...prevSectionList, {...payload.data, tasks: []}]);
+                if (payload.operationType === 'delete') setSections(prevSectionList => prevSectionList.filter((section) => section.id !== payload.data.id))
+                if (payload.operationType === 'update') setIndividualSection(payload.data.id, payload.data);
+                break;
+            case 'room':
+                if (payload.operationType) {console.log("This room action hello")}
+                break;
+            case 'connection':
+                if (payload.operationType === 'ping') console.log("PONG");;
+                break;
+            default:
+                console.error("Undefined target", payload.targetType);
+                break;
+        }
     }
 }
 
