@@ -1242,3 +1242,4 @@ backend/vendor/psr/http-server-middleware/composer.json
 backend/vendor/psr/http-server-middleware/LICENSE
 backend/vendor/psr/http-server-middleware/README.md
 backend/vendor/psr/http-server-middleware/src/MiddlewareInterface.php
+backend/dump.rdb
