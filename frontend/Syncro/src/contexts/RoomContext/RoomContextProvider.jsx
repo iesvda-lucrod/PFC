@@ -68,6 +68,7 @@ export function RoomContextProvider(props) {
     }
     const setIndividualSection = (sectionId, newSectionData) => {
         const taskIndex = sections.findIndex((section) => section.id === sectionId);
+        if (!newSectionData.tasks) newSectionData.tasks = [];
         setSections(prevSectionList => {
             const newSectionList = [...prevSectionList];
             newSectionList[taskIndex] = newSectionData;
@@ -118,12 +119,9 @@ export function RoomContextProvider(props) {
         }
     
         const updateSection = async (sectionData) => {
-            
             const response = await sectionCRUDModel.updateSection(sectionData);
             if (response.valid) console.log("section updated", sectionData);
-            
             return response;
-
         }
         return {createSection, deleteSection, updateSection}
     }
@@ -140,6 +138,8 @@ export function RoomContextProvider(props) {
         }
     
         const deleteTask = async (target) => {
+
+            console.log("deleting ", target);
             const response = await taskCRUDModel.deleteTask(target);
             if (response.valid) {console.log("DELETE operation successful");}
             return response;

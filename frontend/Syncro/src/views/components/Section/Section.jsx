@@ -2,7 +2,7 @@ import './Section.css'
 import Task from '../Task/Task';
 import { useRoomContext } from '../../../contexts/RoomContext/RoomContext';
 import TaskForm from '../TaskForm/TaskForm';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SectionForm from '../SectionForm/SectionForm';
 
 export default function Section({ sectionInfo }) {
@@ -11,6 +11,7 @@ export default function Section({ sectionInfo }) {
         sidePanel: { setPanel, setPanelOpen, resetPanel }
         
     }  = useRoomContext();
+    const [ showConfirmationModal, setShowConfirmationModal] = useState();
 
     const triggerPanel = () => {
         setPanel({
@@ -19,25 +20,20 @@ export default function Section({ sectionInfo }) {
             actions: [{key:'editSection',name:"Edit", function:editSection}],
         });
     }
-    
-    const firstLoad = useRef(true);
-    useEffect(() => {
-        console.log("SECTIONINFO CHANGED");
-        if (firstLoad.current) firstLoad.current = false;
-        else triggerPanel();
-    }, [sectionInfo.name]); //TODO this works, but need to update everytime
-
 
     const removeSection = async (e) => {
         e.stopPropagation();
+        if (sectionInfo.tasks.length > 0) { //TODO confirmation modal
+            setShowConfirmationModal(true);
+        }
         const response = await sectionModel.deleteSection(sectionInfo);
         resetPanel();
     }
 
     async function editSection () {
         const newPanelData = {
-            header: "Editing task",
-            content: [<SectionForm key='sectionForm' sectionData={sectionInfo} editMode={true}/>],
+            header: "Editing section",
+            content: [<SectionForm key='sectionForm' sectionData={sectionInfo} editMode={true} submitAction={() => resetPanel()}/>],
             actions: [{key:'confirmsECTION', name:"Confirm", targetForm:'SectionForm'},{key:'cancelTask',name:'Cancel', function:triggerPanel}]
         }
         setPanel(newPanelData);
@@ -48,7 +44,7 @@ export default function Section({ sectionInfo }) {
         setPanel({
             header:"Create a task",
             content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false}/>],
-            actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:() => {setPanelOpen(false)}}]
+            actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:triggerPanel}]
         });
     }
 

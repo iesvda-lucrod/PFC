@@ -41,8 +41,7 @@ class SectionsTable extends DBConnection {
             return $sectionData;
 
         } catch (Error $e) {
-            echo $e->getMessage();
-            logError($e->getMessage());
+            logError($e);
             $this->rollBack();
             throw $e;
         }

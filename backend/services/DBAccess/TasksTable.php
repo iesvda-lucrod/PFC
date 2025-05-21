@@ -42,8 +42,30 @@ class TasksTable extends DBConnection {
             return $result;
         }
         catch (Error $e) {
-            echo $e->getMessage();
-            logError($e->getMessage());
+            logError($e);
+            $this->rollBack();
+            throw $e;
+        }
+    }
+
+    public function getParentSection($taskData) {
+        try {
+            $this->beginTransaction();
+            if (!$taskData['section_id']) {
+                $this->execPreparedQuery(
+                    "SELECT section_id FROM tasks WHERE id = :id",
+                    ['id' => $taskData['id']]);
+                $taskData['section_id'] = $this->getNextRow();
+            } 
+            $this->execPreparedQuery(
+                "SELECT * from sections WHERE id = :section_id",
+                ['section_id' => $taskData['section_id']]
+            );
+            $section = $this->getNextRow();
+            $this->commit();
+            return $section;
+        } catch (Error $e) {
+            logError($e);
             $this->rollBack();
             throw $e;
         }

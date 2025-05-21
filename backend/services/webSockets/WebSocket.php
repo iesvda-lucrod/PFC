@@ -65,7 +65,7 @@ function sendToRoom($roomName, $message) {
     global $server;
     $connections = getRoomConnections($roomName);
     foreach($connections as $connection) {
-        echo "SEND TO $connection: ";var_dump($server->isEstablished($connection)); echo "\n";
+        //echo "SEND TO $connection: ";var_dump($server->isEstablished($connection)); echo "\n";
         if ($server->isEstablished($connection)) $server->push($connection, json_encode($message));
     }
 }

@@ -6,22 +6,17 @@ import { useEffect, useRef } from 'react';
 export default function Task({ taskInfo }) {
     const {
         task: { taskModel },
-        sidePanel: { setPanel, resetPanel }
+        sidePanel: { setPanel, resetPanel , setPanelOpen}
     } = useRoomContext();
 
-    const triggerPanel = () => {
+    const triggerPanel = (header = null, content = null) => {
+        console.log("triggerpanel with : ", header, content);
         setPanel({
-            header: taskInfo.title,
-            content: taskInfo.description,
+            header:  header || taskInfo.title,
+            content: content || taskInfo.description,
             actions: [{key:'editTask',name:"Edit", function:editTask}, {key:'deleteTask',name: "Delete", function:removeTask}],
         });
     }
-
-    const firstLoad = useRef(true);
-    useEffect(() => {
-        if (firstLoad.current) firstLoad.current = false;
-        else triggerPanel();
-    }, [taskInfo]);
 
     async function removeTask () {
         let response = await taskModel.deleteTask(taskInfo);
@@ -31,14 +26,14 @@ export default function Task({ taskInfo }) {
     async function editTask () {
         const newPanelData = {
             header: "Editing task",
-            content: [<TaskForm key='taskForm' sectionId={taskInfo.section_id} taskData={taskInfo} editMode={true}/>],
-            actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:triggerPanel}]
+            content: [<TaskForm key='taskForm' sectionId={taskInfo.section_id} taskData={taskInfo} editMode={true} submitAction={() => resetPanel()}/>],
+            actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:() => triggerPanel()}]
         }
         setPanel(newPanelData);
     }
 
     return (
-        <div className="Task" onClick={triggerPanel}>
+        <div className="Task" onClick={() => triggerPanel()}>
             <span>ID: {taskInfo.id}</span>
             <span>Title: {taskInfo.title}</span>
         </div>

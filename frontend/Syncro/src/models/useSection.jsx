@@ -16,7 +16,7 @@ export default function useSection(token) {
         return result;
     }
     const deleteSection = async (section) => {
-        let result = await model.delete({id: section.id});
+        let result = await model.delete(section);
         return result;
     }
     const updateSection = async (sectionInfo) => {

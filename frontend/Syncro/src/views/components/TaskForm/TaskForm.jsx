@@ -24,10 +24,11 @@ export default function TaskForm({ sectionId, taskData = {}, editMode = false , 
         console.log("subbmitting, formdata: ", formData);
         if (editMode) {
             console.log("updating, taskData", taskData, "formdata", formData, "result", {...taskData, ...formData});
-            await taskModel.updateTask({...taskData, ...formData});
+            await taskModel.updateTask({sectionId:sectionId, ...taskData, ...formData});
         }
         else {
-            await taskModel.createTask(new Task({sectionId: sectionId, ...formData}));
+            console.log("subbmitting, formdata: ", new Task({sectionId: sectionId, ...formData}));
+            await taskModel.createTask({sectionId: sectionId, ...formData});
         }
 
         if (submitAction) submitAction();

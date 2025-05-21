@@ -8,5 +8,5 @@ export default function useUser(token) {
         return result;
     }
 
-    return {model: { getUserInfo }}
+    return {isLoading, model: { getUserInfo }}
 }
