@@ -1,13 +1,13 @@
 <?php
 require __DIR__."/../../vendor/autoload.php";
 require __DIR__."/../../config.php";
-require_once __DIR__."/templates/confirmationEmail.php";
+require_once __DIR__."/templates/verificationEmail.php";
+require_once __DIR__."/templates/inviteEmail.php";
 
 use \Mailjet\Resources;
-function sendVerificationEmail($userData, $code) {
-    try {
-        $template = generateVerificationEmailTemplate($userData, $code);
 
+function sendEmail($receiverEmail, $receiverName, $subject, $content) {
+    try {
         $mj = new \Mailjet\Client($_ENV['MJ_APIKEY_PUBLIC'], $_ENV['MJ_APIKEY_PRIVATE'],true,['version' => 'v3.1']);
         $body = [
             'Messages' => [
@@ -18,22 +18,32 @@ function sendVerificationEmail($userData, $code) {
                     ],
                     'To' => [
                         [
-                            'Email' => $userData['email'],
-                            'Name' => $userData['username'],
+                            'Email' => $receiverEmail,
+                            'Name' => $receiverName,
                         ]
                     ],
-                    'Subject' => 'Syncro - Confirm your email address',
-                ] + $template 
+                    'Subject' => $subject,
+                ] + $content 
             ]
         ];
 
         $response = $mj->post(Resources::$Email, ['body' => $body]);
-
-        logError("Email sent, IS ok?".$response->success());
-
         if (!$response->success()) throw new ErrorException('Theres was a problem sending the email');
-    } catch (Error $e) {
-        logError('Error sending verification email: '.$e->getMessage());
+    } catch (\Error $e) {
+        logError($e);
+        throw $e;
     }
+    
+}
+function sendVerificationEmail($receiverData, $code) {
+    $subject = 'Syncro - Confirm your email address';
+    $template = generateVerificationEmailTemplate($receiverData, $code);
+    sendEmail($receiverData['email'], $receiverData['username'], $subject, $template);
+}
+
+function sendInvitationEmail($senderData, $receiverData, $roomData, $code) {
+    $subject = 'Syncro - Invitation to room';
+    $template = generateInvitationEmailTemplate($senderData, $receiverData, $roomData, $code);
+    sendEmail($receiverData['email'], $receiverData['username'], $subject, $template);
 }
 

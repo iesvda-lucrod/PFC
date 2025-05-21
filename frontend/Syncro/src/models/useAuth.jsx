@@ -48,16 +48,24 @@ export default function useAuth() {
         let result = await model.post({action: 'sendVerificationEmail', user: {...userData}});
         return result;
     }
-
     const verifyEmailCode = async (email, code) => {
         let result = await model.post({action: 'verifyEmailCode', email: email, code: code});
         return result;
     }
-
     const checkEmailVerified = async (userEmail) => {
         let result = await model.post({action: 'isEmailVerified', email: userEmail});
         return result.valid;
     }
+
+    const sendInvitationEmail = async (sender, receiverEmail, room) => {
+        let result = await model.post({action: 'sendInvitationEmail', senderData:sender, receiverEmail:receiverEmail, roomData:room});
+        return result;
+    }
+    const acceptInvitation = async (userId, roomId, code) => {
+        let result = await model.post({action: 'acceptInvitation', user_id:userId, room_id:roomId, code:code});
+        return result;
+    }
+
 
     return {
         isLoading,
@@ -68,6 +76,9 @@ export default function useAuth() {
 
         sendVerificationEmail,
         verifyEmailCode,
+
+        sendInvitationEmail,
+        acceptInvitation,
 
         checkLoggedStatus,
         checkEmailVerified,

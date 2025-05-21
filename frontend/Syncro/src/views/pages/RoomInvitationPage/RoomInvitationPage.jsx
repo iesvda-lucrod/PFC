@@ -4,33 +4,34 @@ import { useLocation, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 
-export default function EmailVerificationPage() {
-    const { isLoading, token, sendVerificationEmail, verifyEmailCode } = useAuth();
+export default function RoomInvitationPage() {
+    const { isLoading, token, acceptInvitation } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const queryParams = new URLSearchParams(location.search);
-    const [ verificationResult, setVerificationResult ] = useState(false);
+    const [ invitationResult, setInvitationResult ] = useState(false);
   
-    const email = queryParams.get('email');
+    const userId = queryParams.get('user');
+    const roomId = queryParams.get('room');
     const code = queryParams.get('code');
 
     useEffect(() => {
         (async () => {
-            let response = await verifyEmailCode(email, code);
-            setVerificationResult(response.valid);
+            let response = await acceptInvitation(userId, roomId, code);
+            setInvitationResult(response.valid);
         })()
     },[]);
 
 
     return (
-        <div className="EmailVerificationPage">
+        <div className="RoomInvitationPage">
             <div>
             {
                 isLoading ? (
-                <LoadingSpinner />
+                    <LoadingSpinner />
                 ) : (
-                    verificationResult ? (
-                        <p>Email verified successfully!</p>
+                    invitationResult ? (
+                        navigate('/dashboard/'+roomId)
                     ) : (
                         <p>Verification failed</p>
                     )
