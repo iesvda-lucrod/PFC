@@ -196,6 +196,7 @@ class DBConnection {
     /**
      * Select the $this->table's rows that match the specified filters
      * @param mixed $filters Associative array containing the filters (field => value, field2 = value2, ...)
+     * @param bool $strict Whether to apply all filters (AND) or any filter (OR).
      */
     public function filteredSelect($filters, $strict = true) {
         $argument = $strict ? ' AND ' : ' OR ';
@@ -209,7 +210,7 @@ class DBConnection {
                 }
             } else {
                 $filtersArray[] = "$key = :$key";
-                $bindedParams[":$key"] = $value;
+                $bindedParams[":$key"] = $values;
             }
         }
 
