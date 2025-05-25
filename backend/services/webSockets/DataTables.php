@@ -20,32 +20,32 @@ Swoole\Timer::tick(60000, function() use ($server, &$roomToFdsMap, $fdToRoomTabl
 });
 */
 
-function getRoomConnections($roomName) {
+function getRoomConnections($roomId) {
     global $roomConnectionsTable;
-    $data = $roomConnectionsTable->get($roomName);
+    $data = $roomConnectionsTable->get($roomId);
     if (!$data) return [];
     return json_decode($data['connections'], true);
 }
-function addRoomConnection($roomName, $fd) {
+function addRoomConnection($roomId, $fd) {
     global $roomConnectionsTable; global $connectionRoomTable;
     //Add to individual row
-    $connectionRoomTable->set($fd, ['room' => $roomName]);
+    $connectionRoomTable->set($fd, ['room' => $roomId]);
     //Add to room connections row
-    $connections = getRoomConnections($roomName);
+    $connections = getRoomConnections($roomId);
     $connections[] = $fd;
-    $roomConnectionsTable->set($roomName, ['connections' => json_encode($connections)]);
+    $roomConnectionsTable->set($roomId, ['connections' => json_encode($connections)]);
     return $connections;
 }
 function removeConnectionFromRoom($fd) {
     global $roomConnectionsTable; global $connectionRoomTable;
-    $roomName = $connectionRoomTable->get($fd, 'room');
+    $roomId = $connectionRoomTable->get($fd, 'room');
     //Remove from room connections row
-    $currentConnections = getRoomConnections($roomName);
+    $currentConnections = getRoomConnections($roomId);
     $newConnections = array_filter($currentConnections, function($item) use ($fd) {return $item != $fd;});
     if (count($newConnections)) {
-        $roomConnectionsTable->set($roomName, ['connections' => json_encode($newConnections)]);
+        $roomConnectionsTable->set($roomId, ['connections' => json_encode($newConnections)]);
     } else {
-        $roomConnectionsTable->del($roomName);
+        $roomConnectionsTable->del($roomId);
     }
     //Remove from individual row
     $connectionRoomTable->del($fd);
