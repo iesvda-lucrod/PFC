@@ -310,6 +310,12 @@ class DBConnection {
      //----------//----------//
     //UPDATE
     //----------//----------//
+    /**
+     * Updates a row
+     * @param mixed $identifier The element which will identify the row(s) as an associetive array ['id' => $value]
+     * @param mixed $data The data to insert as an associative array ['field1' => 'value1', 'field2' => 'value2', ...]
+     * @return bool
+     */
     public function update($identifier, $data) {
         $fieldsArray = [];
         $bindings = [];
@@ -322,12 +328,20 @@ class DBConnection {
         $idenfifierField = array_keys($identifier)[0];
         $bindings[":$idenfifierField"] = $identifier[$idenfifierField];
 
+        //echo "UPDATE $this->table SET $fields WHERE $idenfifierField=:$idenfifierField"; var_dump($bindings); 
         return $this->execPreparedQuery(
             "UPDATE $this->table SET $fields WHERE $idenfifierField=:$idenfifierField",
             $bindings
         );
     }
 
+    /**
+     * Updates several rows based on the filters provided in $targets
+     * @param array $targets Associative array containing the filters, accepts  ['filter1' => 'value1', 'filter2' => 'value2', ...]
+     * @param array $data The data to insert as an associative array ['field1' => 'value1', 'field2' => 'value2', ...]
+     * @param bool $strict Update the rows that pass all the filters (true, default) or any (false)
+     * @return bool
+     */
     public function multiUpdate($targets, $data, $strict = true) {
         $argument = $strict ? ' AND ' : ' OR ';
         $conditionsArray = [];
