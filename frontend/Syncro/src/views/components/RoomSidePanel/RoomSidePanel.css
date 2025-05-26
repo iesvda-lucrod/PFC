@@ -5,7 +5,7 @@
     width: 30%;
     right: -30%;
 
-    background-color: var(--backgroundColor1);
+    background-color: var(--baseColor);
 
     box-sizing: border-box;
     padding: 20px 40px;
@@ -14,13 +14,10 @@
     flex-direction: column;
 
     transition: right 0.2s ease;
+    border-left: 2px solid var(--mainColor);
 }
 
-.RoomSidePanel .toggleButton {
-    position: absolute;
-    right: 100%;
-    top: 50%;
-}
+
 
 .RoomSidePanel.open {
     right: 0;
@@ -28,38 +25,71 @@
 
 
 .RoomSidePanel .header {
-    border-bottom: 2px solid var(--mainColorDark);
-}
-
-.detailsTitle {
-    background-color: var(--background2);
-    border-radius: 20px;
-    padding: 20px;
+    border-bottom: 2px solid var(--mainColor-dark);
+    padding: 10px;
 }
 
 .RoomSidePanel .content {
-
-    background-color: var(--background2);
     border-radius: 20px;
-    padding: 20px;
+    padding: 10px;
     flex: 1;
 }
 
-.detailsDescription {
-    display: flex;
+.RoomSidePanel .componentContainer,
+.detailsTitle {
+    background-color: var(--baseColor-dark);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.detailsTitle {
+    text-align: center;
 }
 
 .RoomSidePanel .actions {
-    border-top: 2px solid var(--mainColorDark);
+    border-top: 2px solid var(--mainColor-dark);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.RoomSidePanel .actions>button {
+.RoomSidePanel .actions > button {
     flex: 1;
 }
 
-.test {
-    background-color: red;
+/* Actions */
+.RoomSidePanel .actions {
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+
+/* toggle button */
+
+.RoomSidePanel .toggleButton {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+
+    background-color: var(--baseColor);
+    border: 2px solid var(--mainColor);
+    border-right: 0px;
+    border-radius: 20px 0px 0px 20px;
+
+    transition: background-color 0.2s ease;
+    z-index: 5;
+}
+.RoomSidePanel .toggleButton:hover {
+}
+
+.RoomSidePanel .toggleButton button {
+    margin: 0;
+    border-width: 0px 1px 0px 0px;
+    width: 130%;
+    border-radius: 20px;
 }

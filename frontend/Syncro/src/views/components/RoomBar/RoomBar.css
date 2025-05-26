@@ -3,10 +3,42 @@
     top: 0px;
     
     width: 100vw;
+    height: 70px;
+    
     z-index: 9;
 
-    border: solid var(--mainColor1);
-    border-width: 0px 0px 2px 0px;
+    background-color: var(--baseColor);
+    border: solid var(--mainColor-dark);
+    border-width: 0px 0px 4px 0px;
 
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px var(--menuBarSpacing);
+}
+
+.RoomBar .roomUsers,
+.RoomBar .roomOptions {
+    height: 100%;
+
+    margin: 0 20px;
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.roomOptions > * {
+    margin-right: 20px;
+}
+
+
+.roomUsers > * {
+    margin-left: 20px;
+}
+.roomUsers .userList {
+    height: 100%;
+    display: flex;
+}
+.userList > * {
 }

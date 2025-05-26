@@ -16,13 +16,22 @@ export default function RoomSidePanel() {
 
             <div className="header">
                 <div className='detailsTitle'>
-                    {panelInfo.header}
+                    <h3>{panelInfo.header}</h3>
                 </div>
             </div>
 
             <div className="content">
-                {panelInfo.content}
-                {/*TODO <div className='detailsDescription'></div>*/}
+            {
+                panelInfo.content.map((component, index) => {
+                    console.log("COMPONENT: ", component);
+                    if (!component) return;
+                    return (
+                    <div key={component.key+index} className='componentContainer'>
+                        {component}
+                    </div>
+                    )
+                })
+            }
             </div>
 
             <div className="actions">
@@ -40,6 +49,7 @@ export default function RoomSidePanel() {
 
             <div className='toggleButton'>
                 <button onClick={() => {setPanelOpen(!panelOpen)}}>
+                <div className='gradient'></div>
                     {panelOpen ? ">" : '<'}
                 </button>
             </div>

@@ -1,7 +1,12 @@
 .RoomWorkspace {
-    background-color: var(--background2);
+    min-height: 50%;
+    width: 100%;
+
+    background-color: var(--mainColor-light);
     position: absolute;
 
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
+
+    padding: 20px var(--menuBarSpacing);
 }

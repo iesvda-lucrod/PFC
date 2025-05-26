@@ -66,6 +66,23 @@ export default function useAuth() {
         return result;
     }
 
+    const sendPasswordChangeEmail = async (email) => {
+        let result = await model.post({action: 'forgotPassword', email:email});
+        return result;
+    }
+    const verifyPasswordChangeRequest = async (userId, code) => {
+        let result = await model.post({action: 'verifyPasswordChangeRequest', user_id:userId, code:code});
+        return result;
+    }
+    const changePassword = async (newPassword, code) => {
+        let result = await model.post({action:'changePassword', newPassword:newPassword, code:code});
+        return result;
+    }
+
+    const sendContactEmail = async (name, email, subject, message) => {
+        return await model.post({action: 'sendContactEmail', name:name, email:email, subject:subject, message:message});
+    }
+
 
     return {
         isLoading,
@@ -82,6 +99,12 @@ export default function useAuth() {
 
         checkLoggedStatus,
         checkEmailVerified,
+
+        sendPasswordChangeEmail,
+        verifyPasswordChangeRequest,
+        changePassword,
+
+        sendContactEmail,
 
         token
     }

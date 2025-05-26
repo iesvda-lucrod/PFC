@@ -1,13 +1,12 @@
 .RoomPage {
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-flow: column wrap;
+    overflow-x: hidden;
 }
 
 .roomContent {
     position: relative;
     flex: 1;
-    background-color: aqua;
-
-    overflow-x: hidden;
+    background-color: var(--mainColor-light);
 }

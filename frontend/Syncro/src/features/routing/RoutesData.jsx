@@ -6,7 +6,9 @@ import RoomInvitationPage from "../../views/pages/RoomInvitationPage/RoomInvitat
 import InfoPage from "../../views/pages/InfoPage/InfoPage";
 import NotFoundPage from "../../views/pages/NotFoundPage/NotFoundPage";
 import ProfilePage from "../../views/pages/ProfilePage/ProfilePage";
-import RoomPage from "../../views/pages/RoomPage/RoomPage";
+import ForgotPasswordPage from "../../views/pages/ForgotPasswordPage/ForgotPasswordPage";
+import ContactPage from "../../views/pages/ContactPage/ContactPage";
+import RoomPageWrapper from "../../views/pages/RoomPage/RoomPageWrapper/RoomPageWrapper";
 
 const routesData = [
     //{title: , path: , element: }
@@ -16,11 +18,13 @@ const routesData = [
     {title: 'auth', path: '/auth', element: <AuthPage/>},
 
     {title: 'dashboard', path: '/dashboard', element: <DashboardPage/>},
-    {title: 'room', path: '/dashboard/:id', element: <RoomContextProvider><RoomPage/></RoomContextProvider>},
+    {title: 'room', path: '/dashboard/:id', element: <RoomPageWrapper />},
     {title: 'profile', path: '/profile', element: <ProfilePage/>},
+    {title: 'contact', path: '/contact', element: <ContactPage/>},
 
     {title: 'emailVerification', path: '/verify-email', element: <EmailVerificationPage/>},
     {title: 'acceptInvitation', path: '/accept-invitation', element: <RoomInvitationPage/>},
+    {title: 'changePassword', path: '/change-password', element: <ForgotPasswordPage/>},
 ];
 
 export default routesData;

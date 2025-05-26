@@ -30,7 +30,7 @@ function publishMessage($channel, $payload, $encode = true) {
  */
 function sendToUsers($room, $targetType, $operationType, $data) {
     $payload = [
-        'action' => 'CRUD',
+        'action' => 'broadcast',
         'room' => $room,
         'targetType' => $targetType,
         'operationType' => $operationType,

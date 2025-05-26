@@ -40,17 +40,26 @@ $server->on('Open', function(Server $server, OpenSwoole\Http\Request $request) {
     $server->push( $request->fd, json_encode(['targetType' => 'connection', 'operationType' => 'ping']));
 });
 $server->on('Close', function(Server $server, int $fd){
-    removeConnectionFromRoom($fd);
-    echo "connection close: {$fd}\n";});
+    echo "Closed connection: {$fd}\n";
+
+    $data = getConnectionInfo($fd);
+    
+    processMessage(['action' => 'leaveRoom', 'room' => $data['room'], 'user' => $data['user']], $fd);
+});
+    
+
 $server->on('Disconnect', function(Server $server, int $fd){echo "connection disconnect: {$fd}\n";});
 
 $server->on('Message', function(Server $server, Frame $frame)
 {
     $data = json_decode($frame->data, true);
+
     $token = $data['token'];
     $isValid = decodeJWT($token);
     if (!$isValid) {$server->publish($frame->fd, ['action' => 'unauthorized']); return;};
 
+    
+    
     echo "received message from: {$frame->fd} action {$data['action']}\n";
     processMessage(json_decode($frame->data, true), $frame->fd);
 });
@@ -63,27 +72,36 @@ function setupPubSub() {
 
 function sendToRoom($roomName, $message) {
     global $server;
+    echo "sending message to room $roomName \n";
     $connections = getRoomConnections($roomName);
     foreach($connections as $connection) {
-        //echo "SEND TO $connection: ";var_dump($server->isEstablished($connection)); echo "\n";
         if ($server->isEstablished($connection)) $server->push($connection, json_encode($message));
+        else {$server->}
     }
 }
 
 function processMessage($messageData, $fd = null) {
+    echo "\n---------------------------------------\n";
+    echo "Processing: {$messageData['action']}\n";
     switch ($messageData['action']) {
         case 'joinRoom':
-            echo "$fd joining room {$messageData['room']}\n";
-            addRoomConnection($messageData['room'], $fd);
+            echo "\n\n-->connection $fd with id joining room {$messageData['room']}\n";
+            addRoomConnection($fd, $messageData['data']['user'], (int) $messageData['data']['room']);
+            
+            $data = array_values(getRoomConnectionsInfo($messageData['room']));
+            echo "\n-->sending back: "; var_dump($data);
+            sendToRoom($messageData['room'], ['targetType' => 'connection', 'operationType' => 'updateActiveUsers', 'data' => $data]);
             break;
         case 'leaveRoom':
+            echo "-->Removing connection $fd from tables\n";
             removeConnectionFromRoom($fd);
             break;
-        case 'CRUD':
-            sendToRoom($messageData['room'], ['operationType' => $messageData['operationType'],'targetType' => $messageData['targetType'], 'data' => $messageData['data']]);
+        case 'broadcast':
+            sendToRoom($messageData['room'], ['targetType' => $messageData['targetType'], 'operationType' => $messageData['operationType'], 'data' => $messageData['data']]);
             break;
 
         default:
+        echo "action not recognized\n";
             break;
     }
 }

@@ -1,6 +1,7 @@
 import { useRoomContext } from '../../../contexts/RoomContext/RoomContext';
 import Section from '../Section/Section';
 import './RoomWorkspace.css'
+
 export default function RoomWorkspace() {
     const {
         section: { sections }

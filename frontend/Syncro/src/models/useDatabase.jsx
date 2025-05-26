@@ -5,11 +5,11 @@ export default function useDatabase(resource, authToken = null) {
     const [ isLoading, setIsLoading ] = useState(false);
     const FINAL_URL= ENDPOINT_URL+resource;
 
-    const requestResource = async(reqMethod, data = null, token = authToken) => {
+    const requestResource = async(reqMethod, data = null, token = authToken, contentType = 'application/json') => {
         const queryParameters = reqMethod === 'GET' ? queryParamsBuilder(data) : '';
-        const reqBody = reqMethod === 'GET' ? null : data;
+        const reqBody = (reqMethod === 'GET' ? null : (contentType === 'application/json' ? JSON.stringify(data) : data)); 
         
-        console.log("MAKING A REQUEST: \n\tURL: ", FINAL_URL+'?'+queryParameters, "\n\tMETHOD: ", reqMethod, "\n\tBODY: ", reqBody, '\n\tTOKEN:', token);
+        console.log("MAKING A REQUEST: \n\tURL: ", FINAL_URL+'?'+queryParameters, "\n\tMETHOD: ", reqMethod, "\n\tBODY: ", reqBody, "\n\tCONTENT-TYPE", contentType, '\n\tTOKEN:', token);
         setIsLoading(true);
 
         let response = await fetch(FINAL_URL+'?'+queryParameters,
@@ -17,10 +17,11 @@ export default function useDatabase(resource, authToken = null) {
                 method: reqMethod,
                 mode: "cors",
                 headers: {
-                    "Content-Type": "application/json",
+//                  "Content-Type":contentType,
+                    ...(contentType === 'application/json' ? {"Content-Type": contentType} : {}),
                     ...(token ? {Authorization: `Bearer ${token}`} : {})
                 },
-                ...(reqBody !== null? {body: JSON.stringify(reqBody)}: {})
+                ...(reqBody !== null ? {body: reqBody}: {})
             }
         );
 
@@ -55,7 +56,7 @@ export default function useDatabase(resource, authToken = null) {
         return await requestResource('PUT', data, token);
     }
 
-    return {model:{get, post, delete:remove, put}, isLoading};
+    return {model:{get, post, delete:remove, put}, isLoading, requestResource};
 }
 
 const queryParamsBuilder = (params) => {

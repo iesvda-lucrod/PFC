@@ -1,7 +1,34 @@
+.DashboardPage {
+    padding: 0 var(--menuBarSpacing);
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.roomListContainer {
+    flex : 1;
+    display: flex;
+    flex-flow: column nowrap;
+    margin: 20px 0;
+}
+.roomListHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.roomListContent {
+    background-color: var(--mainColor);
+    border: 5px solid var(--mainColor);
+    border-radius: 30px;
+    padding: 10px;
+}
+
 .roomList {
     display: flex;
     flex-direction: row;
-    border: 2px dashed green;
+    min-height: 200px;
+    overflow-x: scroll;
+    margin-bottom: 10px;
 
-    padding: 40px;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
 }

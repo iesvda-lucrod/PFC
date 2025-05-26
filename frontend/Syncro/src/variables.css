@@ -1,19 +1,34 @@
 /* Custom fonts */
 
+
 /* Custom variables */
 :root {
-    --backgroundColor1: #eeeeee;
-    --backgroundColor2: #d0d0d0;
-    --backgroundColor3: ;
+    /* Colors */
+    --baseColor: #f0f0f0;
+    --baseColor-light: #ffffff;
+    --baseColor-dark: #e0e0e0;
 
-    --mainColor1: #2070f0;
-    --mainColorLight: #2090f0;
-    --mainColorDark: #2050f0;
+    --mainColor: #2070f0;
+    --mainColor-light: #a6c6f9;
+    --mainColor-dark: #0d2d60;
 
+    /* Font colors */
+    --textColor: #1a1a1a;
+    --textHighlightColor: #0d2d60;
 
-    --warningColor: #f0f0a0;
-    --errorColor: #f07070;
+    --warningColor: #f0f070;
+    --errorColor: #f05050;
+    --confirmColor: #50f050;
 
     --debug1: #f000f0;
     --debug2: #a000a0;
+
+    /* Menu bar */
+    --menuBarWidthReference: 50;
+    --menuBarWidth: calc(var(--menuBarWidthReference) * 1px);
+    --menuBarSpacing: calc((var(--menuBarWidthReference) * 1px) + 10px);
+}
+
+.Darkmode {
+    
 }

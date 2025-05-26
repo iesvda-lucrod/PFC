@@ -12,6 +12,7 @@ export default function useRoom(token) {
         return await model.get({action: 'getUserRooms', user_id: userId});
     }
 
+
     const getRoomMembers = async (roomId) => {
         return await model.get({action: 'getRoomMembers', room_id: roomId});
     }
@@ -31,5 +32,11 @@ export default function useRoom(token) {
         return result;
     }
 
-    return {isLoading, model:{getRoomInfo, getUserRooms, getRoomMembers, createRoom, deleteRoom, updateRoom}}
+
+    const leaveRoom = async (userId, roomId) => {
+        return await model.delete({action:'leaveRoom', userId:userId, roomId:roomId});
+    }
+
+
+    return {isLoading, model:{getRoomInfo, getUserRooms, getRoomMembers, createRoom, deleteRoom, updateRoom, leaveRoom}}
 }

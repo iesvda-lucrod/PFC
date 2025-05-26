@@ -1,0 +1,15 @@
+.ProfilePicture {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    width: auto;
+
+    border: 2px solid transparent;
+    border-radius: 50%;
+    overflow: hidden;
+    
+}
+
+.ProfilePicture img {
+    height: 100%;
+    width: 100%;
+}
