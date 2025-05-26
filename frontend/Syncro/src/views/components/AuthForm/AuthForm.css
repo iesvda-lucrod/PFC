@@ -1,0 +1,38 @@
+.AuthForm {
+    background-color: var(--backgroundColorDark);
+    border: 2px solid var(--mainColor);
+    border-radius: 20px;
+
+    min-width: 400px;
+    margin: auto;
+
+    padding: 10px;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+
+    transition: all 0.2s ease;
+}
+
+.AuthForm > form {
+    display: flex;
+    flex-flow: column wrap;
+    width: 100%;
+    transition: height .3s ease-in-out;
+}
+
+form > * {
+    width: 100%;
+}
+
+.AuthForm .additionalActions {
+    width: 100%;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+}
+.AuthForm .additionalActions > button {
+    width: 100%;
+}
+

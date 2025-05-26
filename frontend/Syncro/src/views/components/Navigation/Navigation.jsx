@@ -27,8 +27,8 @@ export default function Navigation() {
     return (
         <div className= {"Navigation "+(!userInfo ? 'hidden':'')}>
             <div className="MenuControl">
-                <div className="MenuToggler">
-                    <button onClick={triggerMenu}><Icon_menu/></button>
+                <div className="MenuRow">
+                    <button className="triggerMenuButton" onClick={triggerMenu}><Icon_menu/></button>
                 </div>
 
                 <div className="MenuRow">
@@ -42,16 +42,16 @@ export default function Navigation() {
                 </div>
 
                 <div className="MenuRow">
-                    <button to={'/auth'} onClick={() => {handleLogoutClick()}}><Icon_power/></button>
+                    <button className="logOffButton" to={'/auth'} onClick={() => {handleLogoutClick()}}><Icon_power/></button>
                 </div>
             </div>
 
             <div className={"MenuText "+(isOpen ? 'MenuOpen' : 'MenuClosed')}>
-                
-                <div className="MenuRow"> <span>Phone</span> </div>
-                <div className="MenuRow"> <span>Profile</span> </div>
-                <div className="MenuRow"> <span>Contact</span> </div>
-                <div className="MenuRow"> <span>Log out</span> </div>
+                <div className="MenuRow buttonRow" onClick={triggerMenu}> <span>Menu</span> </div>
+                <div className="MenuRow"> <Link className='link'to={'/dashboard'}>Dashboard</Link></div>
+                <div className="MenuRow"> <Link className='link'to={'/profile'}>Profile</Link></div>
+                <div className="MenuRow"> <Link className='link'to={'/contact'}>Contact</Link></div>
+                <div className="MenuRow buttonRow"> <Link className='link logOut'to={'/contact'}>Log out</Link> </div>
             </div>
         </div>
     );

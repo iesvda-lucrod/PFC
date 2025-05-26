@@ -1,8 +1,10 @@
+import "./AuthForm.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../models/useAuth";
 import { useUserContext } from "../../../contexts/UserContext/UserContext";
 import FormInput from "../FormInput/FormInput";
+import ForgotPassword from "../ForgotPassword/ForgotPassword";
 
 export default function AuthForm() {
     const { userInfo, saveUserInContext } = useUserContext();
@@ -19,7 +21,6 @@ export default function AuthForm() {
     const [ validationErrors, setValidationErrors ] = useState({...formData});
 
     const handleChange = (event) => {
-        console.log("change", event.target.name, event.target.value);
         const field = event.target;
         setFormData({...formData, [field.name]: field.value});
         setValidationErrors({...validationErrors, [field.name]: ''});
@@ -45,6 +46,10 @@ export default function AuthForm() {
     }
     const validateRegisterData = () => {
         let errors = validateData();
+
+        if (!formData.password.match(/^(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/)) {
+            errors.password = 'Minimum 8 characters, a letter, a number and a symbol';
+        }
         
         if (formData.confirmPassword === '') {
             errors.confirmPassword = 'This field is required';
@@ -90,14 +95,17 @@ export default function AuthForm() {
             return;
         }
 
-        const userData = {...userInfo, email: response.data.user.email, id: response.data.user.id, username: response.data.user.username, JWT: response.data.JWT}
+        
+        const userData = {...userInfo, ...response.data.user, JWT:response.data.JWT}
         saveUserInContext(userData);
         navigate('/dashboard');
     };
     
 
     return (
-        <div>
+        <div className="AuthForm">
+            <h2>{isRegistering ? "Register" : "Log in"}</h2>
+
             <form onSubmit={(e) => {handleSubmit(e)}}>
 
                 <FormInput label="Email" name="email" type="text" placeholder="Enter email" onChange={(e) => handleChange(e)} validationErrorMessage={validationErrors.email}/>
@@ -112,8 +120,11 @@ export default function AuthForm() {
                 
                 <button type="submit">{isRegistering ? 'Register' : 'Log in'}</button>
             </form>
-
-            <button onClick={() => {setValidationErrors({email: '', password: '', confirmPassword: '', username: ''});setIsRegistering(!isRegistering)}}>{isRegistering ? "Already have an account?" : "Don't have an account yet?"}</button>
+                <hr/>
+            <div className="additionalActions">
+                <ForgotPassword />
+                <button onClick={() => {setValidationErrors({email: '', password: '', confirmPassword: '', username: ''});setIsRegistering(!isRegistering)}}>{isRegistering ? "Already have an account?" : "Don't have an account yet?"}</button>
+            </div>
             
         </div>
     );

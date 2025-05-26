@@ -1,13 +1,25 @@
+.loaderContainer {
+  min-width: 100%;
+  min-height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
 .loader {
-  width: 48px;
-  height: 48px;
-  border: 5px solid var(--mainColor1);
+  font-size: 10vmin;
+  border: 0.2em solid var(--mainColor);
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
-  }
+
+  aspect-ratio: 1 / 1;
+  height: 100%;
+}
 
   @keyframes rotation {
   0% {

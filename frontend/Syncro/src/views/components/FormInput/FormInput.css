@@ -1,3 +1,21 @@
 .FormInput {
     display: flex;
+    flex-flow: column wrap;
+    
+    margin: 5px 0px;
 }
+.FormInput .inputContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    
+}
+
+.FormInput .inputContainer > label {
+    margin-right: 5px;
+    min-width: 20%;
+}
+
+
+

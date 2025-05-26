@@ -1,5 +1,5 @@
 .Modal {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
@@ -15,8 +15,8 @@
 
 
 .ModalContainer {
-    background-color: var(--background1);
-    border: 10px solid var(--background2);
+    background-color: var(--baseColor);
+    border: 8px solid var(--mainColor-dark);
     border-radius: 20px;
 
     position: relative;
@@ -25,6 +25,7 @@
 
 .ModalContent {
     display: flex;
+    flex-direction: column;
 }
 
 
