@@ -1,14 +1,61 @@
-.ProfilePage{}
+.ProfilePage {
+    padding-left: var(--menuBarSpacing);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .ProfileCard {
-    border: 2px solid var(--mainColor1);
+    background-color: var(--backgroundColorBlue);
+    border: 2px solid var(--mainColorDark);
     border-radius: 20px;
 
     max-width: 500px;
     margin: auto;
 
     padding: 20px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
 }
+
+.ProfileCard .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+/* Profile picture */
+
+.cardHeader .profilePictureContainer {
+    position: relative;
+    height: 100%;
+}
+.cardHeader .profilePictureContainer .editPicture {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.2s ease;
+    color: transparent;
+}
+
+.cardHeader .profilePictureContainer .editPicture:hover {
+    background-color: black;
+    color: white;
+}
+
+/* Other fields */
 
 .emailNotVerifiedWarning {
     background-color: var(--warningColor);

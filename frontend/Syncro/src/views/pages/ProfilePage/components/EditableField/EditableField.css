@@ -1,0 +1,28 @@
+.EditableField {
+    display: flex;
+    align-items: center;
+}
+
+.EditableField label {
+    color: var(--textHighlightColor);
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.EditableField .buttons {
+    margin-left: auto;
+
+    display: flex;
+}
+
+.EditableField button {
+    margin: 4px;
+}
+
+
+.confirmChanges {
+    background-color: var(--confirmColor);
+}
+.cancelChanges {
+    background-color: var(--errorColor);
+}

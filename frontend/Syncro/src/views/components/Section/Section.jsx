@@ -4,6 +4,7 @@ import { useRoomContext } from '../../../contexts/RoomContext/RoomContext';
 import TaskForm from '../TaskForm/TaskForm';
 import { useEffect, useRef, useState } from 'react';
 import SectionForm from '../SectionForm/SectionForm';
+import { Icon_cross, Icon_plus } from '../../../assets/icons';
 
 export default function Section({ sectionInfo }) {
     const {
@@ -16,7 +17,7 @@ export default function Section({ sectionInfo }) {
     const triggerPanel = () => {
         setPanel({
             header: sectionInfo.name,
-            content: sectionInfo.description,
+            content: [sectionInfo.description],
             actions: [{key:'editSection',name:"Edit", function:editSection}],
         });
     }
@@ -43,7 +44,7 @@ export default function Section({ sectionInfo }) {
         e.stopPropagation();
         setPanel({
             header:"Create a task",
-            content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false}/>],
+            content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false} submitAction={() => triggerPanel()}/>],
             actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:triggerPanel}]
         });
     }
@@ -52,17 +53,21 @@ export default function Section({ sectionInfo }) {
         <div className="Section">
             <div className='header' onClick={triggerPanel}>
                 <h4>{sectionInfo.name}</h4>
-                <button type='button' aria-label="Add task"     onClick={(e) => showTaskForm(e)}>+</button>
-                <button type='button' aria-label="Delete task"  onClick={(e) => removeSection(e)}>X</button>
+                <div className='headerButtons'>
+                    <button type='button' aria-label="Add task"     onClick={(e) => showTaskForm(e)}><Icon_plus/></button>
+                    <button type='button' aria-label="Delete task"  onClick={(e) => removeSection(e)}><Icon_cross/></button>
+                </div>
             </div>
 
-            <div>
+            <div className='content'>
             {sectionInfo.tasks.length > 0 ? (
                 sectionInfo.tasks.map((task) => {
                     return <Task key={task.id} taskInfo={task}></Task>
                 })
                 ) : (
-                    <p>No tasks yet</p>
+                    <div className='contentWhenEmpty'>
+                        <p>No tasks yet</p>
+                    </div>
                 )
             }
             </div>

@@ -13,7 +13,7 @@ export default function Task({ taskInfo }) {
         console.log("triggerpanel with : ", header, content);
         setPanel({
             header:  header || taskInfo.title,
-            content: content || taskInfo.description,
+            content: content || [taskInfo.description],
             actions: [{key:'editTask',name:"Edit", function:editTask}, {key:'deleteTask',name: "Delete", function:removeTask}],
         });
     }
@@ -34,8 +34,7 @@ export default function Task({ taskInfo }) {
 
     return (
         <div className="Task" onClick={() => triggerPanel()}>
-            <span>ID: {taskInfo.id}</span>
-            <span>Title: {taskInfo.title}</span>
+            <span className='title'>{taskInfo.title}</span>
         </div>
     );
 }

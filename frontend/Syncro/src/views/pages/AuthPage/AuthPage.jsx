@@ -1,3 +1,4 @@
+import "./AuthPage.css";
 import { useEffect } from "react";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +13,7 @@ export default function AuthPage() {
     }, [checkLoggedStatus, navigate]);
 
     return (
-        <div className="AuthPage">
+        <div className="AuthPage page">
             <AuthForm></AuthForm>
         </div>
     );

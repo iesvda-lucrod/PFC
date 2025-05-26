@@ -1,3 +1,4 @@
+import "./EmailVerificationPage.css";
 import { useEffect, useState } from "react";
 import useAuth from "../../../models/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";

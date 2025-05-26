@@ -1,0 +1,35 @@
+.ContactPage {
+    padding-left: var(--menuBarSpacing);
+
+    padding-left: var(--menuBarSpacing);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.ContactPage .contactFormContainer {
+    background-color: var(--backgroundColorBlue);
+    border: 2px solid var(--mainColorDark);
+    border-radius: 20px;
+
+    min-width: 500px;
+    width: 80%;
+    margin: auto;
+
+    padding: 20px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
+
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.ContactPage textarea {
+    height: 5em;
+}
+
+.success {color: var(--confirmColor);}
