@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import "./RoomInvitationPage.css";
+import { useEffect, useRef, useState } from "react";
 import useAuth from "../../../models/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
@@ -15,11 +16,18 @@ export default function RoomInvitationPage() {
     const roomId = queryParams.get('room');
     const code = queryParams.get('code');
 
+    const didRun = useRef(false);
     useEffect(() => {
-        (async () => {
+
+        const triggerInvitation = async () => {
             let response = await acceptInvitation(userId, roomId, code);
             setInvitationResult(response.valid);
-        })()
+        }
+
+        if (!didRun.current) //React safe dev is running the call twice, this prevents it
+            triggerInvitation();
+
+        didRun.current = true;
     },[]);
 
 
@@ -32,12 +40,11 @@ export default function RoomInvitationPage() {
                 ) : (
                     invitationResult ? (
                         //navigate('/dashboard/'+roomId)
-                        console.log("SUCCEWSS")
+                        <p>Verification Success</p>
                     ) : (
                         <p>Verification failed</p>
                     )
                 )
-
             }
             </div>
         </div>
