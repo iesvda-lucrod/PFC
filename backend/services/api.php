@@ -12,8 +12,10 @@ require_once __DIR__."/JWT/JWT.php";
 function handleContentType(){
     $rawData = file_get_contents('php://input');
 
-    if ($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded') return  $rawData;
-    if ($_SERVER['CONTENT_TYPE'] == 'application/json') return json_decode($rawData, true);
+    if (    str_starts_with($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded')
+    || str_starts_with($_SERVER['CONTENT_TYPE'], 'multipart/form-data')) return  $_POST;
+
+    if ($_SERVER['CONTENT_TYPE'] === 'application/json') return json_decode($rawData, true);
 
     sendResponse(valid:false, message:'Unsuported media type', responseCode:415);
 }
@@ -25,7 +27,7 @@ function handleCorsRequest() {
     header("Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS");
 
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        sendResponse([],204);
+        sendResponse(true,'Pass preflight request', responseCode:204);
     }
 }
 
@@ -36,7 +38,6 @@ function handleCorsRequest() {
  * @return void
  */
 function sendResponse($valid, $message, $data = null, $errors = null, $responseCode = 200) {
-    header('Content-Type: application/json');
 
     $response = [
         'valid' => $valid,
