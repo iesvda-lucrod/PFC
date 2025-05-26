@@ -31,7 +31,8 @@ export default function RoomInvitationPage() {
                     <LoadingSpinner />
                 ) : (
                     invitationResult ? (
-                        navigate('/dashboard/'+roomId)
+                        //navigate('/dashboard/'+roomId)
+                        console.log("SUCCEWSS")
                     ) : (
                         <p>Verification failed</p>
                     )
