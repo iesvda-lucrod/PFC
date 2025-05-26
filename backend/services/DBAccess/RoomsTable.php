@@ -32,11 +32,20 @@ class RoomsTable extends DBConnection {
         return $result;
     }
     public function getUserRooms($user_id) {
+        
         $this->execPreparedQuery(
-            "SELECT rooms.*, users_rooms.user_id FROM rooms JOIN users_rooms ON rooms.id = users_rooms.room_id WHERE users_rooms.user_id = :user_id",
+            "SELECT rooms.*, users_rooms.user_id FROM rooms JOIN users_rooms ON rooms.id = users_rooms.room_id WHERE users_rooms.user_id = :user_id AND role = 'owner'",
             [':user_id' => $user_id]
         );
-        $result = $this->getAllRows();
+        $ownRooms = $this->getAllRows();
+
+        $this->execPreparedQuery(
+            "SELECT rooms.*, users_rooms.user_id FROM rooms JOIN users_rooms ON rooms.id = users_rooms.room_id WHERE users_rooms.user_id = :user_id AND role != 'owner'",
+            [':user_id' => $user_id]
+        );
+        $memberRooms = $this->getAllRows();
+
+        $result = ['ownRooms' => $ownRooms, 'memberRooms' => $memberRooms];
         return $result;
     }
 
@@ -63,5 +72,23 @@ class RoomsTable extends DBConnection {
             $this->rollBack();
             throw $e;
         }
+    }
+
+    public function leaveRoom($userId, $roomId) {
+        $this->beginTransaction();
+        try {
+            $result = $this->execPreparedQuery("DELETE FROM users_rooms WHERE user_id = :user_id AND room_id = :room_id",
+                [
+                ':user_id' => $userId,
+                ':room_id' => $roomId,
+                ]
+            );
+            $this->commit();
+            return $result;
+        } catch (\Throwable $th) {
+            $this->rollback();
+            throw $th;
+        }
+        
     }
 }

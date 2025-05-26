@@ -4,7 +4,16 @@ require_once __DIR__ . '/DBConnection.php';
 class UsersTable extends DBConnection{ 
     public function __construct()
     {
-        parent::__construct("users", "id, email, username");
+        parent::__construct("users", "id, email, username, profile_picture");
+    }
+
+    //Check if the user is present in the database
+    public function isRegistered($data) {
+        $duplicates = $this->getUserFromEmail($data['email']);
+        if ($duplicates) {
+            return true;
+        }
+        return false;
     }
 
     /**
