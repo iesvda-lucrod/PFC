@@ -6,6 +6,7 @@ require_once __DIR__.'/../services/api.php';
 handleCorsRequest();
 
 require_once __DIR__."/../services/DBAccess/RoomsTable.php";
+
 $table = new RoomsTable();
 $token = verifyToken();
 
@@ -38,11 +39,20 @@ switch($_SERVER['REQUEST_METHOD']){
 
         if ($table->hasDuplicates($payload['user_id'], $payload['room'])) {sendResponse(valid:false, message:'There was a problem creating the room', errors: ['name' => 'Room with same name already exists']);}
         $roomInfo = $table->createRoom($payload);
-        sendResponse(valid:true, message:'Room created successgully', data:['room' => $roomInfo]);
+        sendResponse(valid:true, message:'Room created successfully', data:['room' => $roomInfo]);
         break;
 
     case "DELETE":
         $payload = handleContentType();
+
+        if (isset($payload['action'])) {
+            if ($payload['action'] === 'leaveRoom') {
+                $table->leaveRoom($payload['userId'], $payload['roomId']);
+                sendResponse(valid:true, message:'Left room successfully');
+            }
+        }
+
+
         $result = $table->delete($payload['id']);
         if (!$result) sendResponse(['message' => 'There was an error deleting the room'], 500);
         sendResponse(valid:true, message:'Room deleted successfully');
