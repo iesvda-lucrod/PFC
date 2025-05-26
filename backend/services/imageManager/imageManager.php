@@ -1,29 +1,27 @@
 <?php
-$token = verifyToken();
+function uploadProfilePicture($userInfo) {
 
-    $IMAGE_FOLDER_URL = __DIR__ . '/../../assets/images/';
+    if (!isset($_FILES['profile_picture'])) 
+        sendResponse(valid:false, message:'There was a problem updating the profile picture', errors:['image' => 'No image selected'], responseCode:400);
+    
+    $file = $_FILES['profile_picture'];
+    $allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+    if (!in_array($file['type'], $allowedTypes)) 
+        sendResponse(valid:false, message:'There was a problem updating the profile picture', errors:['image' => 'Invalid file type'], responseCode:400);
 
-    switch($_SERVER['REQUEST_METHOD']){
-        case "POST":
-            $img_temp_path = $_FILES['image']['tmp_path'];
-            $img_name = $_FILES['image']['tmp_path'];
-            move_uploaded_file($img_temp_path, $IMAGE_FOLDER_URL.$img_name);
-            sendResponse(valid:true);
-            break;
+    $targetDir = __DIR__.'/../../assets/images/profile_pictures/';
+    $fileName = uniqid() . '-' . basename($file['name']);
+    $targetPath = $targetDir . $fileName;
 
-        case "DELETE":
-            $result = unlink($IMAGE_FOLDER_URL.$imgInfo['imgUrl']);
-            if (!$result) {
-                http_response_code(500);
-                echo json_encode(["message" => "Failed to delete the file"]);
-                exit;
-            }
-            echo json_encode($result); //this returns true
-            break;
-        case "PUT":
 
-            break;
-    }
-    exit;
+    if (!move_uploaded_file($file['tmp_name'], $targetPath))
+        sendResponse(valid:false, message:'There was a problem updating the profile picture', errors:['server' => 'There was a problem uploading the image'], responseCode:500);
 
+    if ($userInfo['profile_picture'] !== 'default.png') unlink($targetDir.$userInfo['profile_picture']);
+
+    $table = new UsersTable();
+
+    $table->update(['id' => $userInfo['id']], ['profile_picture' => $fileName]);
+    sendResponse(valid:true, message:'Image uploaded successfully', data:['profile_picture' => $fileName]);
+}
    
