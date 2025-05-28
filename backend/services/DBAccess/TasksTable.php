@@ -48,6 +48,97 @@ class TasksTable extends DBConnection {
         }
     }
 
+    public function deleteTask($taskInfo)  {
+        try {
+            $this->beginTransaction();
+            $targetPosition = $taskInfo['position'];
+
+            $this->delete($taskInfo['id']);
+            $this->execPreparedQuery(
+                "UPDATE tasks SET position = position - 1 WHERE position > :position",
+                [':position' => $targetPosition]
+            );
+
+            $this->commit();
+        } catch (Error $e) {
+            $this->rollback();
+            logError($e);
+        }
+
+    }
+
+    public function reorderTask($movedTask, $targetTask) {
+
+        try {
+            $this->beginTransaction();
+
+
+            if ($movedTask['section_id'] !== $targetTask['section_id']) {
+                $this->execPreparedQuery("UPDATE tasks SET position = position -1 WHERE section_id = :movedSection AND position > :movedPosition",
+                [
+                        ':movedSection' => $movedTask['section_id'],
+                        ':movedPosition' => $movedTask['position'],
+                    ]
+                );
+
+                $this->execPreparedQuery("UPDATE tasks SET position = position +1 WHERE section_id = :targetSection AND position > :targetPosition",
+                [
+                        ':targetSection' => $targetTask['section_id'],
+                        ':targetPosition' => $targetTask['position'],
+                    ]
+                );
+            } else {
+                $modifier = -1;
+                $minPosition = $movedTask['position'];
+                $maxPosition = $targetTask['position'];
+                if ((int) $movedTask['position'] > (int) $targetTask['position']) {
+                    $minPosition = $targetTask['position'];
+                    $maxPosition = $movedTask['position'];
+                    $modifier = 1;
+                }
+
+                /*
+                echo "changing tasks between $minPosition and $maxPosition";
+                echo "UPDATE tasks SET position = position + :modifier WHERE section_id = :targetSection AND position > :minPosition AND position < :maxPosition ";
+                var_dump([
+                        ':modifier' => $modifier,
+                        ':targetSection' => $targetTask['section_id'],
+                        ':minPosition' => $minPosition,
+                        ':maxPosition' => $maxPosition,
+                ]);*/
+                $this->execPreparedQuery("UPDATE tasks SET position = position + :modifier WHERE section_id = :targetSection AND position >= :minPosition AND position <= :maxPosition ",
+                    [
+                        ':modifier' => $modifier,
+                        ':targetSection' => $targetTask['section_id'],
+                        ':minPosition' => $minPosition,
+                        ':maxPosition' => $maxPosition,
+                    ]
+                );
+            }
+
+            $this->execPreparedQuery("UPDATE tasks SET position = :targetPosition, section_id = :targetSection WHERE id = :movedId",
+                [
+                    ':targetPosition' => $targetTask['position'],
+                    ':targetSection' => $targetTask['section_id'],
+                    ':movedId' => $movedTask['id'],
+                ]
+            );
+
+            $this->execPreparedQuery("UPDATE tasks SET position = :targetPosition, section_id = :targetSection WHERE id = :movedId",
+                [
+                    ':targetPosition' => $targetTask['position'],
+                    ':targetSection' => $targetTask['section_id'],
+                    ':movedId' => $movedTask['id'],
+                ]
+            );
+
+            $this->commit();
+        } catch (Error $e) {
+            logError($e);
+            $this->rollback();
+        }
+    }
+
     public function getParentSection($taskData) {
         try {
             $this->beginTransaction();

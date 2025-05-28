@@ -25,14 +25,6 @@
     opacity: 0.5;
 }
 
-.Task.dragOver {
-    background-color: red;
-}
-
-
-.Task.draggingOverTop {
-    box-shadow: 0px  4px 0px black inset, 0px -4px 0px black;
-}
-.Task.draggingOverBottom {
-    box-shadow: 0px -4px 0px black inset, 0px  4px 0px black;
+.Task.draggingOver {
+    box-shadow: 0px  -4px 0px black inset, 0px 4px 0px black;
 }

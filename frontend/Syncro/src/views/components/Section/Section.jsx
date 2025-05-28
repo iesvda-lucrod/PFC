@@ -51,7 +51,7 @@ export default function Section({ sectionInfo }) {
     const showTaskForm = (e) => {
         e.stopPropagation();
         setPanel({
-            header:"Create a task",
+            header:"Create a task on "+sectionInfo.name,
             content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false}/>],
             actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:triggerPanel}]
         });

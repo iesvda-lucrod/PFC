@@ -8,7 +8,7 @@ export default function Task({ taskInfo }) {
         task: { taskModel },
         sidePanel: { setPanel, resetPanel , setPanelOpen}
     } = useRoomContext();
-    const { dragStyle, dragMethods} = useDrag();
+    const { dragStyle, dragMethods} = useDrag(taskModel);
 
     const triggerPanel = () => {
         setPanel({
@@ -41,7 +41,7 @@ export default function Task({ taskInfo }) {
     return (
         <div className={"Task "+dragStyle} onClick={() => triggerPanel()}
         draggable={true}
-            onDragStart={(e) => dragMethods.handleDragStart(e)}
+            onDragStart={(e) => dragMethods.handleDragStart(e, taskInfo)}
             
             onDragEnter={(e) => dragMethods.handleDragEnter(e)}
             onDragOver={(e) => dragMethods.handleDragOver(e, taskInfo)}
@@ -49,7 +49,7 @@ export default function Task({ taskInfo }) {
 
             onDragEnd={(e) => dragMethods.handleDragEnd(e)}
 
-            onDrop={(e) => dragMethods.handleDrop(e)}
+            onDrop={(e) => dragMethods.handleDrop(e, taskInfo)}
 
         >
             <div className={'taskContent' +(taskInfo.done ? ' done': '')}>
@@ -60,11 +60,13 @@ export default function Task({ taskInfo }) {
 }
 
 
-const useDrag = () => {
+const useDrag = (taskModel) => {
     const  [style, setStyle ] = useState('');
 
-    const handleDragStart = (e) => {
-        e.dataTransfer.setData("Text", e.target.id);
+    const handleDragStart = (e, taskInfo) => {
+        const data = JSON.stringify(taskInfo);
+        console.log(data);
+        e.dataTransfer.setData("text/plain", data);
         e.dataTransfer.dropEffect = "move";
         console.log("DRAG START");
         
@@ -74,29 +76,36 @@ const useDrag = () => {
         console.log(" ENTER");
      
     }
-    const handleDragOver = (e, taskInfo) => {
+    const handleDragOver = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        //if (taskInfo.id == e.dataTransfer)
-        console.log("E", e, "datatransfer", e.dataTransfer);
-
-        var rect = e.target.getBoundingClientRect();
-        var x = e.clientX - rect.left; //x position within the element.
-        var y = e.clientY - rect.top;  //y position within the element.
-        //console.log("Left? : " + x + " ; Top? : " + y + ". --> drop top", (y < rect.height / 2));
-
-        if (y < rect.height / 2) setStyle('draggingOverTop');
-        else setStyle("draggingOverBottom");
+        setStyle("draggingOver");
     }
     const handleDragLeave = (e) => {
         console.log("Drag exit");
         setStyle('');
     }
 
-    const handleDrop = () => {
-        console.log("drop");
-        setStyle('');
+    const handleDrop = async (e, taskInfo) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("dropping ", e.dataTransfer, "current", e.currentTarget);
+
+        e.currentTarget.getBoundingRect();
+
+        console.log(e.dataTransfer.getData('text/plain'));
+        
+        const currentTask = JSON.parse(e.dataTransfer.getData('text/plain'));
+        const droppedTask = taskInfo;
+
+        if (currentTask.id === droppedTask.id) return;
+
+        let result = await taskModel.reorderTask(currentTask, droppedTask);
+        console.log(result);
+
+        e.dataTransfer.clearData();
     }
+    
     const handleDragEnd = (e) => {
         setStyle('');
     }

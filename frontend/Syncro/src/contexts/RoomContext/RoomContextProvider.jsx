@@ -43,10 +43,13 @@ export function RoomContextProvider({ roomId, children }) {
 
         console.log("Fetching room tasks...");
         const sectionIds = sectionResponse.data.map((section) => section.id);
+        console.log("SECTION IDS", sectionIds);
         const taskResponse = await taskCRUDModel.getSectionTasks(sectionIds);
+        let sortedTaskResponse = taskResponse.data.sort((a, b) => a.position - b.position);
+
 
         console.log("Organizing tasks by section...");
-        let organizedTasks = taskResponse.data.reduce((orderedObj, task) => {
+        let organizedTasks = sortedTaskResponse.reduce((orderedObj, task) => {
             if (orderedObj[task.section_id]) orderedObj[task.section_id].push(task);
             else orderedObj[task.section_id] = [task];
             return orderedObj;
@@ -60,9 +63,9 @@ export function RoomContextProvider({ roomId, children }) {
 
         setRoomInfo(roomResponse.data);
         setSections(sectionResponse.data);
-        setTasks(taskResponse.data);
+        setTasks(sortedTaskResponse);
 
-        console.log("Room information:", roomResponse.data, "Sections:",sectionResponse.data, "Tasks:", taskResponse.data);
+        console.log("Room information:", roomResponse.data, "Sections:",sectionResponse.data, "Tasks:", sortedTaskResponse);
         console.log("Initiating web socket...");
         await initWebSocket();
         console.log("Websocket initiated");
@@ -132,6 +135,12 @@ export function RoomContextProvider({ roomId, children }) {
                     const taskIndex = sectionTasks.findIndex((task) => task.id === payload.data.id);
                     newTaskList[taskIndex] = payload.data;
                     setIndividualSection(payload.data.section_id, {...getTaskSection(payload.data), tasks: newTaskList});
+                }
+                if (payload.operationType === 'reorder') {
+                    payload.data.forEach((updatedSection) =>  {
+                        console.log("updating ", updatedSection);
+                        setIndividualSection(updatedSection.id, updatedSection);
+                    });
                 }
                 break;
             case 'section':

@@ -59,7 +59,6 @@ export default function RoomBar({ roomInfo, role }) {
                 <div className='userList'>
                     {
                         activeUsers.map((data, index) => {
-                            console.log("active user:", data);
                             if (index > 2) return;
                             if (data === null) return;
                             return <ProfilePicture key={data.user} pictureName={data.profile_picture}></ProfilePicture>

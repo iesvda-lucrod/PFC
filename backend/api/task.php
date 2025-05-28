@@ -33,7 +33,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "DELETE":
         $payload = handleContentType();
         try {
-            $table->delete($payload['id']);
+            $table->deleteTask($payload);
             $room = $table->getParentSection($payload)['room_id'];
             sendToUsers($room, 'task', 'delete', $payload);
             sendResponse(valid: true, message:'Task deleted successfully');
@@ -46,6 +46,27 @@ switch($_SERVER['REQUEST_METHOD']){
     case "PUT":
         $payload = handleContentType();
         try {
+            if (isset($payload['action'])) {
+                if ($payload['action'] === 'reorderTask') {
+                    $table->reorderTask($payload['movedTask'], $payload['targetTask'], $payload['under']);
+
+                    $updatedSections = [];
+                    $movedSectionData = $table->getParentSection($payload ['movedTask']);
+                    $movedSectionData['tasks'] = $table->selectByField('section_id', $payload['movedTask']['section_id']);
+                    $updatedSections[] = $movedSectionData;
+                    if ($payload['movedTask']['section_id'] !== $payload['movedTask']['section_id']) {
+                        $targetSectionData = $table->getParentSection($payload ['targetTask']);
+                        $targetSectionData['tasks'] = $table->selectByField('section_id', $payload['targetTask']['section_id']);
+                        $updatedSections[] = $targetSectionData;
+                    }
+
+                    $room = $table->getParentSection($payload['movedTask'])['room_id'];
+                    sendToUsers($room, 'task', 'reorder', $updatedSections);
+                    sendResponse(valid:true, message:"Tasks reordered successfully", data:$updatedSections);
+                }
+            }
+
+
             $table->update(['id' => $payload['id']], $payload);
             $room = $table->getParentSection($payload)['room_id'];
             sendToUsers($room, 'task', 'update', $payload);
