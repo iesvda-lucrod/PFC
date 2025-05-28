@@ -29,7 +29,7 @@ export default function ForgotPassword ({ userEmail = '' }) {
     return (
         <div>
             <p className="link" onClick={() => setOpenModal(true)}>Forgot your password?</p>
-            <Modal isOpen={openModal} setIsOpen={setOpenModal} >
+            <Modal isOpen={openModal} onClose={() => setOpenModal(false)} >
                 <form onSubmit={handleSubmit}>
                     <FormInput label={'Email'} name={'email'} type="email" placeholder="Enter your account's email"
                     value={formData.email}

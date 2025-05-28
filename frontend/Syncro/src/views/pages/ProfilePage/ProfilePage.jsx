@@ -147,7 +147,7 @@ export default function ProfilePage() {
                             </div>
                         </div>
 
-                        <Modal isOpen={openPFPModal} setIsOpen={setOpenPFPModal}>
+                        <Modal isOpen={openPFPModal} onClose={() => setOpenPFPModal(false)}>
                             <form onSubmit={(e) => handlePFPChange(e)} encType="multipart/form-data">
                                 <input type="file" name="profile_picture" onChange={(e) => setSelectedImage(e.target.files[0])}/>
                                 <button type="submit">Change profile picture</button>
@@ -184,7 +184,7 @@ export default function ProfilePage() {
                     </div>
 
                     <button onClick={() => setOpenPasswordModal(true)}>Change password</button>
-                    <Modal isOpen={openPasswordModal} setIsOpen={setOpenPasswordModal}>
+                    <Modal isOpen={openPasswordModal} onClose={() => setOpenPasswordModal(false)}>
                         
                         <form onSubmit={(e) => updatePassword(e)}>
                             <FormInput label='Old password' name={'oldPassword'} type="password" placeholder="Enter old password..."
@@ -209,7 +209,7 @@ export default function ProfilePage() {
 
                     <button onClick={() => setOpenConfirmDeleteModal(true)}>Delete account</button> 
 
-                    <Modal isOpen={openConfirmDeleteModal} setIsOpen={setOpenConfirmDeleteModal}>
+                    <Modal isOpen={openConfirmDeleteModal} onClose={() => setOpenConfirmDeleteModal(false)}>
                         <p>Are you sure you want to delete your account?</p>
                         <p>This action is irreversible</p>
                         <button className="deleteButton" onClick={deleteAccount}>Delete account</button>

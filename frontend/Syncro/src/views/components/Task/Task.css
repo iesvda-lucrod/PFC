@@ -1,20 +1,38 @@
 .Task {
+    padding: 2px 4px;
+}
+.Task:hover {
+    border-color: var(--mainColor);
+}
+
+.Task .taskContent {
     border: 2px solid var(--mainColor-dark);
     border-radius: 10px;
-    margin: 4px 0;
 
     background-color: var(--baseColor);
     padding: 4px;
 
     transition: background-color 0.2s ease;
+    user-select: none
 }
-.Task:hover {
-    border-color: var(--mainColor);
-}
-.Task:active {
-    background-color: var(--mainColor-light);
+.Task .taskContent.done {
+    text-decoration:line-through;
+    opacity: 0.5;
+    border-style: dashed;
 }
 
-.Task .title {
+.Task.dragStart {
+    opacity: 0.5;
+}
 
+.Task.dragOver {
+    background-color: red;
+}
+
+
+.Task.draggingOverTop {
+    box-shadow: 0px  4px 0px black inset, 0px -4px 0px black;
+}
+.Task.draggingOverBottom {
+    box-shadow: 0px -4px 0px black inset, 0px  4px 0px black;
 }

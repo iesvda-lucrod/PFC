@@ -1,15 +1,20 @@
 .Section {
+    background-color: var(--baseColor);
     border: 2px solid var(--mainColor-dark);
     border-radius: 20px;
-    margin: 20px;
+
+    flex-grow: 1;
     width: 400px;
+    max-width: 400px;
+    margin: 0 20px;
 
-    display: flex;
-    flex-direction: column;
-
-    background-color: var(--baseColor);
+    min-height: 0;
+    max-height: 100%;
 
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .Section .header {
@@ -20,6 +25,7 @@
 
     text-overflow: ellipsis;
     height: 50px;
+    flex-shrink: 0;
 }
 .Section .header .headerButtons {
     display: flex;
@@ -41,16 +47,28 @@
 
 .Section .content {
     background-color: var(--baseColor-dark);
-    flex: 1;
 
+    flex-grow: 1;
+    
+    overflow: auto;
+    
+    /* for Firefox */
+    min-height: 0;
     border-radius: 10px;
-    padding: 4px;
-    overflow-y: scroll;
+
+    transition: filter 0.2s ease;
 }
+.Section .content .Task:first-of-type {padding-top: 10px;}
+.Section .content .Task:last-of-type {padding-bottom: 10px;}
 
 .Section .contentWhenEmpty {
     height: 100%;
+    padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.Section .content.draggingOver {
+    filter: brightness(0.5);
 }

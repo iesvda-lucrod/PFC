@@ -2,11 +2,12 @@ import './RoomPage.css';
 import { useRoomContext } from "../../../contexts/RoomContext/RoomContext";
 import RoomBar from "../../components/RoomBar/RoomBar";
 import RoomWorkspace from "../../components/RoomWorkspace/RoomWorkspace";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RoomSidePanel from '../../components/RoomSidePanel/RoomSidePanel';
 import useAuth from '../../../models/useAuth';
 import { useUserContext } from '../../../contexts/UserContext/UserContext';
+import Modal from "../../components/Modal/Modal";
 
 export default function RoomPage({ roomId }) {
     const navigate = useNavigate();
@@ -16,11 +17,13 @@ export default function RoomPage({ roomId }) {
     
     const {
         loadRoom,
-        room: {roomInfo, roomModel},
+        room: { roomInfo, roomModel },
         section: {sections},
         sidePanel: { resetPanel },
         webSocket
     } = useRoomContext(roomId, token);
+
+    const [ role, setRole ] = useState(null);
 
     const hasRunRef = useRef(false);
     useEffect(() => {
@@ -33,8 +36,11 @@ export default function RoomPage({ roomId }) {
 
             console.log("Checking user is a member of the room...");
             const response = await roomModel.getRoomMembers(roomId);
-            const memberIds = response.data.map((member) => (member.id));
-            return memberIds.includes(storedUserInfo.id);
+            const found = response.data.find((member) => member.id === storedUserInfo.id)
+
+            if (found === undefined) return false;
+            setRole(found.role);
+            return true;
         }
 
         (async () => {
@@ -44,12 +50,15 @@ export default function RoomPage({ roomId }) {
             } else {
                 console.log("Fetching room information...");
                 await loadRoom();
-
-                console.log("Broadcasting");
                 webSocket.joinRoom(userInfo, roomId);
             }
         })();
     }, []);
+
+    useEffect(() => {
+        if (!webSocket.isOpen) 
+        console.log("CONNECTION CLOSED NAHHHH");
+    }, [webSocket.isOpen]);
 
     const hasLoaded = useRef(false);
     useEffect(() => {
@@ -63,16 +72,19 @@ export default function RoomPage({ roomId }) {
     return (
         <div className="page RoomPage">
             {
-                roomInfo && <RoomBar roomInfo={roomInfo}/>
+                roomInfo && <RoomBar roomInfo={roomInfo} role={role}/>
             }
             
             <div className='roomContent'>
                 {
-                    sections && <RoomWorkspace sections={sections}/>
+                    sections && <RoomWorkspace sections={sections} role={role}/>
                 }
                 <RoomSidePanel></RoomSidePanel>
             </div>
             
+            <Modal isOpen={(!webSocket.isOpen)} onClose={() => navigate('/dashboard')}>
+                Connection lost
+            </Modal>
         </div>
     );
 }

@@ -13,14 +13,23 @@ export default function TaskForm({ sectionId, taskData = {}, editMode = false , 
         title: taskData.title || '',
         description: taskData.description || '',
     });
+    const [ validationErrors, setValidationErrors  ] = useState({
+        title:'',
+    });
 
     const handleChange = (e) => {
         const field = e.target;
         setFormData({...formData, [field.name]: field.value});
+        setValidationErrors(prev => ({...prev, [e.target.name]: ''}));
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!formData.title) {
+            setValidationErrors(prev => ({...prev, title:'This field is required'}));
+            return;
+        }
         console.log("subbmitting, formdata: ", formData);
         if (editMode) {
             console.log("updating, taskData", taskData, "formdata", formData, "result", {...taskData, ...formData});
@@ -36,7 +45,7 @@ export default function TaskForm({ sectionId, taskData = {}, editMode = false , 
 
     return (
         <form id='TaskForm' onSubmit={(e) => {handleSubmit(e)}}>
-            <FormInput label='Title' name='title' placeholder='Task title...' value={formData.title} onChange={(e) => {handleChange(e)}} ></FormInput>
+            <FormInput label='Title' name='title' placeholder='Task title...' value={formData.title} validationErrorMessage={validationErrors.title} onChange={(e) => {handleChange(e)}} ></FormInput>
             <FormInput label='Description' name='description' placeholder='Task description...' value={formData.description} onChange={(e) => {handleChange(e)}}></FormInput>
         </form>
     )

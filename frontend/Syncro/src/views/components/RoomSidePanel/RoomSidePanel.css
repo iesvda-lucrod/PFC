@@ -30,16 +30,23 @@
 }
 
 .RoomSidePanel .content {
-    border-radius: 20px;
-    padding: 10px;
     flex: 1;
+
+    padding: 10px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: start;
+
+    gap: 10px;
+    overflow-y: scroll;
 }
 
 .RoomSidePanel .componentContainer,
 .detailsTitle {
     background-color: var(--baseColor-dark);
     border-radius: 20px;
-    padding: 20px;
+    padding: 20px;    
 }
 
 .detailsTitle {
@@ -83,8 +90,6 @@
 
     transition: background-color 0.2s ease;
     z-index: 5;
-}
-.RoomSidePanel .toggleButton:hover {
 }
 
 .RoomSidePanel .toggleButton button {

@@ -13,7 +13,7 @@ Co::set(['hook_flags'=> OpenSwoole\Runtime::HOOK_ALL]);
 $server = new Server("0.0.0.0", 9502);
 $server->set([
     'heartbeat_check_interval' => 60*5,   // Check every 30 seconds
-    'heartbeat_idle_time' => 60*20,        // Disconnect if idle for 60 seconds
+    'heartbeat_idle_time' => 60*20,       // Disconnect if idle for 60 seconds
 ]);
 
 $client = new Predis\Client('tcp://127.0.0.1:6379'."?read_write_timeout=-1");
@@ -76,7 +76,7 @@ function sendToRoom($roomName, $message) {
     $connections = getRoomConnections($roomName);
     foreach($connections as $connection) {
         if ($server->isEstablished($connection)) $server->push($connection, json_encode($message));
-        else {$server->}
+        else {$server->disconnect($connection);}
     }
 }
 
@@ -95,6 +95,10 @@ function processMessage($messageData, $fd = null) {
         case 'leaveRoom':
             echo "-->Removing connection $fd from tables\n";
             removeConnectionFromRoom($fd);
+
+            $data = array_values(getRoomConnectionsInfo($messageData['room']));
+            echo "\n-->sending back: "; var_dump($data);
+            sendToRoom($messageData['room'], ['targetType' => 'connection', 'operationType' => 'updateActiveUsers', 'data' => $data]);
             break;
         case 'broadcast':
             sendToRoom($messageData['room'], ['targetType' => $messageData['targetType'], 'operationType' => $messageData['operationType'], 'data' => $messageData['data']]);

@@ -3,10 +3,11 @@ export default class Task {
     id;
     title;
     description;
-    constructor({sectionId, title, description = '', id = null}) {
+    constructor({sectionId, title, description = '', id = null, done}) {
         this.section_id = sectionId;
         this.id = id;
         this.title = title;
         this.description = description;
+        this.done = done
     }
 }

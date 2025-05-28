@@ -71,7 +71,7 @@ export default function DashboardPage() {
                     {
                         isLoading ? <LoadingSpinner /> :
                         (userInfo && userInfo.ownRooms) && userInfo.ownRooms.map((room) =>
-                           <RoomCard key={room.id} roomInfo={room} onClose={() => {deleteRoom(room.id)}}/>
+                           <RoomCard key={room.id} roomInfo={room} onClose={() => {deleteRoom(room.id)}} />
                         )
                     }
                     </div>
@@ -90,7 +90,7 @@ export default function DashboardPage() {
                     {
                         isLoading ? <LoadingSpinner /> :
                         (userInfo && userInfo.memberRooms) && userInfo.memberRooms.map((room) =>
-                           <RoomCard key={room.id} roomInfo={room} onClose={() => {leaveRoom(room.id)}}/>
+                           <RoomCard key={room.id} roomInfo={room} onClose={() => {leaveRoom(room.id)}} />
                         )
                     }
                     </div>
@@ -103,7 +103,7 @@ export default function DashboardPage() {
             
             {
                 openRoomForm ?
-                <Modal isOpen={openRoomForm} setIsOpen={setOpenRoomForm}>
+                <Modal isOpen={openRoomForm} onClose={() => setOpenRoomForm(false)}>
                     <RoomForm submitAction={() => {setOpenRoomForm(false)}}></RoomForm>
                 </Modal>
                 : <></>

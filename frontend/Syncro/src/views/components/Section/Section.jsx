@@ -5,6 +5,7 @@ import TaskForm from '../TaskForm/TaskForm';
 import { useEffect, useRef, useState } from 'react';
 import SectionForm from '../SectionForm/SectionForm';
 import { Icon_cross, Icon_plus } from '../../../assets/icons';
+import Modal from '../Modal/Modal';
 
 export default function Section({ sectionInfo }) {
     const {
@@ -14,10 +15,12 @@ export default function Section({ sectionInfo }) {
     }  = useRoomContext();
     const [ showConfirmationModal, setShowConfirmationModal] = useState();
 
+    const [ dragStyle, setDragStyle ] = useState('');
+
     const triggerPanel = () => {
         setPanel({
             header: sectionInfo.name,
-            content: [sectionInfo.description],
+            content: [sectionInfo.description, <>Tasks: {sectionInfo.tasks.length}</>],
             actions: [{key:'editSection',name:"Edit", function:editSection}],
         });
     }
@@ -26,7 +29,12 @@ export default function Section({ sectionInfo }) {
         e.stopPropagation();
         if (sectionInfo.tasks.length > 0) { //TODO confirmation modal
             setShowConfirmationModal(true);
+            return;
         }
+        await deleteSection();
+    }
+    const deleteSection = async () => {
+        setShowConfirmationModal(false);
         const response = await sectionModel.deleteSection(sectionInfo);
         resetPanel();
     }
@@ -44,10 +52,23 @@ export default function Section({ sectionInfo }) {
         e.stopPropagation();
         setPanel({
             header:"Create a task",
-            content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false} submitAction={() => triggerPanel()}/>],
+            content: [<TaskForm key='taskForm' sectionId={sectionInfo.id} editMode={false}/>],
             actions: [{key:'confirmTask', name:"Confirm", targetForm:'TaskForm'},{key:'cancelTask',name:'Cancel', function:triggerPanel}]
         });
     }
+
+    const handleDragOver = () =>  {
+        console.log("DRAGGING OVER SERCTION");
+        setDragStyle('draggingOver');
+    }
+    const handleDragLeave = () =>  {
+        setDragStyle('');
+        
+    }
+    const handleDrop = () =>  {
+        setDragStyle('');
+    }
+    
 
     return (
         <div className="Section">
@@ -59,7 +80,7 @@ export default function Section({ sectionInfo }) {
                 </div>
             </div>
 
-            <div className='content'>
+            <div className={'content '+dragStyle} onDragOver={(e) => handleDragOver(e)}  onDragLeave={(e) => handleDragLeave(e)} onDrop={(e) => handleDrop(e)}>
             {sectionInfo.tasks.length > 0 ? (
                 sectionInfo.tasks.map((task) => {
                     return <Task key={task.id} taskInfo={task}></Task>
@@ -71,6 +92,12 @@ export default function Section({ sectionInfo }) {
                 )
             }
             </div>
+
+
+            <Modal isOpen={showConfirmationModal} onClose={() => setShowConfirmationModal(false)}>
+                <p>This section still contains tasks, are you sure you want to delete the section?</p>
+                <button onClick={deleteSection}>Yes, delete the section</button>
+            </Modal>
         </div>
     );
 }

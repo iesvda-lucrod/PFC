@@ -23,7 +23,7 @@ export default function RoomSidePanel() {
             <div className="content">
             {
                 panelInfo.content.map((component, index) => {
-                    console.log("COMPONENT: ", component);
+                    //console.log("COMPONENT: ", component);
                     if (!component) return;
                     return (
                     <div key={component.key+index} className='componentContainer'>

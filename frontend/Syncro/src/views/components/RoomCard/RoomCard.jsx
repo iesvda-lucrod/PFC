@@ -1,7 +1,7 @@
 import './RoomCard.css';
 import { Link } from 'react-router-dom';
 
-export default function RoomCard({roomInfo, onClose}) {
+export default function RoomCard({roomInfo, onClose }) {
 
     return (
         <div className='RoomCard'>

@@ -12,15 +12,25 @@ export default function SectionForm({sectionData = {}, editMode = false, submitA
 
     const [ formData, setFormData ] = useState({
         name: sectionData.name || '',
+        description: sectionData.description || '',
+    });
+    const [ validationErrors, setValidationErrors  ] = useState({
+        name:'',
     });
 
     const handleChange = (e) => {
         const field = e.target;
         setFormData({...formData, [field.name]: field.value});
+        setValidationErrors(prev => ({...prev, [e.target.name]:''}));
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.name) {
+            setValidationErrors(prev => ({...prev, name:'This field is required'}));
+            return;
+        }
+
         if (editMode){
             console.log("updating, taskData", sectionData, "formdata", formData, "result", {...sectionData, ...formData});
             await sectionModel.updateSection({...sectionData, ...formData});
@@ -34,7 +44,8 @@ export default function SectionForm({sectionData = {}, editMode = false, submitA
 
     return (
         <form id='SectionForm' onSubmit={(e) => {handleSubmit(e)}}>
-            <FormInput label='Name' name={'name'} placeholder='Section name...' value={formData.name} onChange={(e) => {handleChange(e)}}/>
+            <FormInput label='Name' name={'name'} placeholder='Section name...' value={formData.name} validationErrorMessage={validationErrors.name} onChange={(e) => {handleChange(e)}}/>
+            <FormInput label='Description' name={'description'} placeholder='Section description...' value={formData.description} onChange={(e) => {handleChange(e)}}/>
         </form>
     );
 }

@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import useRoom from "./useRoom";
 
 export default function useWebSocket(roomId, token) {
+    const [ isOpen, setIsOpen ] = useState(false);
     const [ messageReceived, setMessageReceived ] = useState(null);
     const ws = useRef(null);
 
@@ -12,11 +13,14 @@ export default function useWebSocket(roomId, token) {
 
             ws.current.onopen = async function() {
                 console.log("Connected to WebSocket server");
+                setIsOpen(true);
                 resolve();
             };
 
             ws.current.onclose = function() {
                 console.log("WebSocket connection closed");
+                ws.current = null;
+                setIsOpen(false);
             };
 
             ws.current.onmessage = function(event) {
@@ -26,6 +30,7 @@ export default function useWebSocket(roomId, token) {
 
             ws.current.onerror = function(error) {
                 console.error("WebSocket error:", error);
+                setIsOpen(false);
                 reject();
             };
 
@@ -34,12 +39,12 @@ export default function useWebSocket(roomId, token) {
     }
 
     const sendJsonMessage = (message) => {
-        console.log("CURRENT SEND CHANNGEL", ws.current);
-        if (ws.current === null) {console.log('WS not initialized');return};
+        if (ws.current === null) {console.log('WS not initialized');return false};
         message.token = token;
         message.room = roomId;
         console.log("Sending to websocket", message);
         ws.current.send(JSON.stringify(message));
+        return true;
     }
 
     const joinRoom = (user, room) => {
@@ -50,5 +55,5 @@ export default function useWebSocket(roomId, token) {
         sendJsonMessage({action: 'broadcast', targetType:targetType, operationType:operationType, data:data});
     }
 
-    return { initWebSocket, newMessageReceived:messageReceived, sendJsonMessage, joinRoom, broadcast };
+    return { initWebSocket, newMessageReceived:messageReceived, sendJsonMessage, joinRoom, broadcast, isOpen };
 }

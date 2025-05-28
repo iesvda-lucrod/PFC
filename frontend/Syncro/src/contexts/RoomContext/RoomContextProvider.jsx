@@ -34,6 +34,10 @@ export function RoomContextProvider({ roomId, children }) {
         console.log("Fetching room info...");
         const roomResponse = await roomCRUDModel.getRoomInfo(roomId);
 
+        console.log("Fetching room members...");
+        const membersResponse = await roomCRUDModel.getRoomMembers(roomId);
+        roomResponse.data.members = membersResponse.data;
+
         console.log("Fething room sections...");
         const sectionResponse = await sectionCRUDModel.getRoomSections(roomId);
 
