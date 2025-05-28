@@ -20,7 +20,6 @@ switch($_SERVER['REQUEST_METHOD']){
     case "POST":
         $payload = handleContentType();
         try {
-            if ($table->hasDuplicates($payload['section_id'], $payload)) sendResponse(valid:false, message:'Could not create the task', errors:'Task with same name already exists');
             $result = $table->createTask($payload);
             $room = $table->getParentSection($payload)['room_id'];
             sendToUsers($room, 'task', 'create', $result);
