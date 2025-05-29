@@ -16,6 +16,7 @@ export default function RoomPage({ roomId }) {
     const { userInfo, saveUserInContext } = useUserContext();
     
     const {
+        activeUsers,
         loadRoom,
         room: { roomInfo, roomModel },
         section: {sections},
@@ -39,7 +40,7 @@ export default function RoomPage({ roomId }) {
             const response = await roomModel.getRoomMembers(roomId);
             const found = response.data.find((member) => member.id === storedUserInfo.id)
 
-            if (found === undefined) return false;
+            if (found === undefined) {return false};
             setRole(found.role);
             return true;
         }

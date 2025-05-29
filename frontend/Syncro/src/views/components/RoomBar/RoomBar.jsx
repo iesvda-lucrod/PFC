@@ -35,7 +35,7 @@ export default function RoomBar({ roomInfo, role }) {
     }
 
     const kickUser = async (userId) => {
-        let result = await roomModel.leaveRoom(userId, roomInfo.id);
+        let response = await roomModel.leaveRoom(userId, roomInfo.id);
     }
 
     const showUserInvite = () => {

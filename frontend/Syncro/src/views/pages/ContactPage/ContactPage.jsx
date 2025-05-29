@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import FormInput from "../../components/FormInput/FormInput";
 import "./ContactPage.css";
+import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+import FormInput from "../../components/FormInput/FormInput";
 import useAuth from "../../../models/useAuth";
 import { useUserContext } from "../../../contexts/UserContext/UserContext";
 import { Icon_arrow_left } from "../../../assets/icons";
-
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 export default function ContactPage() {
     const [ formData, setFormData ] = useState({
@@ -65,6 +66,8 @@ export default function ContactPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setEmailSent(false);
+        setErrors(prev => ({...prev, server:''}));
 
         let errors = validate();
         if (Object.keys(errors).length > 0) {
@@ -73,7 +76,7 @@ export default function ContactPage() {
         }
 
         const response = await sendContactEmail(formData.name, formData.email, formData.subject, formData.message);
-        if (!response.valid) {setErrors({...errors, ...response.data});return;}
+        if (!response.valid) {setErrors(prev => ({...prev, ...response.errors})); return;}
         setEmailSent(true);
     }
 
@@ -81,7 +84,7 @@ export default function ContactPage() {
     return (
         <div className="ContactPage page">
             {!userInfo && 
-                <Link ><Icon_arrow_left/> back to homepage</Link>
+                <Link to={"/"}><Icon_arrow_left/> back to homepage</Link>
             }
 
             <div className="contactFormContainer">
@@ -90,7 +93,7 @@ export default function ContactPage() {
 
                     <div className="formContent">
 
-                        <FormInput label={'Name'} name={'subject'} type="text" placeholder="Enter your name"
+                        <FormInput label={'Name'} name={'name'} type="text" placeholder="Enter your name"
                         value={formData.name}
                         onChange={(e) => handleChange(e)}
                         validationErrorMessage={errors.name}
@@ -120,7 +123,7 @@ export default function ContactPage() {
                         </div>
                     </div>
 
-                    <button type="submit">Send email</button>
+                    <button type="submit">{isLoading ? <LoadingSpinner/> : 'Send email'}</button>
                     
                     <span className="errorMessage">{errors.server}</span>
                     <span className="successMessage">{emailSent && 'Email sent!'}</span>

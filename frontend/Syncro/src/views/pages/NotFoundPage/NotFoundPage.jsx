@@ -1,4 +1,3 @@
-import TestComponent from '../../components/TestComponent';
 export default function NotFoundPage() {
     return(
         <div className="NotFoundPage">

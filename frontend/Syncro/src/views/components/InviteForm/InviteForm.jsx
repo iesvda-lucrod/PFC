@@ -29,7 +29,7 @@ export default function InviteForm({ roomInfo }) {
             return;
         }
         const response =sendInvitationEmail(userInfo, formData.email, roomInfo);
-        if (!response) {setValidationErrors(prev => ({...prev, ...response.errors}))}
+        if (!response.valid) {setValidationErrors(prev => ({...prev, ...response.errors}))}
     }
 
     const validateData = () => {

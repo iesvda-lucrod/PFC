@@ -11,12 +11,21 @@ $connectionInformationTable->column('profile_picture', Swoole\Table::TYPE_STRING
 $connectionInformationTable->column('room', Swoole\Table::TYPE_INT);
 $connectionInformationTable->create();
 
+/**
+ * Get the user id, profile_picture and room related to a FD
+ * @param mixed $fd
+ * @return array|bool|float|int|string|null
+ */
 function getConnectionInfo($fd) {
     global $connectionInformationTable;
     $data = $connectionInformationTable->get($fd);
     if (!$data) {echo "\n---empty---";return null;}
     return $data;
 };
+/**
+ * Get the FDs related to a room
+ * @param mixed $roomId
+ */
 function getRoomConnections($roomId) {
     global $roomConnectionsTable;
     $data = $roomConnectionsTable->get($roomId);
@@ -24,6 +33,11 @@ function getRoomConnections($roomId) {
     return json_decode($data['connections'], true);
 }
 
+/**
+ * Get the user id, profile picture and room related to the FDs in the room
+ * @param mixed $roomId
+ * @return array<array|bool|float|int|string|null>
+ */
 function getRoomConnectionsInfo($roomId) {
     $currentConnections = getRoomConnections($roomId);
     echo "\n Getting the connections: \n";var_dump($currentConnections);echo "\n";
@@ -35,6 +49,13 @@ function getRoomConnectionsInfo($roomId) {
     return $data;
 }
 
+/**
+ * Adds a connection to a room taking care of duplicates
+ * @param mixed $fd
+ * @param mixed $userData
+ * @param mixed $roomId
+ * @return void
+ */
 function addRoomConnection($fd, $userData, $roomId) {
     global $roomConnectionsTable; global $connectionInformationTable;
     //Check for duplicate users
@@ -49,6 +70,11 @@ function addRoomConnection($fd, $userData, $roomId) {
     $fdList[] = $fd;
     $roomConnectionsTable->set($roomId, ['connections' => json_encode($fdList)]);
 }
+
+/**
+ * Removes a connection from a room
+ * @param mixed $fd
+ */
 function removeConnectionFromRoom($fd) {
     global $roomConnectionsTable; global $connectionInformationTable;
 

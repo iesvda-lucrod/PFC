@@ -10,7 +10,7 @@ import Modal from '../Modal/Modal';
 export default function Section({ sectionInfo }) {
     const {
         section: { sectionModel },
-        sidePanel: { setPanel, setPanelOpen, resetPanel }
+        sidePanel: { setPanel, resetPanel }
         
     }  = useRoomContext();
     const [ showConfirmationModal, setShowConfirmationModal] = useState();
@@ -27,7 +27,7 @@ export default function Section({ sectionInfo }) {
 
     const removeSection = async (e) => {
         e.stopPropagation();
-        if (sectionInfo.tasks.length > 0) { //TODO confirmation modal
+        if (sectionInfo.tasks.length > 0) {
             setShowConfirmationModal(true);
             return;
         }

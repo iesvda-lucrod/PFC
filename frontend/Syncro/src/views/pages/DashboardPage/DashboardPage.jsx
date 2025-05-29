@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { UserContext, useUserContext } from "../../../contexts/UserContext/UserContext";
+import { useUserContext } from "../../../contexts/UserContext/UserContext";
 
 import RoomForm from "../../components/RoomForm/RoomForm";
 import Modal from "../../components/Modal/Modal";
@@ -38,9 +38,7 @@ export default function DashboardPage() {
     const deleteRoom = async (id) => {
         let response = await roomModel.deleteRoom(id);
 
-        //TODO error case control when entering a deleted room
-
-        if (response) {
+        if (response.valid) {
             let newRoomList = userInfo.ownRooms.filter((room) => room.id !== id);
             saveUserInContext({...userInfo, ownRooms: newRoomList});
             console.log("deleted correctly");
@@ -96,10 +94,6 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </section>
-            
-            
-            
-            
             
             {
                 openRoomForm ?

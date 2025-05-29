@@ -1,10 +1,10 @@
 import "./AuthForm.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../../models/useAuth";
-import { useUserContext } from "../../../contexts/UserContext/UserContext";
-import FormInput from "../FormInput/FormInput";
-import ForgotPassword from "../ForgotPassword/ForgotPassword";
+import useAuth from "../../../../../models/useAuth";
+import { useUserContext } from "../../../../../contexts/UserContext/UserContext";
+import FormInput from "../../../../components/FormInput/FormInput";
+import ForgotPassword from "../../../../components/ForgotPassword/ForgotPassword";
 
 export default function AuthForm() {
     const { userInfo, saveUserInContext } = useUserContext();

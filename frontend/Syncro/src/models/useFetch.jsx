@@ -17,7 +17,7 @@ export default function useFetch(resource, authToken = null) {
                 method: reqMethod,
                 mode: "cors",
                 headers: {
-//                  "Content-Type":contentType,
+                    // "Content-Type":contentType,
                     ...(contentType === 'application/json' ? {"Content-Type": contentType} : {}),
                     ...(token ? {Authorization: `Bearer ${token}`} : {})
                 },

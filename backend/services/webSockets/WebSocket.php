@@ -78,7 +78,12 @@ function sendToRoom($roomName, $message) {
         else {$server->disconnect($connection);}
     }
 }
-
+function sendToUser($userFD, $message) {
+    global $server;
+    echo "sending message to room $userFD \n";
+    if ($server->isEstablished($userFD)) $server->push($userFD, json_encode($message));
+    else {$server->disconnect($userFD);}
+};
 function processMessage($messageData, $fd = null) {
     echo "\n---------------------------------------\n";
     echo "Processing: {$messageData['action']}\n";
@@ -93,6 +98,7 @@ function processMessage($messageData, $fd = null) {
             break;
         case 'leaveRoom':
             echo "-->Removing connection $fd from tables\n";
+            sendToUser($fd, ['targetType' => 'connection', 'operationType' => 'leaveRoom']);
             removeConnectionFromRoom($fd);
 
             $data = array_values(getRoomConnectionsInfo($messageData['room']));
@@ -101,6 +107,17 @@ function processMessage($messageData, $fd = null) {
             break;
         case 'broadcast':
             sendToRoom($messageData['room'], ['targetType' => $messageData['targetType'], 'operationType' => $messageData['operationType'], 'data' => $messageData['data']]);
+            break;
+        case 'individualMessage':
+            $roomId = $messageData['roomId'];
+            $userId = $messageData['userId'];
+            $connectionsInfo = getRoomConnectionsInfo($roomId);
+            foreach ($connectionsInfo as $fd => $connectionData) {
+                if ($connectionData['user'] === $userId) {
+                    sendToUser($fd, ['targetType' => $messageData['targetType'], 'operationType' => $messageData['operationType'], 'data' => $messageData['data']]);
+                    break;
+                }
+            }
             break;
 
         default:
