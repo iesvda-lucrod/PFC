@@ -51,7 +51,7 @@ function sendResponse($valid, $message, $data = null, $errors = null, $responseC
     exit; //Prevent further execution
 }
 
-function logError(Error  $error, $customMessage = '') {
-    $logMessage = "\tERROR in {$error->getFile()}({$error->getLine()}): {$error->getMessage()}. \t$customMessage";
+function logError(Throwable $error, $customMessage = '') {
+    $logMessage = "\tERROR in {$error->getFile()}({$error->getLine()}): {$error->getMessage()}." . (!empty($customMessage) ? "\tCustom message: $customMessage":'');
     file_put_contents(__DIR__.'/error.log', date("Y-m-d H:i:s") . $logMessage . PHP_EOL, FILE_APPEND);
 };
