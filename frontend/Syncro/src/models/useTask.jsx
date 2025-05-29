@@ -25,8 +25,8 @@ export default function useTask(token) {
         return result;
     }
 
-    const reorderTask = async (movedTask, targetTask) => {
-        let result = model.put({action:'reorderTask', movedTask:movedTask, targetTask:targetTask});
+    const reorderTask = async (movedTask, targetTask, under) => {
+        let result = model.put({action:'reorderTask', movedTask:movedTask, targetTask:targetTask, under:under});
         return result;
     }
 

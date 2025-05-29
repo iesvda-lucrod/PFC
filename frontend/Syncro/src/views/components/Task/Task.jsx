@@ -43,7 +43,6 @@ export default function Task({ taskInfo }) {
         draggable={true}
             onDragStart={(e) => dragMethods.handleDragStart(e, taskInfo)}
             
-            onDragEnter={(e) => dragMethods.handleDragEnter(e)}
             onDragOver={(e) => dragMethods.handleDragOver(e, taskInfo)}
             onDragLeave={(e) => dragMethods.handleDragLeave(e)}
 
@@ -72,43 +71,45 @@ const useDrag = (taskModel) => {
         
         setStyle('dragStart');
     }
-    const handleDragEnter = (e) => {
-        console.log(" ENTER");
-     
-    }
+    
     const handleDragOver = (e) => {
         e.preventDefault();
         e.stopPropagation();
         setStyle("draggingOver");
+
+        var rect = e.target.getBoundingClientRect();
+        var y = e.clientY - rect.top;  //y position within the element.
+
+        if (y < rect.height / 2) setStyle('draggingOverTop');
+        else setStyle("draggingOverBottom");
     }
-    const handleDragLeave = (e) => {
-        console.log("Drag exit");
-        setStyle('');
-    }
+    const handleDragLeave = (e) => {setStyle('');}
 
     const handleDrop = async (e, taskInfo) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("dropping ", e.dataTransfer, "current", e.currentTarget);
-
-        e.currentTarget.getBoundingRect();
-
-        console.log(e.dataTransfer.getData('text/plain'));
+        //console.log("dropping ", e.dataTransfer, "current", e.currentTarget);
         
         const currentTask = JSON.parse(e.dataTransfer.getData('text/plain'));
         const droppedTask = taskInfo;
-
         if (currentTask.id === droppedTask.id) return;
 
-        let result = await taskModel.reorderTask(currentTask, droppedTask);
-        console.log(result);
+        var rect = e.target.getBoundingClientRect();
+        var y = e.clientY - rect.top;
 
-        e.dataTransfer.clearData();
+        let under;
+        if (y < rect.height / 2) under = false;
+        else under = true;
+
+        let result = await taskModel.reorderTask(currentTask, droppedTask, under);
+
+        setStyle('');
+        
     }
     
     const handleDragEnd = (e) => {
         setStyle('');
     }
     
-    return {dragStyle:style, dragMethods:{handleDragStart, handleDragEnter, handleDragOver, handleDragLeave, handleDrop, handleDragEnd}};
+    return {dragStyle:style, dragMethods:{handleDragStart, handleDragOver, handleDragLeave, handleDrop, handleDragEnd}};
 }

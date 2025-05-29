@@ -24,6 +24,7 @@ export default function RoomPage({ roomId }) {
     } = useRoomContext(roomId, token);
 
     const [ role, setRole ] = useState(null);
+    const [ connectionLost, setConnectionLost ] = useState(webSocket.isOpen);
 
     const hasRunRef = useRef(false);
     useEffect(() => {
@@ -55,9 +56,11 @@ export default function RoomPage({ roomId }) {
         })();
     }, []);
 
+    const connectionEstablished = useRef(false);
     useEffect(() => {
-        if (!webSocket.isOpen) 
-        console.log("CONNECTION CLOSED NAHHHH");
+        console.log("WS change", webSocket.isOpen);
+        if (webSocket.isOpen) connectionEstablished.current = true;
+        if (!webSocket.isOpen && connectionEstablished.current) setConnectionLost(true);
     }, [webSocket.isOpen]);
 
     const hasLoaded = useRef(false);
@@ -82,8 +85,8 @@ export default function RoomPage({ roomId }) {
                 <RoomSidePanel></RoomSidePanel>
             </div>
             
-            <Modal isOpen={(!webSocket.isOpen)} onClose={() => navigate('/dashboard')}>
-                Connection lost
+            <Modal isOpen={connectionLost} onClose={() => navigate('/dashboard')}>
+                Connection lost, you will be redirected to your dashboard
             </Modal>
         </div>
     );

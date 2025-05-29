@@ -79,6 +79,7 @@ export function RoomContextProvider({ roomId, children }) {
     const setIndividualSection = (sectionId, newSectionData) => {
         const taskIndex = sections.findIndex((section) => section.id === sectionId);
         if (!newSectionData.tasks) newSectionData.tasks = [];
+        else {newSectionData.tasks = newSectionData.tasks.sort((a, b) => a.position - b.position);}
         setSections(prevSectionList => {
             const newSectionList = [...prevSectionList];
             newSectionList[taskIndex] = newSectionData;

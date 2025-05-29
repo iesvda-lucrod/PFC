@@ -67,7 +67,6 @@ switch($_SERVER['REQUEST_METHOD']){
             }
 
 
-            $table->update(['id' => $payload['id']], $payload);
             $room = $table->getParentSection($payload)['room_id'];
             sendToUsers($room, 'task', 'update', $payload);
             sendResponse(valid: true, message:'Task updated successfully');

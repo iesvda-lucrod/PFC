@@ -25,6 +25,10 @@
     opacity: 0.5;
 }
 
-.Task.draggingOver {
+.Task.draggingOverBottom {
     box-shadow: 0px  -4px 0px black inset, 0px 4px 0px black;
+}
+
+.Task.draggingOverTop {
+    box-shadow: 0px  4px 0px black inset, 0px -4px 0px black;
 }

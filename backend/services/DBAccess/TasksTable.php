@@ -67,7 +67,7 @@ class TasksTable extends DBConnection {
 
     }
 
-    public function reorderTask($movedTask, $targetTask) {
+    public function reorderTask($movedTask, $targetTask, $under) {
 
         try {
             $this->beginTransaction();
@@ -87,6 +87,8 @@ class TasksTable extends DBConnection {
                         ':targetPosition' => $targetTask['position'],
                     ]
                 );
+
+                if ($under) {}
             } else {
                 $modifier = -1;
                 $minPosition = $movedTask['position'];
@@ -97,15 +99,6 @@ class TasksTable extends DBConnection {
                     $modifier = 1;
                 }
 
-                /*
-                echo "changing tasks between $minPosition and $maxPosition";
-                echo "UPDATE tasks SET position = position + :modifier WHERE section_id = :targetSection AND position > :minPosition AND position < :maxPosition ";
-                var_dump([
-                        ':modifier' => $modifier,
-                        ':targetSection' => $targetTask['section_id'],
-                        ':minPosition' => $minPosition,
-                        ':maxPosition' => $maxPosition,
-                ]);*/
                 $this->execPreparedQuery("UPDATE tasks SET position = position + :modifier WHERE section_id = :targetSection AND position >= :minPosition AND position <= :maxPosition ",
                     [
                         ':modifier' => $modifier,
@@ -116,19 +109,21 @@ class TasksTable extends DBConnection {
                 );
             }
 
+            $position = $targetTask['position'];
+            $adjacentPosition = $targetTask['position'] + $modifier;
             $this->execPreparedQuery("UPDATE tasks SET position = :targetPosition, section_id = :targetSection WHERE id = :movedId",
                 [
-                    ':targetPosition' => $targetTask['position'],
+                    ':targetPosition' => ($under ? max([$position, $adjacentPosition]) : min($position, $adjacentPosition)),
                     ':targetSection' => $targetTask['section_id'],
                     ':movedId' => $movedTask['id'],
                 ]
             );
 
-            $this->execPreparedQuery("UPDATE tasks SET position = :targetPosition, section_id = :targetSection WHERE id = :movedId",
+            $this->execPreparedQuery("UPDATE tasks SET position = :targetPosition, section_id = :targetSection WHERE id = :targetId",
                 [
-                    ':targetPosition' => $targetTask['position'],
+                    ':targetPosition' => (!$under ? max([$position, $adjacentPosition]) : min($position, $adjacentPosition)),
                     ':targetSection' => $targetTask['section_id'],
-                    ':movedId' => $movedTask['id'],
+                    ':targetId' => $targetTask['id'],
                 ]
             );
 
