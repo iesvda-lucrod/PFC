@@ -53,7 +53,10 @@ class RoomsTable extends DBConnection {
     public function createRoom($data) {
         $user_id = $data['user_id'];
         $room = $data['room'];
-        $roomData = ['name' => $room['name']];
+        $roomData = [
+            'name' => $room['name'],
+            'description' => $room['description'],
+        ];
 
         $this->beginTransaction();
         //var_dump($roomData);

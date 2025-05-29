@@ -13,8 +13,37 @@ export default function RoomForm({editMode = false, roomInfo = {}, submitAction 
     const { isLoading, model:roomModel } = useRoom(token);
     const [ formData, setFormData ] = useState({
         name: roomInfo.name || '',
+        description: roomInfo.description || '',
     });
-    const [ validationErrors, setValidationErrors ] = useState('');
+    const [ validationErrors, setValidationErrors ] = useState({
+        name: '',
+        description: '',
+    });
+
+    
+
+    const validateRoomInfo = () => {
+        setValidationErrors({name:'',description:''});
+        if (!formData.name) {
+            setValidationErrors(prev => ({...prev, name:'This field is required'}));
+            return;
+        }
+        console.log("Formdatanamelengyt", formData.name.length);
+        if (formData.name.length > 50) {
+            setValidationErrors(prev => ({...prev, name:'Max 50 characters'}));
+            return;
+        }
+        if (/[^a-zA-Z0-9À-ÖØ-öø-ÿ\s]/.test(formData.name)) {
+            setValidationErrors(prev => ({...prev, name:"Can only contain letters, spaces and numbers"}));
+            return;
+        }
+
+        if (userInfo.ownRooms.map((room) => room.name).includes(formData.name)) {
+            setValidationErrors(prev => ({...prev, name:"Room with the same name already exists"}));
+            return false;
+        };
+        return true;
+    }
 
     const handleChange = (e) => {
         const field = e.target;
@@ -26,29 +55,11 @@ export default function RoomForm({editMode = false, roomInfo = {}, submitAction 
             return;
         }
         if (editMode) await roomModel.updateRoom({...formData});
-        else await roomModel.createRoom(userInfo.id, new Room(formData.name));
+        else await roomModel.createRoom(userInfo.id, new Room(formData));
 
         let response = await roomModel.getUserRooms(userInfo.id);
         saveUserInContext({...userInfo, ...response.data});
         if (submitAction) submitAction();
-    }
-
-    const validateRoomInfo = () => {
-        if (!formData.name) {
-            setValidationErrors("Field required");
-            return;
-        }
-        if (/[^a-zA-Z0-9À-ÖØ-öø-ÿ\s]/.test(formData.name)) {
-            setValidationErrors("Can only contain letters, spaces and numbers");
-            return;
-        }
-
-        if (userInfo.ownRooms.map((room) => room.name).includes(formData.name)) {
-            setValidationErrors("Room with the same name already exists");
-            return false;
-        };
-        console.log("No dupes");
-        return true;
     }
 
     return (
@@ -57,10 +68,16 @@ export default function RoomForm({editMode = false, roomInfo = {}, submitAction 
                 <FormInput label={'Room name'} name={'name'} type='text' 
                 value={formData.name}
                 onChange={(e) => handleChange(e)}
-                validationErrorMessage={validationErrors}
+                validationErrorMessage={validationErrors.name}
                 ></FormInput>
-            <button type="submit">{isLoading ? <LoadingSpinner /> : 'Create Room'}</button>
-            
+
+                <FormInput label={'Room description'} name={'description'} type='text' 
+                value={formData.description}
+                onChange={(e) => handleChange(e)}
+                validationErrorMessage={validationErrors.description}
+                ></FormInput>
+
+                <button type="submit">{isLoading ? <LoadingSpinner /> : 'Create Room'}</button>            
             </form>
         </div>
     );
