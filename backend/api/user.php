@@ -11,35 +11,51 @@ require_once __DIR__."/../services/imageManager/imageManager.php";
 handleCorsRequest();
 $token = verifyToken();
 
-$table = new UsersTable();
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
-        if (isset($_GET['action'])) {
+        try {
+            $table = new UsersTable();
+            if (isset($_GET['action'])) {
             if ($_GET['action'] === 'isEmailTaken') {
                 $result = $table->isRegistered($_GET);
                 sendResponse(valid:true, message:'Email availability checked', data:['result' => $result]);
+                }
             }
-        }
 
-        if (!isset($_GET['email'])) sendResponse(valid:false, message:"Invalid request", responseCode:400);
-        $userData = $table->getUserFromEmail($_GET['email']);
-        sendResponse(valid:true, message:'User information retrieved successfully', data:$userData);
+            if (!isset($_GET['email'])) sendResponse(valid:false, message:"Invalid request", responseCode:400);
+            $userData = $table->getUserFromEmail($_GET['email']);
+            sendResponse(valid:true, message:'User information retrieved successfully', data:$userData);
+        } catch (\Throwable $th) {
+            logError($th, 'There was a problem fetching the user');
+            sendResponse(valid:false, message:'There was a problem fetching the user', errors:['server' => 'Unexpected server error'], responseCode:500);
+        }
         break;
     case "POST":
-        $request = handleContentType();
+        try {
+            $table = new UsersTable();
+            $request = handleContentType();
 
-        if (isset($request['action'])){
-            if ($_POST['action'] === 'changeProfilePicture') {
-                uploadProfilePicture(json_decode($request['userInfo'], true));
+            if (isset($request['action'])){
+                if ($_POST['action'] === 'changeProfilePicture') {
+                    uploadProfilePicture(json_decode($request['userInfo'], true));
+                }
             }
+            sendResponse(valid:false, message:'Invalid request', responseCode:405);
+        } catch (\Throwable $th) {
+            logError($th, 'There was a problem updating the profile picture');
+            sendResponse(valid:false, message:'There was a problem updating the profile picture', errors:['server' => 'Unexpected server error'], responseCode:500);
         }
-
-        sendResponse(valid:false, message:'Invalid request', responseCode:405);
         break;
     case "DELETE":
-        $request = handleContentType();
-        $result = $table->delete($request['user']['id']);
-        sendResponse(valid: true, message:'User deleted successfully');
+        try {
+            $table = new UsersTable();
+            $request = handleContentType();
+            $result = $table->delete($request['user']['id']);
+            sendResponse(valid: true, message:'User deleted successfully');
+        } catch (\Throwable $th) {
+            logError($th, 'There was a problem deleting the user');
+            sendResponse(valid:false, message:'There was a problem deleting the user', errors:['server' => 'Unexpected server error'], responseCode:500);
+        }
         break;
 
     case "PUT":

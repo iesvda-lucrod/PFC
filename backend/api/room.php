@@ -8,12 +8,12 @@ handleCorsRequest();
 require_once __DIR__."/../services/DBAccess/RoomsTable.php";
 require_once __DIR__."/../services/webSockets/publishToWebSocket.php";
 
-$table = new RoomsTable();
 $token = verifyToken();
 
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
         try {
+            $table = new RoomsTable();
             if (isset($_GET['action'])) {
             if ($_GET['action'] === 'getUserRooms') {unset($_GET['action']);
                 $result = $table->getUserRooms($_GET['user_id']);
@@ -41,6 +41,7 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "POST":
         try {
+            $table = new RoomsTable();
             $payload = handleContentType();
 
             if ($table->hasDuplicates($payload['user_id'], $payload['room'])) {sendResponse(valid:false, message:'There was a problem creating the room', errors: ['name' => 'Room with same name already exists']);}
@@ -54,6 +55,7 @@ switch($_SERVER['REQUEST_METHOD']){
 
     case "DELETE":
         try {
+            $table = new RoomsTable();
             $payload = handleContentType();
 
             if (isset($payload['action'])) {
@@ -75,6 +77,7 @@ switch($_SERVER['REQUEST_METHOD']){
     
     case "PUT":
         try {
+            $table = new RoomsTable();
             $payload = handleContentType();
             $result = $table->update($payload['id'], $payload['newValues']);
             if (!$result) sendResponse(valid: false, message:'There was an error updating the room', responseCode:500);

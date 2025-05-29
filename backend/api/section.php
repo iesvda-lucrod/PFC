@@ -7,18 +7,24 @@ require_once __DIR__."/../services/webSockets/publishToWebSocket.php";
 handleCorsRequest();
 verifyToken();
 
-$table = new SectionsTable();
-
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
+        try {
+            $table = new SectionsTable();
+            $result = $table->selectByField('room_id', $_GET['room_id']);
+            sendResponse(valid: true, message:'Sections fetched successfully', data:$result);
+        } catch (\Throwable $th) {
+            logError($e, 'There was a problem fetching the section');
+            sendResponse(valid: false, message: 'There was a problem fetching the section', responseCode: 500);
+        }
         //$table->selectAll();
-        $result = $table->selectByField('room_id', $_GET['room_id']);
-        sendResponse(valid: true, message:'Sections fetched successfully', data:$result);
+        
         break;
 
     case "POST":
         $payload = handleContentType();
         try {
+            $table = new SectionsTable();
             //if ($table->hasDuplicates($payload['room_id'], $payload)) sendResponse(valid:false, message:'Could not create section', errors:['name' => 'Section with same name already exists']);
             $result = $table->createSection($payload);
             sendToUsers($result['room_id'], 'section', 'create', $result);
@@ -32,6 +38,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "DELETE":
         $payload = handleContentType();
         try {
+            $table = new SectionsTable();
             $targetInfo = $table->selectByField('id', $payload['id'])[0];
             $table->delete($payload['id']);
             sendToUsers($targetInfo['room_id'], 'section', 'delete', $payload);
@@ -45,6 +52,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "PUT":
         $payload = handleContentType();
         try {
+            $table = new SectionsTable();
             $table->update(['id' => $payload['id']], $payload);
             sendToUsers($payload['room_id'], 'section', 'update', $payload);
             sendResponse(valid: true, message:'Section updated successfully');

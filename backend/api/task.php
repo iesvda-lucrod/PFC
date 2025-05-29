@@ -7,12 +7,10 @@ require_once __DIR__."/../services/webSockets/publishToWebSocket.php";
 handleCorsRequest();
 verifyToken();
 
-
-$table = new TasksTable();
-
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
         try {
+            $table = new TasksTable();
             $result = $table->filteredSelect($_GET, false);
             sendResponse(valid:true, message:'Tasks fetched successfully', data:$result);
         } catch (Error $e) {
@@ -24,6 +22,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "POST":
         $payload = handleContentType();
         try {
+            $table = new TasksTable();
             $result = $table->createTask($payload);
             $room = $table->getParentSection($payload)['room_id'];
             sendToUsers($room, 'task', 'create', $result);
@@ -37,6 +36,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "DELETE":
         $payload = handleContentType();
         try {
+            $table = new TasksTable();
             $table->deleteTask($payload);
             $room = $table->getParentSection($payload)['room_id'];
             sendToUsers($room, 'task', 'delete', $payload);
@@ -50,6 +50,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "PUT":
         $payload = handleContentType();
         try {
+            $table = new TasksTable();
             if (isset($payload['action'])) {
                 if ($payload['action'] === 'reorderTask') {
                     $table->reorderTask($payload['movedTask'], $payload['targetTask'], $payload['under']);

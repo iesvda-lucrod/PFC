@@ -43,7 +43,7 @@ switch($_SERVER['REQUEST_METHOD']){
                         acceptInvitation($request['user_id'], $request['room_id'], $request['code']);    
                     } catch (\Throwable $th) {
                         logError($th, 'There was a problem sending the email');
-                        sendResponse(valid:false, message:'There was a problem sending the email', errors:['server' => 'There was a problem sending the email, please try again later']);
+                        sendResponse(valid:false, message:'There was a problem sending the email', errors:['server' => 'There was a problem sending the email, please try again later'], responseCode:500);
                     }
                 }
 
@@ -52,7 +52,7 @@ switch($_SERVER['REQUEST_METHOD']){
                         requestPasswordChange($request);
                     } catch (\Throwable $th) {
                         logError($th, 'There was a problem sending the email');
-                        sendResponse(valid:false, message:'There was a problem sending the email', errors:['server' => 'There was a problem sending the email, please try again later']);
+                        sendResponse(valid:false, message:'There was a problem sending the email', errors:['server' => 'There was a problem sending the email, please try again later'], responseCode:500);
                     }
                 }
                 if ($request['action'] === 'verifyPasswordChangeRequest') {
@@ -68,7 +68,7 @@ switch($_SERVER['REQUEST_METHOD']){
                         sendResponse(valid:true, message:'Email sent successfully');
                     } catch (\Throwable $th) {
                         logError($th, 'There was a problem sending the email');
-                        sendResponse(valid:false, message:'There was a problem sending the email', errors:['server' => 'There was a problem sending the email, please try again later']);
+                        sendResponse(valid:false, message:'There was a problem sending the email', errors:['server' => 'There was a problem sending the email, please try again later'], responseCode:500);
                     }
                 }
             }
