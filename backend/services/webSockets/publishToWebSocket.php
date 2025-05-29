@@ -38,3 +38,15 @@ function sendToUsers($room, $targetType, $operationType, $data) {
     ];
     publishMessage('Syncro', $payload);
 };
+
+function sendToIndividualUser($roomId, $userId, $targetType, $operationType, $data) {
+$payload = [
+        'action' => 'individualMessage',
+        'roomId' => $roomId,
+        'userId' => $userId,
+        'targetType' => $targetType,
+        'operationType' => $operationType,
+        'data' => $data,
+    ];
+    publishMessage('Syncro', $payload);
+}
