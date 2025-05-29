@@ -15,15 +15,15 @@ switch($_SERVER['REQUEST_METHOD']){
         try {
             $table = new RoomsTable();
             if (isset($_GET['action'])) {
-            if ($_GET['action'] === 'getUserRooms') {unset($_GET['action']);
-                $result = $table->getUserRooms($_GET['user_id']);
-                sendResponse(valid:true, message:'User rooms fetched successfully', data: $result);
-            }
-            if ($_GET['action'] === 'getRoomMembers') {
-                unset($_GET['action']);
-                $result = $table->getRoomMembers($_GET['room_id']);
-                sendResponse(valid:true, message:'Room users fetched successfully', data: $result);
-            }
+                if ($_GET['action'] === 'getUserRooms') {unset($_GET['action']);
+                    $result = $table->getUserRooms($_GET['user_id']);
+                    sendResponse(valid:true, message:'User rooms fetched successfully', data: $result);
+                }
+                if ($_GET['action'] === 'getRoomMembers') {
+                    unset($_GET['action']);
+                    $result = $table->getRoomMembers($_GET['room_id']);
+                    sendResponse(valid:true, message:'Room users fetched successfully', data: $result);
+                }
             }
 
             if (isset($_GET['id'])) {
