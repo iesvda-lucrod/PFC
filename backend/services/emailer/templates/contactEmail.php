@@ -21,16 +21,15 @@ function generateContactEmailTemplate($name, $email, $subject, $message) {
       border-radius: 20px;
       text-align:center;
       ">
-        <h2 style="width:100%;text-align:center;">A user has contacted us</h2>
-        <p>User information</p>
-        <ul>
-        <li><b>Name:</b> {$name}</li>
-        <li><b>Email:</b> {$email}</li>
-        </ul>
+        <h2 style="width:100%;text-align:center;">A user has contacted us:</h2>
+        <h3>-- User information --</h3>
+        <p><b>Name:</b> {$name}</p>
+        <p><b>Email:</b> {$email}</p>
 
+        <h3>-- Contact details --</h3>
         <p><b>Subject:</b> {$subject}</p>
         <p><b>Message:</b></p>
-        <p>{$message}</p>
+        <p style="text-align:justify;border:1px solid black;padding:4px;">{$message}</p>
       </div>
       EOD
   ];
