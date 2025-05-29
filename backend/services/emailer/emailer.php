@@ -4,6 +4,7 @@ require __DIR__."/../../config.php";
 require_once __DIR__."/templates/verificationEmail.php";
 require_once __DIR__."/templates/inviteEmail.php";
 require_once __DIR__."/templates/passwordChangeEmail.php";
+require_once __DIR__."/templates/contactEmail.php";
 
 use \Mailjet\Resources;
 
@@ -14,7 +15,7 @@ function sendEmail($receiverEmail, $receiverName, $subject, $content) {
             'Messages' => [
                 [
                     'From' => [
-                        'Email' => 'iesvda.lucrod@gmail.com', // This should be a verified sender in Mailjet
+                        'Email' => "{$_ENV['SYNCRO_EMAIL']}", // This should be a verified sender in Mailjet
                         'Name' => 'Syncro',
                     ],
                     'To' => [
@@ -55,7 +56,9 @@ function sendPasswordResetEmail($receiverData, $code) {
 }
 
 //TODO send contact email
-function sendContactEmail() {
-
+function sendContactEmail($name, $email, $userSubject, $userMessage) {
+    $subject = 'Syncro - User contacted';
+    $template = generateContactEmailTemplate($name, $email, $userSubject, $userMessage);
+    sendEmail($_ENV['SYNCRO_EMAIL'], 'Syncro', $subject, $template);
 }
 
