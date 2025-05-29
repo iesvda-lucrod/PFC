@@ -7,21 +7,10 @@ class SectionsTable extends DBConnection {
         parent::__construct("sections");
     }
 
-    public function hasDuplicates($room_id, $sectionData) {
-        $this->execPreparedQueryWithTransaction(
-            "SELECT * FROM sections WHERE room_id = :room_id AND name = :name",
-            [
-                ':room_id' => $room_id,
-                ':name'=> $sectionData['name']
-            ]
-        );
-        $duplicates = $this->getAllRows();
-        if (count($duplicates) > 0){
-            return true;
-        }
-        return false;
-    }
-
+    /**
+     * Create a record for a section in the database
+     * @param mixed $data
+     */
     public function createSection($data) {
         try {
             $this->beginTransaction();
@@ -41,7 +30,7 @@ class SectionsTable extends DBConnection {
             return $sectionData;
 
         } catch (Error $e) {
-            logError($e);
+            logError($e, 'Database error');
             $this->rollBack();
             throw $e;
         }

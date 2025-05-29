@@ -3,7 +3,7 @@
 use Symfony\Component\Finder\Iterator\FilenameFilterIterator;
 use Symfony\Component\Validator\Constraints\Valid;
 
-require_once __DIR__."/../services/api.php";
+require_once __DIR__."/../services/endpointFunctions.php";
 require_once __DIR__."/../services/DBAccess/UsersTable.php";
 require_once __DIR__."/../services/emailer/emailer.php";
 require_once __DIR__."/../services/imageManager/imageManager.php";
@@ -64,12 +64,13 @@ switch($_SERVER['REQUEST_METHOD']){
             logError(new Error($PDOexception));
             sendResponse(valid:false, message:'There was a problem updating the user', errors:['server' => 'Unexpected server error'], responseCode:500);
         } catch (Error $e) {
-            logError($e);
+            logError($e, 'There was a problem updating the user');
             sendResponse(valid:false, message:'There was a problem updating the user', errors:['server' => 'Unexpected server error'], responseCode:500);
         }
         
         break;
     default:
+        logError(new Error('Access to unauthorized method: '.$_SERVER['REEQUEST_METHOD']));
         sendResponse(valid:false, message:'Method not allowed', responseCode:405);
         break;
 }

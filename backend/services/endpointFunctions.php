@@ -33,9 +33,12 @@ function handleCorsRequest() {
 
 /**
  * Echo a response with data and a code
- * @param mixed $data
- * @param mixed $status
- * @return void
+ * @param mixed $valid Whether if the operation was successful (operation can not be successfull without having any errors)
+ * @param mixed $message Message to return with the request
+ * @param mixed $data Optional. Relevant data to include in the response
+ * @param mixed $errors Optional. Relevant data to include in the response
+ * @param mixed $responseCode The response code to use (defaults to 200)
+ * @return never
  */
 function sendResponse($valid, $message, $data = null, $errors = null, $responseCode = 200) {
 
@@ -44,14 +47,20 @@ function sendResponse($valid, $message, $data = null, $errors = null, $responseC
         'message'=> $message,
     ]
     + (isset($data) ? ['data'=> $data] : [])
-    + ($valid ? ['warnings' => $errors] : ['errors'=> $errors]);
+    + (isset($errors) ? ['errors'=> $data] : []);
 
     http_response_code($responseCode);
     echo json_encode($response);
     exit; //Prevent further execution
 }
 
+/**
+ * Log an error to the /backend/services/error.log file
+ * @param Throwable $error
+ * @param mixed $customMessage
+ * @return void
+ */
 function logError(Throwable $error, $customMessage = '') {
-    $logMessage = "\tERROR in {$error->getFile()}({$error->getLine()}): {$error->getMessage()}." . (!empty($customMessage) ? "\tCustom message: $customMessage":'');
-    file_put_contents(__DIR__.'/error.log', date("Y-m-d H:i:s") . $logMessage . PHP_EOL, FILE_APPEND);
+    $logMessage = "\tERROR in {$error->getFile()}({$error->getLine()}): {$error->getMessage()}.";
+    file_put_contents(__DIR__.'/error.log', date("Y-m-d H:i:s") . $customMessage . '\t' . $logMessage . PHP_EOL, FILE_APPEND);
 };

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Store the uploaded profile picture into the designated folder
+ * @param mixed $userInfo The user's information, needs at least an 'id' and 'profile_picture' attributes
+ * @return void
+ */
 function uploadProfilePicture($userInfo) {
 
     if (!isset($_FILES['profile_picture'])) 

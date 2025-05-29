@@ -38,23 +38,3 @@ function sendToUsers($room, $targetType, $operationType, $data) {
     ];
     publishMessage('Syncro', $payload);
 };
-
-
-
-/*
-sendToWebSocket('Syncro', ['operationType' => 'ping'], false);
-
-
-
-function openSocketChannel($channelName) {
-    sendToWebSocket('main', [
-        'action' => 'openChannel',
-        'payload' => $channelName,
-    ]);
-}
-function closeSocketChannel($channelName) {
-    sendToWebSocket('main', [
-        'action' => 'closeChannel',
-        'payload' => $channelName,
-    ]);
-}*/

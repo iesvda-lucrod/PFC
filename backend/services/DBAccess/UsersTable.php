@@ -7,7 +7,11 @@ class UsersTable extends DBConnection{
         parent::__construct("users", "id, email, username, profile_picture");
     }
 
-    //Check if the user is present in the database
+    /**
+     * Check if the user is present in the database
+     * @param mixed $data
+     * @return bool
+     */
     public function isRegistered($data) {
         $duplicates = $this->getUserFromEmail($data['email']);
         if ($duplicates) {
@@ -38,16 +42,13 @@ class UsersTable extends DBConnection{
         return $result;
     }
 
+    /**
+     * Checks if the user's email is verified
+     * @param mixed $userEmail
+     */
     public function isUserEmailVerified($userEmail) {
         $result = $this->getUnprotectedUserFromEmail($userEmail);
         return $result['verified'];
-    }
-
-    public function getUserCredentials($userData) {
-        $this->fields = 'id, email, username, password';
-        $credentials = $this->selectByField('email', $userData['email'])[0];
-        $this->fields = 'id, email, username, password';
-        return $credentials;
     }
 
     public function registerUserData($userData) {

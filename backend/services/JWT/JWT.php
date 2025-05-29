@@ -3,6 +3,12 @@ require_once __DIR__ ."/../../config.php";
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+
+/**
+ * Generate a JWT token
+ * @param mixed $contents Information to be included in the token
+ * @return string
+ */
 function generateJWT($contents) {
     $aditionalContents = ($contents !== null) ? ['user' => $contents] : [];
     $payload = [
@@ -15,6 +21,11 @@ function generateJWT($contents) {
     return $jwt;
 }
 
+/**
+ * Decodes and returns the content of the JWT
+ * @param mixed $jwt
+ * @return stdClass|null
+ */
 function decodeJWT($jwt) {
     try {
         JWT::$leeway = 60; // $leeway in seconds

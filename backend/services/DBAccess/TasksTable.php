@@ -7,21 +7,10 @@ class TasksTable extends DBConnection {
         parent::__construct("tasks");
     }
 
-    public function hasDuplicates($section_id, $taskData) {
-        $this->execPreparedQueryWithTransaction(
-            "SELECT * FROM tasks WHERE section_id = :section_id AND title = :title",
-            [
-                ':section_id' => $section_id,
-                ':title'=> $taskData['title']
-            ]
-        );
-        $duplicates = $this->getAllRows();
-        if (count($duplicates) > 0){
-            return true;
-        }
-        return false;
-    }
-
+    /**
+     * Record the task in the database, assigns the position dynamically
+     * @param mixed $data
+     */
     public function createTask($data) {
         try {
 
@@ -42,12 +31,17 @@ class TasksTable extends DBConnection {
             return $result;
         }
         catch (Error $e) {
-            logError($e);
+            logError($e, 'Database error');
             $this->rollBack();
             throw $e;
         }
     }
 
+    /**
+     * Delete a task from the database, updates the position of related tasks
+     * @param mixed $taskInfo
+     * @return void
+     */
     public function deleteTask($taskInfo)  {
         try {
             $this->beginTransaction();
@@ -62,11 +56,18 @@ class TasksTable extends DBConnection {
             $this->commit();
         } catch (Error $e) {
             $this->rollback();
-            logError($e);
+            logError($e, 'Database error');
         }
 
     }
 
+    /**
+     * Changes the task's position
+     * @param mixed $movedTask Task to move
+     * @param mixed $targetTask Task with the position $movedTask is moved to
+     * @param mixed $under Whether to place the $movedTask before or after $targetTask
+     * @return void
+     */
     public function reorderTask($movedTask, $targetTask, $under) {
 
         try {
@@ -129,11 +130,15 @@ class TasksTable extends DBConnection {
 
             $this->commit();
         } catch (Error $e) {
-            logError($e);
+            logError($e, 'Database error');
             $this->rollback();
         }
     }
 
+    /**
+     * Get the task's parent section by its 'section_id' attribute
+     * @param mixed $taskData
+     */
     public function getParentSection($taskData) {
         try {
             $this->beginTransaction();
@@ -151,7 +156,7 @@ class TasksTable extends DBConnection {
             $this->commit();
             return $section;
         } catch (Error $e) {
-            logError($e);
+            logError($e, 'Database error');
             $this->rollBack();
             throw $e;
         }

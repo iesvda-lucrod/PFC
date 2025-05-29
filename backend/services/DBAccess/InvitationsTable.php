@@ -7,11 +7,22 @@ class InvitationsTable extends DBConnection{
         parent::__construct("invitations");
     }
 
+    /**
+     * Get the related invitation by the user and room id
+     * @param mixed $userId
+     * @param mixed $roomId
+     * @return mixed The single result or null
+     */
     public function getInvitation($userId, $roomId): mixed {
         $result = $this->filteredSelect(['user_id' => $userId, 'room_id' => $roomId]);
         return isset($result[0]) ? $result[0] : null;
     }
 
+    /**
+     * Use an invitation record to grant access to the user
+     * @param mixed $invitation
+     * @return void
+     */
     public function processInvitation($invitation) {
         try {
             $this->beginTransaction();

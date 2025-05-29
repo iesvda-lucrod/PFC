@@ -15,7 +15,7 @@ function sendEmail($receiverEmail, $receiverName, $subject, $content) {
             'Messages' => [
                 [
                     'From' => [
-                        'Email' => "{$_ENV['SYNCRO_EMAIL']}", // This should be a verified sender in Mailjet
+                        'Email' => "{$_ENV['MJ_REGISTERED_EMAIL']}", // This should be a verified sender in Mailjet
                         'Name' => 'Syncro',
                     ],
                     'To' => [
@@ -32,7 +32,7 @@ function sendEmail($receiverEmail, $receiverName, $subject, $content) {
         $response = $mj->post(Resources::$Email, ['body' => $body]);
         if (!$response->success()) throw new ErrorException('Theres was a problem sending the email');
     } catch (\Error $e) {
-        logError($e);
+        logError($e, customMessage: 'Emailer error');
         throw $e;
     }
     
@@ -59,6 +59,6 @@ function sendPasswordResetEmail($receiverData, $code) {
 function sendContactEmail($name, $email, $userSubject, $userMessage) {
     $subject = 'Syncro - User contacted';
     $template = generateContactEmailTemplate($name, $email, $userSubject, $userMessage);
-    sendEmail($_ENV['SYNCRO_EMAIL'], 'Syncro', $subject, $template);
+    sendEmail($_ENV['MJ_REGISTERED_EMAIL'], 'Syncro', $subject, $template);
 }
 

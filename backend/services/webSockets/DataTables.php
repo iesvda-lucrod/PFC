@@ -11,18 +11,6 @@ $connectionInformationTable->column('profile_picture', Swoole\Table::TYPE_STRING
 $connectionInformationTable->column('room', Swoole\Table::TYPE_INT);
 $connectionInformationTable->create();
 
-
-/*
-//periodic sweep
-Swoole\Timer::tick(20000, function() use ($server, &$roomToFdsMap, $fdToRoomTable) {
-    foreach ($roomToFdsMap as $room => $fds) {
-        $roomToFdsMap[$room] = array_filter($fds, function($fd) use ($server, $fdToRoomTable) {
-            return $server->isEstablished($fd) && $fdToRoomTable->exist($fd);
-        });
-    }
-});*/
-
-
 function getConnectionInfo($fd) {
     global $connectionInformationTable;
     $data = $connectionInformationTable->get($fd);

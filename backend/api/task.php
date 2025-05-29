@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__."/../services/api.php";
+require_once __DIR__."/../services/endpointFunctions.php";
 require_once __DIR__."/../services/DBAccess/TasksTable.php";
 require_once __DIR__."/../services/webSockets/publishToWebSocket.php";
 
@@ -12,9 +12,13 @@ $table = new TasksTable();
 
 switch($_SERVER['REQUEST_METHOD']){
     case "GET":
-        //$table->selectAll();
-        $result = $table->filteredSelect($_GET, false);
-        sendResponse(valid:true, message:'Tasks fetched successfully', data:$result);
+        try {
+            $result = $table->filteredSelect($_GET, false);
+            sendResponse(valid:true, message:'Tasks fetched successfully', data:$result);
+        } catch (Error $e) {
+            logError($e, 'There was a problem inserting the task');
+            sendResponse(valid: false, message:'There was a problem inserting the task', responseCode:500);
+        }
         break;
 
     case "POST":
@@ -25,7 +29,7 @@ switch($_SERVER['REQUEST_METHOD']){
             sendToUsers($room, 'task', 'create', $result);
             sendResponse(valid:true, message:'Task created successfully', data:$result);
         } catch (Error $e) {
-            logError($e);
+            logError($e, 'There was a problem inserting the task');
             sendResponse(valid: false, message:'There was a problem inserting the task', responseCode:500);
         }
         break;
@@ -38,7 +42,7 @@ switch($_SERVER['REQUEST_METHOD']){
             sendToUsers($room, 'task', 'delete', $payload);
             sendResponse(valid: true, message:'Task deleted successfully');
         } catch (Error $e) {
-            logError($e);
+            logError($e, 'There was a problem deleting the task');
             sendResponse(valid:false, message:'There was a problem deleting the task', responseCode:500);
         }
         break;
@@ -71,11 +75,12 @@ switch($_SERVER['REQUEST_METHOD']){
             sendToUsers($room, 'task', 'update', $payload);
             sendResponse(valid: true, message:'Task updated successfully');
         } catch (Error $e) {
-            logError($e);
+            logError($e, 'There was a problem updating the task');
             sendResponse(valid:false, message:'There was a problem updating the task', errors:[$e->getTraceAsString()], responseCode:500);
         }
         break;
     default: 
+        logError(new Error('Access to unauthorized method: '.$_SERVER['REEQUEST_METHOD']));
         sendResponse(valid:false, message:'Method not allowed', responseCode:405);
         break;
 }

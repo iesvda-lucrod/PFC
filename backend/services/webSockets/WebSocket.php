@@ -12,8 +12,8 @@ Co::set(['hook_flags'=> OpenSwoole\Runtime::HOOK_ALL]);
 // Create the WebSocket server and define listeners
 $server = new Server("0.0.0.0", 9502);
 $server->set([
-    'heartbeat_check_interval' => 60*5,   // Check every 30 seconds
-    'heartbeat_idle_time' => 60*20,       // Disconnect if idle for 60 seconds
+    'heartbeat_check_interval' => 60*5,   // Check every 5 minutes
+    'heartbeat_idle_time' => 60*20,       // Disconnect if idle for 20 minutes
 ]);
 
 $client = new Predis\Client('tcp://127.0.0.1:6379'."?read_write_timeout=-1");
@@ -66,9 +66,8 @@ $server->on('Message', function(Server $server, Frame $frame)
 
 $server->start();
 
-function setupPubSub() {
-    
-}
+
+
 
 function sendToRoom($roomName, $message) {
     global $server;
