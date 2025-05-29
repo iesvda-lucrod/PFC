@@ -50,10 +50,14 @@ export default function useWebSocket(roomId, token) {
     const joinRoom = (user, room) => {
         sendJsonMessage({action: 'joinRoom', targetType:'connection', operationType:'joined', data:{user:user, room:room}});
     }
+    const closeConnection = () => {
+        ws.current.close();
+        ws.current = null;
+    };
 
     const broadcast = (targetType, operationType, data) => {
         sendJsonMessage({action: 'broadcast', targetType:targetType, operationType:operationType, data:data});
     }
 
-    return { initWebSocket, newMessageReceived:messageReceived, sendJsonMessage, joinRoom, broadcast, isOpen };
+    return { initWebSocket, newMessageReceived:messageReceived, sendJsonMessage, closeConnection, joinRoom, broadcast, isOpen };
 }

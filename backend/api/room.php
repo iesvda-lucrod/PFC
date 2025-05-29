@@ -6,6 +6,7 @@ require_once __DIR__.'/../services/endpointFunctions.php';
 handleCorsRequest();
 
 require_once __DIR__."/../services/DBAccess/RoomsTable.php";
+require_once __DIR__."/../services/webSockets/publishToWebSocket.php";
 
 $table = new RoomsTable();
 $token = verifyToken();
@@ -58,10 +59,10 @@ switch($_SERVER['REQUEST_METHOD']){
             if (isset($payload['action'])) {
                 if ($payload['action'] === 'leaveRoom') {
                     $table->leaveRoom($payload['userId'], $payload['roomId']);
+                    sendToIndividualUser($payload['roomId'], $payload['userId'], 'connection', 'kick', $payload['userId']);
                     sendResponse(valid:true, message:'Left room successfully');
                 }
             }
-
 
             $result = $table->delete($payload['id']);
             if (!$result) sendResponse(['message' => 'There was an error deleting the room'], 500);

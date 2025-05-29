@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import useSection from "../../models/useSection";
+import { useEffect, useState } from "react";
+import { RoomContext } from "./RoomContext";
 import useRoom from "../../models/useRoom";
+import useSection from "../../models/useSection";
 import useTask from "../../models/useTask";
 import useAuth from "../../models/useAuth";
 import useSidePanel from "../../models/useSidePanel";
-import { RoomContext } from "./RoomContext";
 import useWebSocket from "../../models/useWebSocket";
 
 
@@ -154,7 +154,8 @@ export function RoomContextProvider({ roomId, children }) {
                 break;
             case 'connection':
                 if (payload.operationType === 'ping') console.log("PONG");
-                if (payload.operationType === 'updateActiveUsers') {console.log("new active users", payload.data);setActiveUsers([...payload.data])};
+                if (payload.operationType === 'updateActiveUsers') {setActiveUsers([...payload.data]);};
+                if (payload.operationType === 'kick') {webSocket.closeConnection();}
                 break;
             default:
                 console.error("Undefined target", payload.targetType);
