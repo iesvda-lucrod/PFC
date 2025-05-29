@@ -15,9 +15,9 @@ export default function ContactPage() {
         message: '',
     });
     const [ errors, setErrors ] = useState({...formData});
-    const { isLoading, sendContactEmail, checkLoggedStatus } = useAuth();
+    const { isLoading, sendContactEmail } = useAuth();
     const [ emailSent, setEmailSent ] = useState(false);
-    const { userInfo } =  useUserContext();
+    const { userInfo } = useUserContext();
 
     useEffect(() => {
 
@@ -30,7 +30,7 @@ export default function ContactPage() {
 
         (async () => {
             console.log("Checking user logged status...");
-            if ((await checkLoggedStatus())) autoComplete();
+            autoComplete();
         })();
     },[]);
 

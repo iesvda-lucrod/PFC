@@ -19,10 +19,15 @@ export default function useAuth() {
         try {
             const response = await model.post({action: 'verifyToken'}, storedToken); //Server side validation
             console.log('Token verification result: ', response.valid);
-            return response.valid ? response.data.token : null;
+            if (!response.valid) {
+                logout();
+                return null;
+            }
+            return response.data.token;
         } catch (e) {
             console.error('Error decoding token:', e);
             localStorage.removeItem('token');
+            logout();
             return null;
         }
     }

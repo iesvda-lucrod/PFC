@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { ENDPOINT_URL } from "./globalVariables";
+import { useNavigate } from "react-router-dom";
 
 export default function useFetch(resource, authToken = null) {
     const [ isLoading, setIsLoading ] = useState(false);
+    
     const FINAL_URL= ENDPOINT_URL+resource;
 
     const requestResource = async(reqMethod, data = null, token = authToken, contentType = 'application/json') => {
@@ -29,9 +31,13 @@ export default function useFetch(resource, authToken = null) {
             let error = await response.json();
             console.error("Call to ",FINAL_URL+'?'+queryParameters,"response: \n", error);
             if (response.status >= 500) {
+                console.log(error);
+                alert(error.message+"\n\nAn unexpected error ocurred, please reload the page and try again later\n");
                 throw new Error('There was an error in the server, please try again later');
             }
             if (response.status === 401) {
+                alert('Session expired');
+                window.location.reload();
                 throw new Error("Authentication error: "+error.message);
             }
             throw new Error(error.message);

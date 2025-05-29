@@ -9,7 +9,7 @@ import useAuth from "../../../models/useAuth";
 export default function Navigation() {
      
     const [ isOpen, setIsOpen ] = useState();
-    const { logout } = useAuth();
+    const { logout, } = useAuth();
     const { userInfo, removeUserFromContext } = useUserContext();
     const navigate = useNavigate();
 

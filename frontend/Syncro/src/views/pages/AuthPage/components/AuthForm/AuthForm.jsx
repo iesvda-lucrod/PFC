@@ -100,7 +100,7 @@ export default function AuthForm() {
         saveUserInContext(userData);
         navigate('/dashboard');
     };
-    
+
 
     return (
         <div className="AuthForm">
@@ -125,7 +125,6 @@ export default function AuthForm() {
                 <ForgotPassword />
                 <button onClick={() => {setValidationErrors({email: '', password: '', confirmPassword: '', username: ''});setIsRegistering(!isRegistering)}}>{isRegistering ? "Already have an account?" : "Don't have an account yet?"}</button>
             </div>
-            
         </div>
     );
 }

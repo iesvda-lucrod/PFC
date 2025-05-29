@@ -14,7 +14,7 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 export default function DashboardPage() {
     
     const { token, checkLoggedStatus } = useAuth();
-    const { userInfo, saveUserInContext } = useUserContext();
+    const { userInfo, saveUserInContext, removeUserFromContext } = useUserContext();
     const { isLoading, model:roomModel } = useRoom(token);
     const [ openRoomForm, setOpenRoomForm ] = useState(false);
     const navigate = useNavigate();
@@ -30,7 +30,10 @@ export default function DashboardPage() {
 
         (async () => {
             console.log("Checking user logged status...");
-            if (!(await checkLoggedStatus())) navigate('/auth');
+            if (!(await checkLoggedStatus())) {
+                removeUserFromContext();
+                navigate('/auth');
+            }
             else loadUserRooms();
         })();
     }, [navigate]);

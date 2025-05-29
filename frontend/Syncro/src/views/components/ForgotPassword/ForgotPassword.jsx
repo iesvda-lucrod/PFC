@@ -21,7 +21,7 @@ export default function ForgotPassword ({ userEmail = '' }) {
         e.preventDefault();
         let response = await sendPasswordChangeEmail(formData.email);
 
-        if (!response.valid) {setValidationErrors(prev => ({...prev, ...response.errors}));}
+        if (!response.valid) {setValidationErrors(prev => ({...prev, ...response.errors})); return;}
 
         setEmailSent(true);
     }
@@ -38,7 +38,7 @@ export default function ForgotPassword ({ userEmail = '' }) {
                     />
                     <button type="submit">Send email</button>
                 </form>
-                { emailSent && <span>Email sent</span> }
+                { emailSent && <span className="successMessage">Email sent</span> }
             </Modal>
         </div>
     );

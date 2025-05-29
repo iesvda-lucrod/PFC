@@ -13,7 +13,7 @@ export default function RoomPage({ roomId }) {
     const navigate = useNavigate();
 
     const { token, checkLoggedStatus } = useAuth();
-    const { userInfo, saveUserInContext } = useUserContext();
+    const { userInfo, saveUserInContext, removeUserFromContext } = useUserContext();
     
     const {
         activeUsers,
@@ -47,8 +47,11 @@ export default function RoomPage({ roomId }) {
 
         (async () => {
             console.log("Checking user authorization to room...");
-            if (!(await checkLoggedStatus() && await isUserPartOfRoom())) {
+            if (!(await checkLoggedStatus())) {
+                removeUserFromContext();
                 navigate('/auth');
+            } else if (!(await isUserPartOfRoom())) {
+                navigate('/dashboard');
             } else {
                 console.log("Fetching room information...");
                 await loadRoom();

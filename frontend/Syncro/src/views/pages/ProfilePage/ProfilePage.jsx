@@ -49,7 +49,10 @@ export default function ProfilePage() {
 
         (async () => {
             console.log("Checking user logged status...");
-            if (!(await checkLoggedStatus())) navigate('/auth');
+            if (!(await checkLoggedStatus())) {
+                removeUserFromContext();
+                navigate('/auth');
+            }
             else loadUserInfo();
         })();
     }, []);
