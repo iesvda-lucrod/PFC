@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { ENDPOINT_URL } from "./globalVariables";
 
-const ENDPOINT_URL = 'http://localhost/PFC/backend/api/';
 export default function useFetch(resource, authToken = null) {
     const [ isLoading, setIsLoading ] = useState(false);
     const FINAL_URL= ENDPOINT_URL+resource;
