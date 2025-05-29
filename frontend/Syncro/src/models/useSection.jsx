@@ -1,8 +1,8 @@
 import Section from "../classes/Section";
-import useDatabase from "./useDatabase";
+import useFetch from "./useFetch";
 
 export default function useSection(token) {
-    const { isLoading, model } = useDatabase('section.php', token);
+    const { isLoading, model } = useFetch('section.php', token);
 
     const getRoomSections = async (roomId) => {
         console.log("fetching room sections: ", {room_id: roomId});

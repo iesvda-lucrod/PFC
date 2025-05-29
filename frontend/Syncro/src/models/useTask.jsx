@@ -1,8 +1,8 @@
 import Task from "../classes/Task";
-import useDatabase from "./useDatabase";
+import useFetch from "./useFetch";
 
 export default function useTask(token) {
-    const {isLoading, model} = useDatabase('task.php', token);
+    const {isLoading, model} = useFetch('task.php', token);
 
     const createTask = async (taskInfo) => {
         const payload = new Task({...taskInfo});

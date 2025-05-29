@@ -1,7 +1,7 @@
-import useDatabase from "./useDatabase";
+import useFetch from "./useFetch";
 
 export default function useUser(token) {
-    const {isLoading, model, requestResource, ENDPOINT_URL} = useDatabase('user.php', token);
+    const {isLoading, model, requestResource, ENDPOINT_URL} = useFetch('user.php', token);
 
     const getUserInfo = async(userData) => {
         let result = await model.get({email: userData.email});

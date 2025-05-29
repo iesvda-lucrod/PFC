@@ -1,11 +1,11 @@
 import { useState } from "react";
-import useDatabase from "./useDatabase";
+import useFetch from "./useFetch";
 
 export default function useAuth() {
     const [ token, setToken ] = useState(() => {
         return localStorage.getItem('token');
     });
-    const { isLoading, model } = useDatabase('auth.php', token);
+    const { isLoading, model } = useFetch('auth.php', token);
 
     const checkLoggedStatus = async () => {
         console.log("Checking user logged status...");

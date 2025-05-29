@@ -1,8 +1,8 @@
-import useDatabase  from "./useDatabase";
+import useFetch  from "./useFetch";
 import Room from "../classes/Room";
 
 export default function useRoom(token) {
-    const {model, isLoading} = useDatabase('room.php', token);
+    const {model, isLoading} = useFetch('room.php', token);
 
     const getRoomInfo = async (roomId) => {
         return await model.get({id: roomId});
