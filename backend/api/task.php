@@ -59,7 +59,7 @@ switch($_SERVER['REQUEST_METHOD']){
                     $movedSectionData = $table->getParentSection($payload ['movedTask']);
                     $movedSectionData['tasks'] = $table->selectByField('section_id', $payload['movedTask']['section_id']);
                     $updatedSections[] = $movedSectionData;
-                    if ($payload['movedTask']['section_id'] !== $payload['movedTask']['section_id']) {
+                    if ($payload['movedTask']['section_id'] !== $payload['targetTask']['section_id']) {
                         $targetSectionData = $table->getParentSection($payload ['targetTask']);
                         $targetSectionData['tasks'] = $table->selectByField('section_id', $payload['targetTask']['section_id']);
                         $updatedSections[] = $targetSectionData;
@@ -68,6 +68,18 @@ switch($_SERVER['REQUEST_METHOD']){
                     $room = $table->getParentSection($payload['movedTask'])['room_id'];
                     sendToUsers($room, 'task', 'reorder', $updatedSections);
                     sendResponse(valid:true, message:"Tasks reordered successfully", data:$updatedSections);
+                }
+
+                if ($payload['action'] === 'changeSection') {
+                    $table->changeSection($payload['movedTask'], $payload['targetSection']);
+
+                    $movedSectionData = $table->getParentSection($payload ['movedTask']);
+                    $movedSectionData['tasks'] = $table->selectByField('section_id', $movedSectionData['id']);
+                    $targetSectionData = $table->getParentSection(['section_id' => $payload['targetSection']['id']]);
+                    $targetSectionData['tasks'] = $table->selectByField('section_id', $payload['targetSection']['id']);
+
+                    sendToUsers($payload['targetSection']['room_id'], 'task', 'reorder', [$movedSectionData, $targetSectionData]);
+                    sendResponse(valid:true, message:'Task moved successfully', data:['task' => $payload['movedTask']]);
                 }
             }
 

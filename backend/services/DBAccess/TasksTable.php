@@ -7,21 +7,27 @@ class TasksTable extends DBConnection {
         parent::__construct("tasks");
     }
 
+    private function getLastPosition($sectionId) {
+        $this->execPreparedQuery(
+            "SELECT MAX(position) as lastPosition FROM tasks WHERE section_id = :section_id",
+            [':section_id' => $sectionId]
+        );
+        $lastPosition = $this->getNextRow()['lastPosition'];
+        if (!$lastPosition) return null;
+        return $lastPosition;
+    }
+
     /**
      * Record the task in the database, assigns the position dynamically
      * @param mixed $data
      */
     public function createTask($data) {
         try {
-
             $this->beginTransaction();
-            $this->execPreparedQuery(
-                "SELECT MAX(position) as lastPosition FROM tasks WHERE section_id = :section_id",
-                [':section_id' => $data['section_id']]
-            );
-            $lastPosition = $this->getNextRow()['lastPosition'];
+
+            $lastPosition = $this->getLastPosition($data['section_id']);
             $data['position'] = $lastPosition !== null ? $lastPosition+1 : 1;
-            //var_dump($data);
+
             $this->insert($data);
 
             $this->execPreparedQuery("SELECT * FROM tasks WHERE id = LAST_INSERT_ID()");
@@ -62,6 +68,62 @@ class TasksTable extends DBConnection {
     }
 
     /**
+     * Get the task's parent section by its 'section_id' attribute
+     * @param mixed $taskData
+     */
+    public function getParentSection($taskData) {
+        try {
+            $this->beginTransaction();
+            if (!$taskData['section_id']) {
+                $this->execPreparedQuery(
+                    "SELECT section_id FROM tasks WHERE id = :id",
+                    ['id' => $taskData['id']]);
+                $taskData['section_id'] = $this->getNextRow();
+            } 
+            $this->execPreparedQuery(
+                "SELECT * from sections WHERE id = :section_id",
+                ['section_id' => $taskData['section_id']]
+            );
+            $section = $this->getNextRow();
+            $this->commit();
+            return $section;
+        } catch (Error $e) {
+            logError($e, 'Database error');
+            $this->rollBack();
+            throw $e;
+        }
+    }
+
+    public function changeSection($movedTask, $targetSection) {
+        try {
+            $this->beginTransaction();
+
+            $this->execPreparedQuery("UPDATE tasks SET position = position -1 WHERE section_id = :movedSection AND position > :movedPosition",
+            [
+                    ':movedSection' => $movedTask['section_id'],
+                    ':movedPosition' => $movedTask['position'],
+                ]
+            );
+
+            $lastSectionPosition = $this->getLastPosition($targetSection['id']);
+            $this->execPreparedQuery("UPDATE tasks SET section_id = :targetSectionId, position = :lastSectionPosition WHERE id = :movedId",
+                [
+                    ':targetSectionId' => $targetSection['id'],
+                    ':lastSectionPosition' => ($lastSectionPosition !== null ? $lastSectionPosition + 1 : 1),
+                    ':movedId' => $movedTask['id'],
+                ]
+            );
+            
+            $this->commit();
+        } catch (Error $e) {
+            logError($e, 'Database error');
+            $this->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
      * Changes the task's position
      * @param mixed $movedTask Task to move
      * @param mixed $targetTask Task with the position $movedTask is moved to
@@ -75,6 +137,7 @@ class TasksTable extends DBConnection {
 
 
             if ($movedTask['section_id'] !== $targetTask['section_id']) {
+                $modifier = 0;
                 $this->execPreparedQuery("UPDATE tasks SET position = position -1 WHERE section_id = :movedSection AND position > :movedPosition",
                 [
                         ':movedSection' => $movedTask['section_id'],
@@ -132,33 +195,6 @@ class TasksTable extends DBConnection {
         } catch (Error $e) {
             logError($e, 'Database error');
             $this->rollback();
-        }
-    }
-
-    /**
-     * Get the task's parent section by its 'section_id' attribute
-     * @param mixed $taskData
-     */
-    public function getParentSection($taskData) {
-        try {
-            $this->beginTransaction();
-            if (!$taskData['section_id']) {
-                $this->execPreparedQuery(
-                    "SELECT section_id FROM tasks WHERE id = :id",
-                    ['id' => $taskData['id']]);
-                $taskData['section_id'] = $this->getNextRow();
-            } 
-            $this->execPreparedQuery(
-                "SELECT * from sections WHERE id = :section_id",
-                ['section_id' => $taskData['section_id']]
-            );
-            $section = $this->getNextRow();
-            $this->commit();
-            return $section;
-        } catch (Error $e) {
-            logError($e, 'Database error');
-            $this->rollBack();
-            throw $e;
         }
     }
 }
