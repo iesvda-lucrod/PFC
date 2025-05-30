@@ -13,7 +13,7 @@ function App() {
   return (
     <div className='App'>
     <HelmetProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/Lucas_PFC">
         <UserContextProvider>
           <Navigation/>
 
