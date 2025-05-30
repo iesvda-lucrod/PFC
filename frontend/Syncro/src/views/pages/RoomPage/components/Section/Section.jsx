@@ -10,8 +10,8 @@ import Modal from '../../../../components/Modal/Modal';
 export default function Section({ sectionInfo }) {
     const {
         section: { sectionModel },
+        task: { taskModel },
         sidePanel: { setPanel, resetPanel, setPanelOpen }
-        
     }  = useRoomContext();
     const [ showConfirmationModal, setShowConfirmationModal] = useState();
 
@@ -62,15 +62,22 @@ export default function Section({ sectionInfo }) {
         });
     }
 
-    const handleDragOver = () =>  {
-        console.log("DRAGGING OVER SERCTION");
+    const handleDragOver = (e) =>  {
+        e.preventDefault();
         setDragStyle('draggingOver');
     }
-    const handleDragLeave = () =>  {
+    const handleDragLeave = (e) =>  {
         setDragStyle('');
-        
     }
-    const handleDrop = () =>  {
+    const handleDrop = async (e) =>  {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Dropping in section");
+        
+        const movedTask = JSON.parse(e.dataTransfer.getData('text/plain'));
+        const targetSection = sectionInfo;
+
+        let result = await taskModel.changeSection(movedTask, targetSection);
         setDragStyle('');
     }
     

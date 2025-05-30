@@ -50,14 +50,10 @@ export default function Task({ taskInfo }) {
         <div className={"Task "+dragStyle} onClick={() => triggerPanel()}
         draggable={true}
             onDragStart={(e) => dragMethods.handleDragStart(e, taskInfo)}
-            
             onDragOver={(e) => dragMethods.handleDragOver(e, taskInfo)}
             onDragLeave={(e) => dragMethods.handleDragLeave(e)}
-
             onDragEnd={(e) => dragMethods.handleDragEnd(e)}
-
             onDrop={(e) => dragMethods.handleDrop(e, taskInfo)}
-
         >
             <div className={'taskContent' +(taskInfo.done ? ' done': '')}>
                 <span className='title'>{taskInfo.title}</span>
