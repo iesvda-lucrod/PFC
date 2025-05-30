@@ -24,7 +24,7 @@ export default function LandingPage() {
             <meta charSet="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-            <title>Online Group Project Organizer | Task Management & Collaboration Tool</title>
+            <title>Syncro - Task Management & Collaboration Tool</title>
             <meta 
             name="description" 
             content="Organize group projects online with ease. Break work into sections and tasks, assign roles, track progress, and collaborate in real-time — all in one powerful project management tool." 

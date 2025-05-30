@@ -1,38 +1,36 @@
 .FormInput {
     width: 100%;
     display: flex;
-    flex-flow: column wrap;
-    align-items: center;
+    flex-flow: row wrap;
     
     margin: 5px 0px;
 }
 .FormInput .inputContainer {
     width: 100%;
     margin: 4px 0px;
-
     display: flex;
+    flex-flow: row wrap;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
 }
 
 .FormInput .inputContainer > label {
-    min-width: 20%;
+    
+    width: auto;
+    flex:1;
     display: flex;
 }
 
 .FormInput .inputContainer > input,
-.FormInput .inputContainer > textarea {
-    max-width: 80%;
-}
+    .FormInput .inputContainer > textarea {
+        max-width: 100%;
+    }
 
 @media screen and (max-width:600px) {
     .FormInput .inputContainer > label {
         min-width: 30%;
     }
 
-    .FormInput .inputContainer > input,
-    .FormInput .inputContainer > textarea {
-        max-width: 100%;
-    }
+    
 }
