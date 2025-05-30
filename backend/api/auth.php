@@ -186,8 +186,8 @@ function acceptInvitation($userId, $roomId, $code) {
 
     $savedInvitation = $table->getInvitation($userId, $roomId);
     if (!$savedInvitation) sendResponse(valid:false, message:'There was an error accepting the invitation', errors:['invitation' => 'The invitation does not exist']);
-    if (!($code && hash_equals($code, $savedInvitation['code']))) sendResponse(valid:false, message:'There was an problem accepting the invitation', errors:['code' => 'Incorrect code']);
-    if (strtotime($savedInvitation['code_expiration']) < time()) sendResponse(valid:false, message:'There was an problem accepting the invitation', errors:['code' => 'This code has expired']);
+    if (!($code && hash_equals($code, $savedInvitation['code']))) sendResponse(valid:false, message:'There was an problem accepting the invitation', errors:['invitation' => 'Incorrect invitation']);
+    if (strtotime($savedInvitation['code_expiration']) < time()) sendResponse(valid:false, message:'There was an problem accepting the invitation', errors:['invitation' => 'This invitation has expired']);
 
     $table->processInvitation($savedInvitation);
 
