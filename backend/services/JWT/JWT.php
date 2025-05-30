@@ -14,7 +14,7 @@ function generateJWT($contents) {
     $payload = [
         'iss' => 'Syncro',
         'iat' => time(),
-        'exp' => (time()+60*60), //1h login time
+        'exp' => (time()+60*60*24), //1 day login time
     ] + $aditionalContents;
 
     $jwt = JWT::encode($payload, $_SERVER['JWT_KEY'], 'HS256');
