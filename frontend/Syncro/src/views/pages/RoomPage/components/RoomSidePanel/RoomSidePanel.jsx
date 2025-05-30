@@ -1,5 +1,6 @@
 import './RoomSidePanel.css';
 import { useRoomContext } from '../../../../../contexts/RoomContext/RoomContext';
+import { Icon_arrow_left, Icon_arrow_right } from '../../../../../assets/icons';
 
 export default function RoomSidePanel() {
     const { 
@@ -52,7 +53,7 @@ export default function RoomSidePanel() {
             <div className='toggleButton'>
                 <button onClick={() => {setPanelOpen(!panelOpen)}}>
                 <div className='gradient'></div>
-                    {panelOpen ? ">" : '<'}
+                    {panelOpen ?  <Icon_arrow_right/> : <Icon_arrow_left/>}
                 </button>
             </div>
 

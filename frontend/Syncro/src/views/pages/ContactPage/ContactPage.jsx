@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import FormInput from "../../components/FormInput/FormInput";
 import useAuth from "../../../models/useAuth";
 import { useUserContext } from "../../../contexts/UserContext/UserContext";
-import { Icon_arrow_left } from "../../../assets/icons";
+import { Icon_arrow_back } from "../../../assets/icons";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 export default function ContactPage() {
@@ -84,7 +84,7 @@ export default function ContactPage() {
     return (
         <div className="ContactPage page">
             {!userInfo && 
-                <Link to={"/"}><Icon_arrow_left/> back to homepage</Link>
+                <Link className="backLink" to={"/"}><Icon_arrow_back/> back to homepage</Link>
             }
             <div className="dataContainer">
             <h1>Contact</h1>

@@ -146,6 +146,20 @@ input {
   display:none;
 }
 
+.backLink {
+  font-size: larger;
+  font-weight: bold;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  color: var(--mainColor-dak);
+  
+  display: flex;
+  align-items: center;
+}
+
+
 .dataContainer {
   background-color: var(--baseColor);
   border: 2px solid var(--mainColor-dark);
