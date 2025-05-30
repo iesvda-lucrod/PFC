@@ -11,6 +11,7 @@ export default function RoomInvitationPage() {
     const navigate = useNavigate();
     const queryParams = new URLSearchParams(location.search);
     const [ invitationResult, setInvitationResult ] = useState(false);
+    const [ invitationError, setInvitationError ] = useState('');
   
     const userId = queryParams.get('user');
     const roomId = queryParams.get('room');
@@ -20,8 +21,11 @@ export default function RoomInvitationPage() {
     useEffect(() => {
 
         const triggerInvitation = async () => {
+            setInvitationResult(false);
+            setInvitationError('');
             let response = await acceptInvitation(userId, roomId, code);
             setInvitationResult(response.valid);
+            if (!response.valid) setInvitationError(response.errors.invitation);
         }
 
         if (!didRun.current) //React safe dev is running the call twice, this prevents it
@@ -32,18 +36,33 @@ export default function RoomInvitationPage() {
 
 
     return (
-        <div className="RoomInvitationPage">
-            <div>
+         <div className="RoomInvitationPage page">
+            <div className="dataContainer">
             {
-                isLoading ? (
-                    <LoadingSpinner />
-                ) : (
-                    invitationResult ? (
-                        //navigate('/dashboard/'+roomId)
-                        <p>Verification Success</p>
+                !isLoading ? 
+                (
+                <>
+                    {invitationResult ? (
+                    <>
+                        <h1>Invitation accepted!</h1>
+                        <button onClick={() => navigate('/dashboard/'+roomId)}>Enter the room</button>
+                    </>
                     ) : (
-                        <p>Verification failed</p>
-                    )
+                    <>
+                        <h1>The invitation failed</h1>
+                        <p><b>{invitationError}</b></p>
+                        <button onClick={() => navigate('/dashboard')}>Back to dashboard</button>
+                    </>
+                    )}
+                    
+                </>
+                ) : (
+                <>
+                    <h1>Verifying email...</h1>
+                    <div className="spinnerContainer">
+                        <LoadingSpinner />
+                    </div>
+                </>
                 )
             }
             </div>

@@ -61,11 +61,10 @@ export default function DashboardPage() {
         <div className="DashboardPage page">
             
             <section className="roomListContainer">
-                <div className="roomListHeader">
-                    <h2>My Rooms</h2>
-                </div>
-
                 <div className="roomListContent">
+                    <div className="roomListHeader">
+                        <h2>My Rooms</h2>
+                    </div>
                     <div className="roomList">
                     {
                         isLoading ? <LoadingSpinner /> :
@@ -79,12 +78,10 @@ export default function DashboardPage() {
             </section>
 
             <section className="roomListContainer">
-                <div className="roomListHeader">
-                    <h2>Rooms im a member of</h2>
-                </div>
-                
-
                 <div className="roomListContent">
+                    <div className="roomListHeader">
+                        <h2>Rooms im a member of</h2>
+                    </div>
                     <div className="roomList">
                     {
                         isLoading ? <LoadingSpinner /> :

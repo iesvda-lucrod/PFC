@@ -1,12 +1,12 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { Icon_menu, Icon_home, Icon_user, Icon_phone, Icon_power } from "../../../assets/icons";
-import './Navigation.css';
+import './Menu.css';
 import { useState } from "react";
 import { useUserContext } from "../../../contexts/UserContext/UserContext";
 import useAuth from "../../../models/useAuth";
 
-export default function Navigation() {
+export default function Menu() {
      
     const [ isOpen, setIsOpen ] = useState();
     const { logout, } = useAuth();
@@ -25,7 +25,7 @@ export default function Navigation() {
     }
 
     return (
-        <div className= {"Navigation "+(!userInfo ? 'hidden':'')}>
+        <div className= {"Menu "+(!userInfo ? 'hidden':'')}>
             <div className="MenuControl">
                 <div className="MenuRow">
                     <button className="triggerMenuButton" onClick={triggerMenu}><Icon_menu/></button>

@@ -145,11 +145,44 @@ input {
 :root .showOnSmall {
   display:none;
 }
+
+.dataContainer {
+  background-color: var(--baseColor);
+  border: 2px solid var(--mainColor-dark);
+  border-radius: 20px;
+
+  min-width: 500px;
+  max-width: 500px;
+  margin: auto;
+
+
+  padding: 30px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  overflow-y: scroll;
+
+  text-align: center;
+}
+
+
 @media screen and (max-width: 800px) {
   :root .hideOnSmall {
     display:none;
   } 
   :root .showOnSmall {
     display:block;
+  }
+
+  .dataContainer {
+    max-width: 100%;
+    min-width: 0;
+    border-radius: 20px 0 0 20px;
+    border-width: 2px 0 2px 2px;
+
+    height: 80%;
+
+    text-align: center;
   }
 }

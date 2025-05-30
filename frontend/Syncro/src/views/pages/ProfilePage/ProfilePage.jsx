@@ -20,7 +20,6 @@ export default function ProfilePage() {
     const { userInfo, saveUserInContext, removeUserFromContext } = useUserContext();
     const [ fullUserInfo, setFullUserInfo ] = useState(null);
 
-    const fileInput = useRef(null);
     const [ selectedImage, setSelectedImage ] = useState(null);
     const [ openPFPModal, setOpenPFPModal ] = useState(false);
 
@@ -146,97 +145,97 @@ export default function ProfilePage() {
 
     return (
         <div className="ProfilePage page">
+            <div className="dataContainer">
             {
-                fullUserInfo ? 
-                <div className="ProfileCard">
-                    <div className="cardHeader">
-                        <h1>Profile</h1>
-                        <div className="profilePictureContainer" onClick={() => setOpenPFPModal(true)/*() => {fileInput.current.click()}*/}>
-                            <ProfilePicture pictureName={fullUserInfo.profile_picture} />
-    
-                            <div className="editPicture">
-                                <Icon_edit className="iconEdit"/>
-                            </div>
+                (fullUserInfo && !isLoadingAuth) ? 
+                <>
+                <div className="cardHeader">
+                    <h1>Profile</h1>
+                    <div className="profilePictureContainer" onClick={() => setOpenPFPModal(true)/*() => {fileInput.current.click()}*/}>
+                        <ProfilePicture pictureName={fullUserInfo.profile_picture} />                            
+
+                        <div className="editPicture">
+                            <Icon_edit className="iconEdit"/>
                         </div>
-
-                        <Modal isOpen={openPFPModal} onClose={() => setOpenPFPModal(false)}>
-                            <form onSubmit={(e) => handlePFPChange(e)} encType="multipart/form-data">
-                                <input type="file" name="profile_picture" onChange={(e) => setSelectedImage(e.target.files[0])}/>
-                                <button type="submit">Change profile picture</button>
-                            </form>
-
-                        </Modal>
                     </div>
 
-                    <div className="userInfo">
-                        <div >
-                            <EditableField 
-                            label='Username' name='username' value={fullUserInfo.username}
-                            editing={editingInfo} setEditing={setEditingInfo}
-                            confirmAction={(newValue) => updateUsername(newValue)}>
-                            </EditableField>
-                            <span className="error">{validationErrors.username}</span>
-                        </div>
-                        <div >
-                            <EditableField 
-                            label='Email' name='email' value={fullUserInfo.email}
-                            editing={editingEmail} setEditing={setEditingEmail}
-                            confirmAction={(newValue) => updateEmail(newValue)} >
-                            </EditableField>
-                            <span>{validationErrors.email}</span>
-                        </div>
-
-                        {
-                        !fullUserInfo.verified &&
-                        <div className="emailNotVerifiedWarning">
-                            <span>This email is not verified, email verification is needed for collaborative rooms</span>
-                            <button onClick={handleVerificationEmail}>Send verification email</button>
-                            <span className="errorMessage">{validationErrors.verificationEmail}</span>
-                            {verificationEmailSent && <span className="successMessage">Email sent!</span>}
-                        </div>
-                        }
-                    </div>
-
-                    <div className="actionButtons">
-                        <button onClick={() => setOpenPasswordModal(true)}>Change password</button>
-                        <button onClick={() => setOpenConfirmDeleteModal(true)}>Delete account</button> 
-                    </div>
-
-                    <Modal isOpen={openPasswordModal} onClose={() => setOpenPasswordModal(false)}>
-                        
-                        <form onSubmit={(e) => updatePassword(e)}>
-                            <FormInput label='Old password' name={'oldPassword'} type="password" placeholder="Enter old password..."
-                            value={oldPassword}
-                            onChange={(e) => setOldPassword(e.target.value)}
-                            validationErrorMessage={validationErrors.oldPassword} />
-
-                            <FormInput label='New password' name={'newPassword'} type="password" placeholder="Enter new password..."
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            validationErrorMessage={validationErrors.newPassword} />
-
-                            <button type="submit">Change password</button>
-                            {
-                                passwordChanged && <span className="successMessage">Password changed successfully!</span>
-                            }
+                    <Modal isOpen={openPFPModal} onClose={() => setOpenPFPModal(false)}>
+                        <form onSubmit={(e) => handlePFPChange(e)} encType="multipart/form-data">
+                            <input type="file" name="profile_picture" onChange={(e) => setSelectedImage(e.target.files[0])}/>
+                            <button type="submit">Change profile picture</button>
                         </form>
 
-                        <ForgotPassword></ForgotPassword>
-
                     </Modal>
+                </div>
 
-                    <Modal isOpen={openConfirmDeleteModal} onClose={() => setOpenConfirmDeleteModal(false)}>
-                        <p>Are you sure you want to delete your account?</p>
-                        <p>This action is irreversible</p>
-                        <button className="deleteButton" onClick={deleteAccount}>Delete account</button>
-                    </Modal>
+                <div className="userInfo">
+                    <p><b>Select the profile picture to change it</b></p>
+                    <EditableField 
+                    label='Username' name='username' value={fullUserInfo.username}
+                    editing={editingInfo} setEditing={setEditingInfo}
+                    confirmAction={(newValue) => updateUsername(newValue)}>
+                    </EditableField>
+                    <span className="error">{validationErrors.username}</span>
+
+                    <EditableField 
+                    label='Email' name='email' value={fullUserInfo.email}
+                    editing={editingEmail} setEditing={setEditingEmail}
+                    confirmAction={(newValue) => updateEmail(newValue)} >
+                    </EditableField>
+                    <span>{validationErrors.email}</span>
+
+                    {
+                    !fullUserInfo.verified &&
+                    <div className="emailNotVerifiedWarning">
+                        <span>This email is not verified, email verification is needed for collaborative rooms</span>
+                        <button onClick={handleVerificationEmail}>Send verification email</button>
+                        <span className="errorMessage">{validationErrors.verificationEmail}</span>
+                        {verificationEmailSent && <span className="successMessage">Email sent!</span>}
+                    </div>
+                    }
+                </div>
+
+                <div className="actionButtons">
+                    <button onClick={() => setOpenPasswordModal(true)}>Change password</button>
+                    <button onClick={() => setOpenConfirmDeleteModal(true)}>Delete account</button> 
+                </div>
+
+                <Modal isOpen={openPasswordModal} onClose={() => setOpenPasswordModal(false)}>
+                    
+                    <form onSubmit={(e) => updatePassword(e)}>
+                        <FormInput label='Old password' name={'oldPassword'} type="password" placeholder="Enter old password..."
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                        validationErrorMessage={validationErrors.oldPassword} />
+
+                        <FormInput label='New password' name={'newPassword'} type="password" placeholder="Enter new password..."
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        validationErrorMessage={validationErrors.newPassword} />
+
+                        <button type="submit">Change password</button>
+                        {
+                            passwordChanged && <span className="successMessage">Password changed successfully!</span>
+                        }
+                    </form>
+
+                    <ForgotPassword></ForgotPassword>
+
+                </Modal>
+
+                <Modal isOpen={openConfirmDeleteModal} onClose={() => setOpenConfirmDeleteModal(false)}>
+                    <p>Are you sure you want to delete your account?</p>
+                    <p>This action is irreversible</p>
+                    <button className="deleteButton" onClick={deleteAccount}>Delete account</button>
+                </Modal>
+            </>
             
-            </div>
             :
             <div className="spinnerContainer">
                 <LoadingSpinner />
             </div>
             }
+            </div>
         </div>
     );
 }

@@ -63,8 +63,8 @@ export default function ForgotPasswordPage() {
 
 
     return (
-        <div className="EmailVerificationPage">
-            <div>
+        <div className="ForgotPasswordPage page">
+            <div className="dataContainer">
             {
                 isLoading ? (
                 <LoadingSpinner />
@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
 
                             <button type="submit">Change password</button>
                             {
-                            passwordChanged && <span>Password changed successfully!</span>
+                            passwordChanged && <span className="successMessage">Password changed successfully!</span>
                             }
                             <button onClick={() => {navigate('/auth')}}>Back to login</button>
 

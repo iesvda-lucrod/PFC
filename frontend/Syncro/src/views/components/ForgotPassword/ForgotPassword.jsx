@@ -28,7 +28,7 @@ export default function ForgotPassword ({ userEmail = '' }) {
     }
 
     return (
-        <div>
+        <div className="ForgotPassword">
             <p className="link" onClick={() => setOpenModal(true)}>Forgot your password?</p>
             <Modal isOpen={openModal} onClose={() => setOpenModal(false)} >
                 <form onSubmit={handleSubmit}>

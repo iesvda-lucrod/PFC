@@ -1,0 +1,33 @@
+.EmailVerificationPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: var(--menuBarSpacing);
+}
+
+.resultContainer {
+    border: 2px solid var(--mainColor-dark);
+    border-radius: 20px;
+    background-color: var(--baseColor);
+
+    height: 70%;
+    width: 70%;
+
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column nowrap;
+    gap: 40px;
+}
+
+.EmailVerificationPage .spinnerContainer {
+    height: 100px;
+    width: 100px;
+}
+
+@media screen and (max-width:600px) {
+    .resultContainer {
+        width: 100%;
+    }
+}

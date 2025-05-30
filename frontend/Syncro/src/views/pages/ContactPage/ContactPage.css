@@ -8,44 +8,27 @@
   justify-content: center;
 }
 
-.contactFormContainer h1 {
+.dataContainer h1 {
   text-align: center;
 }
 
-.ContactPage .contactFormContainer {
-  background-color: var(--mainColor-light);
-  border: 2px solid var(--mainColor-dark);
-  border-radius: 20px;
-
+.ContactPage .dataContainer {
   min-width: 500px;
   width: 80%;
-  margin: auto;
-
   padding: 20px;
-
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-evenly;
-
-  display: flex;
-  flex-flow: column nowrap;
 }
 
 .ContactPage textarea {
-    height: 5em;
+  height: 5em;
 }
 
 .success {color: var(--confirmColor);}
 
 
 @media screen and (max-width: 600px) {
-  .ContactPage .contactFormContainer {
+  .ContactPage .dataContainer {
     min-width: 0;
     width: 100%;
-    height: 80%;
-
-    border-width: 2px 0 2px 2px;
-    border-radius: 20px 0px 0px 20px;
+    height: 70%;
   }
-  
 }

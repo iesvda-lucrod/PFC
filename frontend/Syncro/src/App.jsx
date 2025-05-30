@@ -6,7 +6,7 @@ import Router from './features/routing/Router';
 import { UserContextProvider } from './contexts/UserContext/UserContextProvider';
 import { ErrorBoundary } from "react-error-boundary";
 //UI Component imports
-import Navigation from "./views/components/Navigation/Navigation";
+import Navigation from "./views/components/Menu/Menu";
 
 function App() {
 

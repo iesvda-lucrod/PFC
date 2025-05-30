@@ -1,5 +1,5 @@
 .AuthForm {
-    background-color: var(--backgroundColorDark);
+    background-color: var(--baseColor);
     border: 2px solid var(--mainColor);
     border-radius: 20px;
 

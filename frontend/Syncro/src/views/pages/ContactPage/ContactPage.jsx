@@ -86,7 +86,7 @@ export default function ContactPage() {
             {!userInfo && 
                 <Link to={"/"}><Icon_arrow_left/> back to homepage</Link>
             }
-            <div className="contactFormContainer">
+            <div className="dataContainer">
             <h1>Contact</h1>
 
                 <form action="" className="contactForm" onSubmit={(e) => handleSubmit(e)}>

@@ -7,6 +7,7 @@ export default function useAuth() {
     });
     const { isLoading, model } = useFetch('auth.php', token);
 
+    //AUTHENTICATION RELATED
     const checkLoggedStatus = async () => {
         console.log("Checking user logged status...");
         const storedToken = localStorage.getItem('token');
@@ -49,6 +50,7 @@ export default function useAuth() {
         setToken(null);
     }
 
+    // EMAIL RELATED
     const sendVerificationEmail = async (userData) => {
         let result = await model.post({action: 'sendVerificationEmail', user: {...userData}});
         return result;

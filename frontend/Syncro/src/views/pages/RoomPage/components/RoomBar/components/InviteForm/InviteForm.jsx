@@ -12,12 +12,14 @@ export default function InviteForm({ roomInfo }) {
         email: '',
     });
     const [ validationErrors, setValidationErrors ] = useState({...formData, server:''});
+    const [ emailSent, setEmailSent ] = useState(false);
 
     const handleChange = (event) => {
         console.log("change", event.target.name, event.target.value);
         const field = event.target;
         setFormData({...formData, [field.name]: field.value});
         setValidationErrors({...validationErrors, [field.name]: ''});
+        setEmailSent(false);
     }
 
     const handleSubmit = (e) => {
@@ -30,6 +32,7 @@ export default function InviteForm({ roomInfo }) {
         }
         const response =sendInvitationEmail(userInfo, formData.email, roomInfo);
         if (!response.valid) {setValidationErrors(prev => ({...prev, ...response.errors}))}
+        setEmailSent(true);
     }
 
     const validateData = () => {
@@ -46,7 +49,9 @@ export default function InviteForm({ roomInfo }) {
     return (
         <form id='InviteForm' onSubmit={(e) => {handleSubmit(e)}}>
             <FormInput label='Email' name='email' type="email" placeholder="Enter user's email" onChange={handleChange} validationErrorMessage={validationErrors.email} value={formData.email}></FormInput>
-            <span className="successMessage">{}</span>
+            {
+                emailSent && <span className="successMessage">Email sent!</span>
+            }
         </form>
     );
 }
