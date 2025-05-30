@@ -1,17 +1,14 @@
 import { Icon_arrow_forward, Icon_arrow_forward_big, Icon_brand_big, Icon_brand, Icon_brand_small, Icon_Facebook, Icon_Instagram, Icon_LinkedIn, Icon_menu, Icon_phone, Icon_Twitter_X, Icon_user } from "../../../assets/icons";
 import "./LandingPage.css";
-import image_collaboration from "../../../assets/images/collaboration.jpeg";
-import image_cooperation from "../../../assets/images/cooperation.jpeg";
-import image_real_time from "../../../assets/images/real_time_collaboration.webp";
-import image_team from "../../../assets/images/team.jpg";
+import image_collaboration from "../../../assets/images/static/collaboration.jpeg";
+import image_cooperation from "../../../assets/images/static/cooperation.jpeg";
+import image_real_time from "../../../assets/images/static/real_time_collaboration.webp";
+import image_team from "../../../assets/images/static/team.jpg";
 import { Link } from "react-router-dom";
-import { InView, useInView } from "react-intersection-observer";
 import AnimateEntry from "./components/AnimateEntry/AnimateEntry";
-import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 export default function LandingPage() {
-    const { ref, inView, entry } = useInView();
 
     const anchorScroll = (e) => {
         e.preventDefault();
