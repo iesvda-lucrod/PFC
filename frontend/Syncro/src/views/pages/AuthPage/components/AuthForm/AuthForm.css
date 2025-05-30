@@ -4,6 +4,7 @@
     border-radius: 20px;
 
     min-width: 400px;
+    max-width: 100%;
     margin: auto;
 
     padding: 10px;
@@ -36,3 +37,8 @@ form > * {
     width: 100%;
 }
 
+@media screen and (max-width: 600px) {
+  .AuthForm {
+    min-width: 0;
+  }
+}

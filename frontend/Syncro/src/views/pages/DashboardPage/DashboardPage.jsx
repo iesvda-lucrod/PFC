@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { useUserContext } from "../../../contexts/UserContext/UserContext";
 
-import RoomForm from "../../components/RoomForm/RoomForm";
 import Modal from "../../components/Modal/Modal";
 import useRoom from "../../../models/useRoom";
-import RoomCard from "../../components/RoomCard/RoomCard";
+import RoomCard from "./components/RoomCard/RoomCard";
 
 import './DashboardPage.css';
 import useAuth from "../../../models/useAuth";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import RoomForm from "./components/RoomForm/RoomForm";
+import { useUserContext } from "../../../contexts/UserContext/UserContext";
 
 export default function DashboardPage() {
-    
     const { token, checkLoggedStatus } = useAuth();
     const { userInfo, saveUserInContext, removeUserFromContext } = useUserContext();
     const { isLoading, model:roomModel } = useRoom(token);
@@ -65,7 +64,6 @@ export default function DashboardPage() {
                 <div className="roomListHeader">
                     <h2>My Rooms</h2>
                 </div>
-                
 
                 <div className="roomListContent">
                     <div className="roomList">

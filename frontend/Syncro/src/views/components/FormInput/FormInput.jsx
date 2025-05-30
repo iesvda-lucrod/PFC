@@ -5,7 +5,7 @@ export default function FormInput({ label, name, type = "text", placeholder='', 
     return(
         <div className="FormInput">
             <div className='inputContainer'>
-                <label htmlFor={name}>{label}:</label>
+                <label htmlFor={name}><b>{label}:</b></label>
                 <input id={name} name={name} type={type} placeholder={placeholder} onChange={onChange} value={value}/>
             </div>
             <span className="errorMessage"> {validationErrorMessage}</span>

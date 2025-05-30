@@ -1,0 +1,27 @@
+.RoomWorkspace {
+    width: 100vw;
+    max-height: 100%;
+
+    background-color: var(--mainColor-light);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: start;
+    gap: 20px;
+
+    padding: 20px var(--menuBarSpacing);
+
+    display: flex;
+    flex-flow: row nowrap;
+    overflow-x: scroll;
+}
+
+@media screen and (max-width:600px) {
+    .RoomWorkspace {
+        flex-flow: column;
+        overflow-y: scroll;
+    }
+}

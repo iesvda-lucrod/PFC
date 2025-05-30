@@ -41,13 +41,12 @@ function handleCorsRequest() {
  * @return never
  */
 function sendResponse($valid, $message, $data = null, $errors = null, $responseCode = 200) {
-
     $response = [
         'valid' => $valid,
         'message'=> $message,
     ]
     + (isset($data) ? ['data'=> $data] : [])
-    + (isset($errors) ? ['errors'=> $data] : []);
+    + (isset($errors) ? ['errors'=> $errors] : []);
 
     http_response_code($responseCode);
     echo json_encode($response);

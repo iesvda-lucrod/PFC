@@ -16,7 +16,8 @@
   width: 100vw;
   background-color: var(--baseColor);
   display: flex;
-    flex-flow: column;
+  flex-flow: column;
+  overflow: hidden;
 }
 
 * {

@@ -1,0 +1,13 @@
+.MemberCard {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.MemberCard .info {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    height: 100px;
+    text-overflow: ellipsis;
+}

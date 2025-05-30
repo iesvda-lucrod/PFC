@@ -61,6 +61,7 @@ switch($_SERVER['REQUEST_METHOD']){
     case "PUT":
         $request = handleContentType();
         try {
+            $table = new UsersTable();
             if (isset($request['action'])) {
                 if ($request['action'] === 'changePassword') {
                     $oldUserInfo = $table->getUnprotectedUserFromEmail($request['email']);

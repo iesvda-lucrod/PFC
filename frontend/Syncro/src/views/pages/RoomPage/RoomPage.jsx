@@ -1,10 +1,10 @@
 import './RoomPage.css';
 import { useRoomContext } from "../../../contexts/RoomContext/RoomContext";
-import RoomBar from "../../components/RoomBar/RoomBar";
-import RoomWorkspace from "../../components/RoomWorkspace/RoomWorkspace";
+import RoomBar from "./components/RoomBar/RoomBar";
+import RoomWorkspace from "./components/RoomWorkspace/RoomWorkspace";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import RoomSidePanel from '../../components/RoomSidePanel/RoomSidePanel';
+import RoomSidePanel from './components/RoomSidePanel/RoomSidePanel';
 import useAuth from '../../../models/useAuth';
 import { useUserContext } from '../../../contexts/UserContext/UserContext';
 import Modal from "../../components/Modal/Modal";
@@ -16,7 +16,6 @@ export default function RoomPage({ roomId }) {
     const { userInfo, saveUserInContext, removeUserFromContext } = useUserContext();
     
     const {
-        activeUsers,
         loadRoom,
         room: { roomInfo, roomModel },
         section: {sections},

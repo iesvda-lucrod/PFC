@@ -4,15 +4,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    max-width: 100%;
 }
 
 .ProfileCard {
-    background-color: var(--backgroundColorBlue);
-    border: 2px solid var(--mainColorDark);
+    background-color: var(--mainColor-light);
+    border: 2px solid var(--mainColor-dark);
     border-radius: 20px;
 
+    min-width: 500px;
     max-width: 500px;
     margin: auto;
+
+    height: 70%;
 
     padding: 20px;
 
@@ -59,7 +64,29 @@
 
 .emailNotVerifiedWarning {
     background-color: var(--warningColor);
-    border: 1px solid var(--mainColorDark);
+    border: 1px solid var(--mainColor-dark);
     border-radius: 10px;
     padding: 10px;
+}
+
+.loaderContainer {
+    width: 50vw;
+}
+
+/* Action buttons */
+.ProfileCard .actionButtons {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+@media screen and (max-width:600px) {
+    .ProfileCard {
+        max-width: 100%;
+        min-width: 0;
+        border-radius: 20px 0 0 20px;
+        border-width: 2px 0 2px 2px;
+
+        height: 80%;
+
+    }
 }

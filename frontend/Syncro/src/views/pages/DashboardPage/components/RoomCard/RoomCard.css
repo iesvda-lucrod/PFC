@@ -1,0 +1,67 @@
+.RoomCard {
+    border: 5px solid var(--mainColor-dark);
+    border-radius: 20px;
+    background-color: var(--baseColor);
+
+    min-width: 400px;
+
+    margin-right: 20px;
+    padding: 10px;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    justify-content: space-between;
+}
+
+.RoomCard .cardTitle {    
+    height: 3em;
+    flex: 0;
+
+    display: flex;
+    flex-flow: row nowrap;
+
+    align-items: center;
+    justify-content: space-between;
+}
+.cardTitle h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cardTitle button {
+    flex: 0;
+}
+
+.RoomCard .cardContent {
+    flex: 1 ;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    overflow: hidden;
+}
+
+.cardContent .description {
+    flex: 1;
+    background-color: var(--baseColor-dark);
+    border-radius: 10px;
+    padding: 4px;
+
+    overflow: scroll;
+    margin: 4px 0;
+}
+
+.cardContent .description.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media screen and (max-width:600px) {
+    .RoomCard {
+        min-width: 0;
+        width: 100%;
+    }
+}

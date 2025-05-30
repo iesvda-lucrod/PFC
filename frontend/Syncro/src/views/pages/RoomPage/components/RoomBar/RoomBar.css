@@ -1,0 +1,60 @@
+.RoomBar {
+    position: relative;
+    top: 0px;
+    
+    width: 100vw;
+    height: 70px;
+    
+    z-index: 9;
+
+    background-color: var(--baseColor);
+    border: solid var(--mainColor-dark);
+    border-width: 0px 0px 4px 0px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px var(--menuBarSpacing);
+}
+
+.RoomBar .roomUsers,
+.RoomBar .roomOptions {
+    height: 100%;
+
+    max-width: 50%;
+
+    display: flex;
+    align-items: center;
+    
+    gap: 10px;
+}
+.roomOptions h2 {cursor: pointer;}
+.roomOptions h2:hover {color: var(--mainColor);}
+.roomOptions button,
+.roomUsers button {
+    height: 100%;
+    padding: 4px;
+}
+
+.roomUsers button {padding: 10px;}
+.roomUsers .userList {
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
+@media screen and (max-width:600px) {
+    .RoomBar {
+        padding: 10px;
+    }
+
+    .roomOptions h2 {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .roomUsers .userList {
+        height: 100%;
+        margin: 0;
+    }
+}

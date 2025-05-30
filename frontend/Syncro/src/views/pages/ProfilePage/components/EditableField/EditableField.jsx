@@ -22,24 +22,28 @@ export default function EditableField({ label, value, editing, setEditing,  conf
 
     return (
         <div className="EditableField">
-            <label>{label}:</label>
             {
                 editing ? (
-                <>
-                    <input type="text" value={temporalValue} onChange={(e) => handleChange(e)}/>
-                    <div className="buttons">
-                        <button onClick={confirmChanges} className="confirmChanges"><Icon_check/></button>
-                        <button onClick={cancelChanges} className="cancelChanges"><Icon_cross/></button>    
+                <div className="editing">
+                    <div className="text">
+                        <label><b>{label}:</b></label>
+                        <input type="text" value={temporalValue} onChange={(e) => handleChange(e)}/>    
                     </div>
-                    
-                </>
+                    <div className="buttons">
+                        <button onClick={confirmChanges} className="confirmButton"><Icon_check/></button>
+                        <button onClick={cancelChanges} className="cancelButton"><Icon_cross/></button>    
+                    </div>
+                </div>
                 ) : (
-                <>
-                    <p>{value}</p>
+                <div className="notEditing">
+                    <div className="text">
+                        <label><b>{label}:</b></label>
+                        <p>{value}</p>
+                    </div>
                     <div className="buttons">
                         <button onClick={() => setEditing(true)}>Edit</button>
                     </div>
-                </>
+                </div>
                 )
             }
         </div>

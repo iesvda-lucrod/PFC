@@ -86,10 +86,11 @@ export default function ContactPage() {
             {!userInfo && 
                 <Link to={"/"}><Icon_arrow_left/> back to homepage</Link>
             }
-
             <div className="contactFormContainer">
+            <h1>Contact</h1>
+
                 <form action="" className="contactForm" onSubmit={(e) => handleSubmit(e)}>
-                    <h2>Contact</h2>
+                    
 
                     <div className="formContent">
 
@@ -113,7 +114,7 @@ export default function ContactPage() {
 
                         <div className="FormInput">
                             <div className='inputContainer'>
-                                <label htmlFor='message'>Message:</label>
+                                <label htmlFor='message'><b>Message:</b></label>
                                 <textarea id='message' name='message'
                                 placeholder="Explain in detail the reason for contact"
                                 value={formData.message} 

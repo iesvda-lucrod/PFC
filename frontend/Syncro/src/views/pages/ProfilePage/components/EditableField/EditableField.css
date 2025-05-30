@@ -1,28 +1,54 @@
 .EditableField {
     display: flex;
     align-items: center;
+
+    width: 100%;
 }
 
-.EditableField label {
-    color: var(--textHighlightColor);
-    font-weight: bold;
-    margin-right: 10px;
+
+.editing, .notEditing {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 5px;
 }
+
+
+.EditableField .text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 5px;
+}
+
+
+
 
 .EditableField .buttons {
-    margin-left: auto;
-
     display: flex;
+    flex: 0 1 auto;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.EditableField button {
-    margin: 4px;
+.notEditing .notEditing .buttons button {
+    
+}
+.EditableField .editing button {
+    
 }
 
 
-.confirmChanges {
-    background-color: var(--confirmColor);
-}
-.cancelChanges {
-    background-color: var(--errorColor);
+
+
+@media screen and (max-width:600px) {
+    .EditableField .editing .buttons,
+    .EditableField .editing .buttons button {
+       flex: 1;
+    }
+    
 }

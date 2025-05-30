@@ -42,7 +42,7 @@ body {
 button,
 .button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid var(--mainColor-light);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -102,8 +102,15 @@ h1,h2,h3,h4,h5 {
   color: #000070;
 }
 
+
+b {
+  font-weight: bold;
+  color: var(--mainColor-dark);
+}
+
 textarea,
 input {
+  height: 3em;
   border: 1px solid var(--mainColor);
   padding: 5px;
   border-radius: 5px;
@@ -121,8 +128,28 @@ input {
   text-align: right;
 }
 
-@media screen and (max-width: 600px) {
-  .hideOnPhone {
-    display: none;
+.confirmButton {
+  background-color: var(--confirmColor);
+}
+.warningButton {
+  background-color: var(--warningColor);
+}
+.cancelButton {
+  background-color: var(--errorColor);
+}
+
+
+:root .hideOnSmall {
+  display: block;
+}
+:root .showOnSmall {
+  display:none;
+}
+@media screen and (max-width: 800px) {
+  :root .hideOnSmall {
+    display:none;
+  } 
+  :root .showOnSmall {
+    display:block;
   }
 }

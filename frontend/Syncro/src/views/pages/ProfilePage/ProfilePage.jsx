@@ -33,6 +33,9 @@ export default function ProfilePage() {
     const [ newPassword, setNewPassword ] = useState('');
     const [ passwordChanged, setPasswordChanged ] = useState(false);
 
+    const [ verificationEmailSent, setVerificationEmailSent ] = useState(false);
+
+
     const [ openConfirmDeleteModal, setOpenConfirmDeleteModal ] = useState(false);
 
 
@@ -60,7 +63,6 @@ export default function ProfilePage() {
     const updateUser = async(newUserInfo) => {
         const response = await userModel.updateUser(newUserInfo);
         if (!response.valid) {setValidationErrors({...validationErrors, server:'There was a problem with the server, please try again later'}); return;}
-
         setFullUserInfo({...fullUserInfo, ...newUserInfo});
     }
 
@@ -68,7 +70,7 @@ export default function ProfilePage() {
         setValidationErrors({...validationErrors, username:''});
         if (newValue === '') {setValidationErrors({...validationErrors, username:'This field is required'}); return;}
         else if (!newValue.match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/)) {setValidationErrors({...validationErrors, username:'Username only accepts letters and spaces'}); return;}
-        
+
         updateUser({...fullUserInfo, username:newValue});
         setEditingInfo(false);
     }
@@ -80,17 +82,18 @@ export default function ProfilePage() {
             setValidationErrors({...validationErrors, email:'Invalid email format'}); return; 
         }
         
-        console.log("hello");
         let response = await userModel.isEmailTaken(newValue);
         if (response.data.result) {setValidationErrors({...validationErrors, email:'This email is not available'}); return;}
-        console.log("gbye");
 
         updateUser({...fullUserInfo, email:newValue});
         setEditingEmail(false);
     }
+
     const updatePassword = async (e) => {
         e.preventDefault();
         setPasswordChanged(false);
+        setValidationErrors({...validationErrors, oldPassword:'', newPassword:''});
+
         let response = await userModel.changePassword(fullUserInfo, oldPassword, newPassword);
 
         if (!response.valid) {
@@ -121,8 +124,6 @@ export default function ProfilePage() {
         formData.append('profile_picture', selectedImage);
         formData.append('userInfo', JSON.stringify(fullUserInfo));
 
-        console.log("SENDING", formData);
-
         let response = await userModel.changeProfilePicture(formData);
         if (!response.valid) {console.error("teher was a problem uploading the image");}
 
@@ -131,22 +132,30 @@ export default function ProfilePage() {
         saveUserInContext(fullUserInfo);
     }
 
+    const handleVerificationEmail = async () => {
+        setValidationErrors(prev => ({...prev, verificationEmail:''}));
+        setVerificationEmailSent(false);
+
+        let response = await sendVerificationEmail(fullUserInfo)
+        if (!response.valid) {
+            setValidationErrors(prev => ({...prev, verificationEmail:'There was an error sending the email, please try again later'}));
+            return;
+        }
+        setVerificationEmailSent(true);
+    }
+
     return (
         <div className="ProfilePage page">
-            <div className="ProfileCard">
             {
                 fullUserInfo ? 
-                <>
+                <div className="ProfileCard">
                     <div className="cardHeader">
-                        <h2>Profile</h2>
+                        <h1>Profile</h1>
                         <div className="profilePictureContainer" onClick={() => setOpenPFPModal(true)/*() => {fileInput.current.click()}*/}>
                             <ProfilePicture pictureName={fullUserInfo.profile_picture} />
     
                             <div className="editPicture">
                                 <Icon_edit className="iconEdit"/>
-                                {
-                                    //<input name="upload" type="file" ref={fileInput} hidden onChange={(e) => setSelectedImage(e.target.files[0])} accept="image/png, image/jpg, image/jpeg"/>
-                                }
                             </div>
                         </div>
 
@@ -181,12 +190,18 @@ export default function ProfilePage() {
                         !fullUserInfo.verified &&
                         <div className="emailNotVerifiedWarning">
                             <span>This email is not verified, email verification is needed for collaborative rooms</span>
-                            <button onClick={() => sendVerificationEmail(fullUserInfo)}>Send verification email</button>
+                            <button onClick={handleVerificationEmail}>Send verification email</button>
+                            <span className="errorMessage">{validationErrors.verificationEmail}</span>
+                            {verificationEmailSent && <span className="successMessage">Email sent!</span>}
                         </div>
                         }
                     </div>
 
-                    <button onClick={() => setOpenPasswordModal(true)}>Change password</button>
+                    <div className="actionButtons">
+                        <button onClick={() => setOpenPasswordModal(true)}>Change password</button>
+                        <button onClick={() => setOpenConfirmDeleteModal(true)}>Delete account</button> 
+                    </div>
+
                     <Modal isOpen={openPasswordModal} onClose={() => setOpenPasswordModal(false)}>
                         
                         <form onSubmit={(e) => updatePassword(e)}>
@@ -202,7 +217,7 @@ export default function ProfilePage() {
 
                             <button type="submit">Change password</button>
                             {
-                                passwordChanged && <span>Password changed successfully!</span>
+                                passwordChanged && <span className="successMessage">Password changed successfully!</span>
                             }
                         </form>
 
@@ -210,19 +225,18 @@ export default function ProfilePage() {
 
                     </Modal>
 
-                    <button onClick={() => setOpenConfirmDeleteModal(true)}>Delete account</button> 
-
                     <Modal isOpen={openConfirmDeleteModal} onClose={() => setOpenConfirmDeleteModal(false)}>
                         <p>Are you sure you want to delete your account?</p>
                         <p>This action is irreversible</p>
                         <button className="deleteButton" onClick={deleteAccount}>Delete account</button>
                     </Modal>
-
-                </>
-                :
-                <LoadingSpinner />
-            }
+            
             </div>
+            :
+            <div className="spinnerContainer">
+                <LoadingSpinner />
+            </div>
+            }
         </div>
     );
 }

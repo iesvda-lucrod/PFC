@@ -88,13 +88,13 @@ export function RoomContextProvider({ roomId, children }) {
         });
     };
 
-    const resetPanel = () => {
-        console.log("Setting panel to default");
+    const resetPanel = (reOpen = false) => {
+        console.log("Setting panel to default", roomInfo);
         sidePanelFunctions.setPanel({
             header: roomInfo.name,
             content: [roomInfo.description],
             actions: []
-        }, false);
+        }, reOpen);
     }
     
 

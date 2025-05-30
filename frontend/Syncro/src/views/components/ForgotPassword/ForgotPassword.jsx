@@ -3,6 +3,7 @@ import { useState } from "react";
 import Modal from "../Modal/Modal";
 import FormInput from "../FormInput/FormInput";
 import useAuth from "../../../models/useAuth";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 export default function ForgotPassword ({ userEmail = '' }) { 
     const { isLoading, sendPasswordChangeEmail } = useAuth();
@@ -36,7 +37,7 @@ export default function ForgotPassword ({ userEmail = '' }) {
                     onChange={handleChange}
                     validationErrorMessage={validationErrors.email}
                     />
-                    <button type="submit">Send email</button>
+                    <button type="submit">{isLoading ? <LoadingSpinner/> : 'Send email'}</button>
                 </form>
                 { emailSent && <span className="successMessage">Email sent</span> }
             </Modal>
