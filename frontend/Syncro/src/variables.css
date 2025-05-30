@@ -8,7 +8,8 @@
     --baseColor-light: #ffffff;
     --baseColor-dark: #e0e0e0;
 
-    --mainColor: #2070f0;
+    /*--mainColor: #2070f0;*/
+    --mainColor: #646cff;
     --mainColor-light: #a6c6f9;
     --mainColor-dark: #0d2d60;
 

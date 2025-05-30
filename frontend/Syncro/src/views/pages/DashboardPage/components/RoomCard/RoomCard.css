@@ -1,7 +1,7 @@
 .RoomCard {
     border: 5px solid var(--mainColor-dark);
     border-radius: 20px;
-    background-color: var(--baseColor);
+    background-color: var(--mainColor);
 
     min-width: 400px;
 
@@ -44,7 +44,7 @@
 
 .cardContent .description {
     flex: 1;
-    background-color: var(--baseColor-dark);
+    background-color: var(--mainColor-light);
     border-radius: 10px;
     padding: 4px;
 

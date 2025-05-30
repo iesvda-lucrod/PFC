@@ -1,0 +1,12 @@
+.AnimateEntry {
+    position: relative;
+    transition: all 1s ease-out 0.2s;
+}
+.AnimateEntry.invisible {
+    opacity: 0;
+    top: 50px;
+}
+.AnimateEntry.visible {
+    opacity: 1;
+    top: 0px;
+}

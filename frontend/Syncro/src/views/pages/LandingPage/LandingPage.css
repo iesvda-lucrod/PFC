@@ -1,0 +1,309 @@
+.LandingPage {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.cta {
+    height: 100px;
+    font-size: 2em;
+
+    border: 1px solid transparent;
+    border-radius: 40px;
+    background-color: var(--mainColor);
+    color: var(--baseColor);
+    font-weight: bold;
+    padding: 30px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    transition: all 0.2s ease;
+}
+.cta:hover {
+    color: var(--baseColor);
+    border: 1px solid var(--mainColor-dark);
+    filter: contrast(1.2);
+}
+
+.LandingPage header {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+.LandingPage header .title {
+    padding: 20px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.LandingPage header h2 {
+    font-size: 70px;
+    text-align: center;
+}
+.LandingPage header .title .Icon {width: 80%;}
+/* MAIN */
+.LandingPage main {
+    background-color: var(--baseColor);
+    padding: 50px 0;
+
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 50px;
+}
+
+/* Bulletpoints */
+    .LandingPage #bulletPoints {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 10px;
+    }
+
+    .LandingPage #bulletPoints .point {
+        height: 40vh;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+    #bulletPoints .AnimateEntry:nth-of-type(even) .point {flex-flow: row-reverse nowrap;}
+
+    /* Image */
+    .LandingPage #bulletPoints .point .imagePart {
+        width: 30%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--mainColor);
+        border-radius: 0 20px 20px 0;
+    }
+    #bulletPoints .AnimateEntry:nth-of-type(even)  .imagePart {border-radius: 20px 0 0 20px;}
+
+
+    #bulletPoints .point .imagePart img {
+        height: 90%;
+        max-width: 90%;
+        border-radius: 5px;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+    }
+    /* Text */
+   #bulletPoints .point .textPart {
+        background-color: var(--mainColor-light);
+        height: 70%;
+        width: 70%;
+        display: flex;
+        align-items: center;
+        padding: 0px 2%;
+    }
+
+    #bulletPoints .point .textContainer {
+        border: 10px solid var(--mainColor-dark);
+        background-color: var(--baseColor);
+        
+        border-radius: 40px;
+        height: auto;
+        padding: 20px;
+    }
+
+
+
+
+/* Informative */
+    .LandingPage main .informative {
+        width: 100%;
+        height: 50vh;
+        background-color: var(--baseColor-dark);
+        border: solid var(--mainColor-dark);
+        border-width: 10px 0;
+        padding: 20px 60px;
+        overflow: hidden;
+    }
+    .LandingPage main .informative > * {
+        height: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .LandingPage #reasonsToUse {
+        height: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 5px;
+    }
+    #reasonsToUse h2 {font-size: 3rem;}
+    #reasonsToUse li {
+        list-style-position: inside;
+        font-size: 1.5em;
+    }
+    #reasonsToUse .cta {
+        height: 20px;
+        max-width: 90%;
+    }
+
+    .LandingPage #interested {
+        flex: 0 1 auto;
+        width: 30%;
+        border: 10px solid var(--mainColor-dark);
+        border-radius: 20px;
+
+        padding: 20px;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 5px;
+    }
+    #interested h2 {font-size: 2rem;}
+    #interested .cta {
+        max-width: 90%;
+        height: 1px;
+        align-self: center;
+    }
+
+/* FOOTER */
+.LandingPage footer {
+    min-height: 20%;
+    background-color: var(--mainColor-dark);
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    gap: 40px;
+
+    padding: 20px;
+    color: var(--mainColor);
+    font-weight: bold;
+}
+.LandingPage footer section{
+    flex: 1;
+
+    display: flex;
+    flex-flow: column wrap;
+    padding: 10px;
+}
+
+.LandingPage footer h3 {
+    color: var(--mainColor);
+}
+
+.LandingPage footer section .content ul {
+    border-top: 4px solid var(--mainColor);
+    padding: 10px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 2px;
+    list-style: none;
+}
+.LandingPage footer section .content ul li,
+.LandingPage footer .socials .content ul li a {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+@media screen and (max-width:1000px) {
+    #reasonsToUse li {
+        list-style-position: inside;
+        font-size: 1em;
+    }
+}
+
+
+
+@media screen and (max-width:800px) {
+    /* HEADER */
+    .LandingPage header h2 {font-size: 1em;}
+    .LandingPage main {
+        padding: 0;
+        gap:0;
+    }
+    
+    /* MAIN */
+    /* Bullet points*/
+    .LandingPage #bulletPoints {
+        gap: 0px;
+    }
+
+    .LandingPage #bulletPoints .point {
+        width: 100vw;
+        height: auto;
+        flex-flow: column nowrap;
+    }
+    #bulletPoints .AnimateEntry:nth-of-type(even) .point {
+        flex-flow: column nowrap;
+
+    }
+
+    .LandingPage #bulletPoints .point .imagePart {
+        width: 100vw;
+    }
+    #bulletPoints .point .imagePart img {
+        max-width: 100%;
+        width: 100%;
+        border-radius: 0;
+    }
+    
+    #bulletPoints .point .textPart {
+        padding: 40px;
+        width: 100%;
+    }
+
+    /* Informative */
+    .LandingPage main .informative {
+        height: auto;
+    }
+
+    .LandingPage main .informative > * {
+        flex-flow: column;
+        gap: 20px;
+    }
+    #reasonsToUse h2 {font-size: 2rem;}
+    #reasonsToUse li {font-size: 1em;}
+
+    .LandingPage #interested {
+        width: 100%;
+    }
+
+    #reasonsToUse .cta,
+    #interested .cta {
+        font-size: 1.5em;
+    }
+
+    /* FOOTER */
+    .LandingPage footer {
+        flex-flow: column nowrap;
+        gap: 0px;
+    }
+
+    .LandingPage footer .socials .content ul {
+        flex-flow: row;
+        justify-content: space-evenly;
+    }
+    .LandingPage footer .socials .content ul li .Icon {
+        height: 30px;
+        width: 30px;
+    }
+
+
+
+
+}

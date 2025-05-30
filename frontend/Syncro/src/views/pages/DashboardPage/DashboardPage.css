@@ -23,7 +23,7 @@
 .roomListContent {
     height: 100%;
     width: 100%;
-    background-color: var(--mainColor-light);
+    background-color: var(--baseColor);
     border: 5px solid var(--mainColor-dark);
     border-radius: 30px;
     padding: 10px;

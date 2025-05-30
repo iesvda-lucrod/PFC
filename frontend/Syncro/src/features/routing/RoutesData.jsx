@@ -3,7 +3,7 @@ import AuthPage from "../../views/pages/AuthPage/AuthPage";
 import DashboardPage from "../../views/pages/DashboardPage/DashboardPage";
 import EmailVerificationPage from "../../views/pages/EmailVerificationPage/EmailVerificationPage";
 import RoomInvitationPage from "../../views/pages/RoomInvitationPage/RoomInvitationPage";
-import InfoPage from "../../views/pages/InfoPage/InfoPage";
+import LandingPage from "../../views/pages/LandingPage/LandingPage";
 import NotFoundPage from "../../views/pages/NotFoundPage/NotFoundPage";
 import ProfilePage from "../../views/pages/ProfilePage/ProfilePage";
 import ForgotPasswordPage from "../../views/pages/ForgotPasswordPage/ForgotPasswordPage";
@@ -14,7 +14,7 @@ const routesData = [
     //{title: , path: , element: }
     {title: '404', path: '*', element: <NotFoundPage/>},
 
-    {title: 'info', path: '/', element: <InfoPage/>},
+    {title: 'info', path: '/', element: <LandingPage/>},
     {title: 'auth', path: '/auth', element: <AuthPage/>},
 
     {title: 'dashboard', path: '/dashboard', element: <DashboardPage/>},

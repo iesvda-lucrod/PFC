@@ -4,23 +4,23 @@ import './App.css'
 import './variables.css'
 import Router from './features/routing/Router';
 import { UserContextProvider } from './contexts/UserContext/UserContextProvider';
-import { ErrorBoundary } from "react-error-boundary";
 //UI Component imports
 import Navigation from "./views/components/Menu/Menu";
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
 
   return (
     <div className='App'>
+    <HelmetProvider>
       <BrowserRouter>
-
         <UserContextProvider>
           <Navigation/>
 
           <Router />
         </UserContextProvider>
-
       </BrowserRouter>
+    </HelmetProvider>
     </div>
   );
 }

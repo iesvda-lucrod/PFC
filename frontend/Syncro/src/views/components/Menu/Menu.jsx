@@ -32,7 +32,7 @@ export default function Menu() {
                 </div>
 
                 <div className="MenuRow">
-                    <Link id="navDashboard" to={'/dashboard'}><Icon_home/></Link>
+                    <Link to={'/dashboard'}><Icon_home/></Link>
                 </div>
                 <div className="MenuRow">
                     <Link to={'/profile'}><Icon_user/></Link>
